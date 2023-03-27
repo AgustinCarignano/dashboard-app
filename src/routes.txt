@@ -1,0 +1,20 @@
+/dashboard                      Home Page
+/login                          Login page
+
+/bookings                       Read all and delete
+    /bookings/<id>              Read one
+    /booking/create-book        Create one
+    /booking/update/<id>        Update one
+
+/rooms                          Read all and delete
+    /rooms/<id>                 Read one
+    /rooms/create-room          Create one
+    /rooms/update-room/<id>     Update one
+
+/users                          Read all and delete
+    /users/<id>                 Read one
+    /users/create-user          Create one
+    /users/update-user/<id>     Update one
+
+/contact                        Read all and read one (pupop)
+    contact/archived            Read archived
