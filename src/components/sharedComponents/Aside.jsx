@@ -1,8 +1,10 @@
 import React from "react";
 import styled from "styled-components";
+import { useLocation } from "react-router-dom";
 import { Link } from "react-router-dom";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
+  faArrowRightToBracket,
   faTableColumns,
   faCalendarCheck,
   faKey,
@@ -14,22 +16,27 @@ import Button from "./Button";
 
 const StyledAside = styled.aside`
   grid-area: aside;
-  padding: 32px 56px;
+  padding-top: 20px;
   background-color: #fff;
   display: flex;
   flex-direction: column;
-  gap: 55px;
+  align-items: center;
+  gap: 30px;
   box-shadow: 13px 3px 40px #00000005;
-  min-height: 100vh;
+  transform: translateX(${(props) => (props.show ? "0px" : "-400px")});
 `;
 
 const LinkContainer = styled.div`
   display: flex;
   gap: 25px;
+  padding: 10px 56px;
+  width: 100%;
   align-items: center;
   font: normal ${(props) => (props.active ? "600" : "400")} 18px/27px Poppins,
     sans-serif;
   color: ${(props) => (props.active ? "#e23428" : "#799283")};
+  border-left: ${(props) =>
+    props.active ? "solid 5px #e23428" : "solid 5px #fff"};
   p {
     transition: transform 0.3s;
   }
@@ -46,6 +53,7 @@ const UserCard = styled.div`
   box-shadow: 0px 20px 30px #00000014;
   border-radius: 18px;
   margin: 60px 0;
+  width: 60%;
   img {
     width: 30%;
     aspect-ratio: 1/1;
@@ -85,47 +93,60 @@ const Logo = styled.div`
 `;
 
 function Aside(props) {
+  const { sidebarVisibility, auth } = props;
+  const { pathname } = useLocation();
+  const pathArray = pathname.split("/");
+
   return (
-    <StyledAside>
+    <StyledAside show={sidebarVisibility}>
       <Logo>
         <img src="https://i.imgur.com/WlUcHWA.png" alt="logo" />
       </Logo>
-      <LinkContainer active={props.activeLink === "dashboard"}>
-        <FontAwesomeIcon icon={faTableColumns} />
-        <Link to="/">
-          <p>Dashboard</p>
-        </Link>
-      </LinkContainer>
-      <LinkContainer active={props.activeLink === "bookings"}>
-        <FontAwesomeIcon icon={faCalendarCheck} />
-        <Link to="/bookings">
-          <p>Booking</p>
-        </Link>
-      </LinkContainer>
-      <LinkContainer active={props.activeLink === "rooms"}>
-        <FontAwesomeIcon icon={faKey} />
-        <Link to="/rooms">
-          <p>Rooms</p>
-        </Link>
-      </LinkContainer>
-      <LinkContainer active={props.activeLink === "contact"}>
-        <FontAwesomeIcon icon={faMessage} />
-        <Link to="/contact">
-          <p>Contact</p>
-        </Link>
-      </LinkContainer>
-      <LinkContainer active={props.activeLink === "users"}>
-        <FontAwesomeIcon icon={faUser} />
-        <Link to="users">
-          <p>Users</p>
-        </Link>
-      </LinkContainer>
-      <UserCard>
-        <img src="https://i.imgur.com/wcT5ydV.jpg" alt="" />
-        <h3>Jane Doe</h3>
-        <p>janedoe@mail.com</p>
-        <Button variant={2}>Edit</Button>
-      </UserCard>
+      {!auth ? (
+        <LinkContainer active={true} style={{ marginBottom: "500px" }}>
+          <FontAwesomeIcon icon={faArrowRightToBracket} />
+          <p>Login</p>
+        </LinkContainer>
+      ) : (
+        <>
+          <LinkContainer active={pathArray[2] === ""}>
+            <FontAwesomeIcon icon={faTableColumns} />
+            <Link to="/dashboard-app/">
+              <p>Dashboard</p>
+            </Link>
+          </LinkContainer>
+          <LinkContainer active={pathArray[2] === "bookings"}>
+            <FontAwesomeIcon icon={faCalendarCheck} />
+            <Link to="/dashboard-app/bookings">
+              <p>Booking</p>
+            </Link>
+          </LinkContainer>
+          <LinkContainer active={pathArray[2] === "rooms"}>
+            <FontAwesomeIcon icon={faKey} />
+            <Link to="/dashboard-app/rooms">
+              <p>Rooms</p>
+            </Link>
+          </LinkContainer>
+          <LinkContainer active={pathArray[2] === "contact"}>
+            <FontAwesomeIcon icon={faMessage} />
+            <Link to="/dashboard-app/contact">
+              <p>Contact</p>
+            </Link>
+          </LinkContainer>
+          <LinkContainer active={pathArray[2] === "users"}>
+            <FontAwesomeIcon icon={faUser} />
+            <Link to="/dashboard-app/users">
+              <p>Users</p>
+            </Link>
+          </LinkContainer>
+          <UserCard>
+            <img src="https://i.imgur.com/wcT5ydV.jpg" alt="" />
+            <h3>Jane Doe</h3>
+            <p>janedoe@mail.com</p>
+            <Button variant={2}>Edit</Button>
+          </UserCard>
+        </>
+      )}
       <Credits>
         <h3>Travle Hotel Admin Dashboard</h3>
         <p>©2023 All Right Reserved</p>

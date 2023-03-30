@@ -6,6 +6,7 @@ const MainContainer = styled.div`
   padding: 50px;
   background-color: #f8f8f8;
   gap: 40px;
+  position: relative;
 `;
 
 export default MainContainer;
