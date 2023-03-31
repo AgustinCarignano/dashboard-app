@@ -85,3 +85,10 @@ export const Submit = styled.div`
   text-align: center;
   margin: 50px auto 0;
 `;
+
+/* 
+const toCapitalCase = (string) => {
+  const newStr = string.split(/(?=[A-Z])/).join(" ");
+  return `${newStr[0].toUpperCase()}${newStr.slice(1, newStr.length)}`;
+};
+*/

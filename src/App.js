@@ -12,6 +12,7 @@ import Header from "./components/sharedComponents/Header";
 import Layout from "./components/sharedComponents/Layout";
 import RequiredAuth from "./components/sharedComponents/RequiredAuth";
 import NewUser from "./components/users/NewUser";
+import UpdateUser from "./components/users/UpdateUser";
 import Users from "./components/users/Users";
 
 function App() {
@@ -171,13 +172,13 @@ function App() {
               }
             />
             <Route
-              path="/dashboard-app/users/update-user/:id"
+              path="/dashboard-app/users/update/:id"
               element={
                 <RequiredAuth auth={auth}>
                   {/* <Layout showAside={showSidebar}> */}
                   {/* <Aside sidebarVisibility={showSidebar} /> */}
                   {/* <Header handleSidebarVisibility={handleSidebarVisibility} /> */}
-                  <Users />
+                  <UpdateUser />
                   {/* </Layout> */}
                 </RequiredAuth>
               }

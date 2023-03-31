@@ -5,17 +5,19 @@ import Button from "../sharedComponents/Button";
 
 const FormContainer = styled.div`
   width: 100%;
-  min-height: 100vh;
+  min-height: calc(100vh - 145px);
   background-color: #f8f8f8;
-  padding-top: 10%;
+  padding-top: 30px;
 `;
 
 const Form = styled.form`
+  position: relative;
   display: flex;
   flex-direction: column;
   justify-content: space-between;
   align-items: center;
   width: 35%;
+  min-width: 650px;
   margin: 0 auto;
   background-color: #fff;
   padding: 50px;
@@ -23,35 +25,48 @@ const Form = styled.form`
   border-radius: 30px;
   box-shadow: 0px 30px 16px rgba(0, 0, 0, 0.25);
   color: #262626;
-  .title {
+  h1 {
     font: normal 600 40px/60px Poppins, Sans-serif;
     text-align: center;
     letter-spacing: 0.09em;
     margin-bottom: 20px;
     width: 80%;
   }
-  .field {
-    display: flex;
-    gap: 30px;
-    align-items: center;
-  }
-  .label {
+  label {
     font: normal 400 24px/36px "Poppins", Sans-serif;
     text-align: right;
     width: 150px;
   }
-  .input {
+  input {
     border: solid 1px #ebebeb;
     border-radius: 8px;
     outline: none;
     padding: 10px;
     font: normal 400 24px/36px "Poppins", Sans-serif;
   }
-  .btnSubmit {
+  Button {
     margin-top: 20px;
     font-size: 24px;
     padding: 20px 53px;
   }
+`;
+
+const Field = styled.div`
+  display: flex;
+  gap: 30px;
+  align-items: center;
+`;
+
+const Credentials = styled.div`
+  position: absolute;
+  width: 100%;
+  bottom: 10px;
+  left: 0;
+  margin: 0 auto;
+  display: flex;
+  justify-content: center;
+  gap: 30px;
+  font-size: 14px;
 `;
 
 function Login(props) {
@@ -62,7 +77,7 @@ function Login(props) {
 
   function handleSubmit(e) {
     e.preventDefault();
-    if (userName === "AgustinCarignano" && password === "12345") {
+    if (userName === "agustinC" && password === "12345") {
       setAuth(true);
     }
   }
@@ -75,7 +90,7 @@ function Login(props) {
     <FormContainer>
       <Form onSubmit={handleSubmit}>
         <h1 className="title">Type Your Credentials </h1>
-        <div className="field">
+        <Field>
           <label className="label" htmlFor="userName">
             User name
           </label>
@@ -88,8 +103,8 @@ function Login(props) {
             onChange={(e) => setUserName(e.target.value)}
             value={userName}
           />
-        </div>
-        <div className="field">
+        </Field>
+        <Field>
           <label className="label" htmlFor="password">
             Pasword
           </label>
@@ -101,11 +116,15 @@ function Login(props) {
             onChange={(e) => setPassword(e.target.value)}
             value={password}
           />
-        </div>
+        </Field>
         {/* <input type="submit" value="Enter" /> */}
-        <Button className="btnSubmit" variant={1} onClick={handleSubmit}>
+        <Button variant={1} onClick={handleSubmit}>
           Sign In
         </Button>
+        <Credentials>
+          <p>User: agustinC</p>
+          <p>Password: 12345</p>
+        </Credentials>
       </Form>
     </FormContainer>
   );

@@ -164,9 +164,9 @@ function BookingsItem() {
       <ItemContainer>
         <LeftColumn>
           <div className="guest">
-            {/* <div className="guest_img">
+            <div className="guest_img">
               <img src="https://i.imgur.com/wcT5ydV.jpg" alt="" />
-            </div> */}
+            </div>
             <div className="guest_detail">
               <h1>{item.guest}</h1>
               <p>ID {item.id}</p>

@@ -1,7 +1,8 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import styled from "styled-components";
-import { useLocation } from "react-router-dom";
+import { useLocation, useNavigate } from "react-router-dom";
 import { Link } from "react-router-dom";
+import { getItemData } from "../../mockService/service";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
   faArrowRightToBracket,
@@ -55,7 +56,7 @@ const UserCard = styled.div`
   margin: 60px 0;
   width: 60%;
   img {
-    width: 30%;
+    width: 40%;
     aspect-ratio: 1/1;
     margin: -25% auto 0;
     border-radius: 8px;
@@ -94,8 +95,26 @@ const Logo = styled.div`
 
 function Aside(props) {
   const { sidebarVisibility, auth } = props;
+  const [user, setUser] = useState({});
   const { pathname } = useLocation();
+  const navigate = useNavigate();
   const pathArray = pathname.split("/");
+
+  async function getUserData() {
+    const data = await getItemData("mockData/users_data.json", "677439179-6");
+    setUser(data);
+  }
+
+  function handleNavigate() {
+    const path = `/dashboard-app/users/update/${user.id}`;
+    navigate(path);
+  }
+
+  useEffect(() => {
+    if (auth) {
+      getUserData();
+    }
+  }, [auth]);
 
   return (
     <StyledAside show={sidebarVisibility}>
@@ -103,9 +122,11 @@ function Aside(props) {
         <img src="https://i.imgur.com/WlUcHWA.png" alt="logo" />
       </Logo>
       {!auth ? (
-        <LinkContainer active={true} style={{ marginBottom: "500px" }}>
+        <LinkContainer active={true} style={{ marginBottom: "100%" }}>
           <FontAwesomeIcon icon={faArrowRightToBracket} />
-          <p>Login</p>
+          <Link to="/dashboard-app/login">
+            <p>Login</p>
+          </Link>
         </LinkContainer>
       ) : (
         <>
@@ -140,10 +161,12 @@ function Aside(props) {
             </Link>
           </LinkContainer>
           <UserCard>
-            <img src="https://i.imgur.com/wcT5ydV.jpg" alt="" />
-            <h3>Jane Doe</h3>
-            <p>janedoe@mail.com</p>
-            <Button variant={2}>Edit</Button>
+            <img src={user.photo} alt="" />
+            <h3>{user.fullName}</h3>
+            <p>{user.email}</p>
+            <Button variant={2} onClick={handleNavigate}>
+              Edit
+            </Button>
           </UserCard>
         </>
       )}

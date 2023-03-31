@@ -1,4 +1,5 @@
 import React, { useState } from "react";
+import bcryprt from "bcryptjs";
 import Button from "../sharedComponents/Button";
 import MainContainer from "../sharedComponents/MainContainer";
 import {
@@ -54,6 +55,11 @@ function NewUser() {
     return true;
   }
 
+  function hashPassword(password) {
+    const salt = bcryprt.genSaltSync(10);
+    return bcryprt.hashSync(password, salt);
+  }
+
   function handleOnSubmit(e) {
     e.preventDefault();
     const copyOfData = { ...newUser };
@@ -61,7 +67,7 @@ function NewUser() {
     if (correctForm) {
       const randomNumber = Math.round(Math.random() * 10000);
       copyOfData.id = `newId-${randomNumber}`;
-      copyOfData.password = `${copyOfData.password}+Encriptado`;
+      copyOfData.password = hashPassword(copyOfData.password);
       console.log(copyOfData);
       setNewUser(initialState);
       setVerifyPass("");

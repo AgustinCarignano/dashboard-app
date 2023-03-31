@@ -44,16 +44,24 @@ const MyTable = styled.table`
   th {
     font-weight: 600;
   }
+  tr {
+    transition: all 0.3s;
+  }
   td,
   th {
     padding: 20px 30px;
     max-width: 400px;
   }
-  tbody tr:nth-child(odd) {
-    background-color: #fdfdfd;
-  }
-  tbody tr:hover {
-    box-shadow: 0px 4px 30px #0000001a;
+  tbody {
+    tr :first-child {
+      cursor: pointer;
+    }
+    tr:nth-child(odd) {
+      background-color: #fdfdfd;
+    }
+    tr:hover {
+      box-shadow: 0px 4px 30px #0000001a;
+    }
   }
   .firstColumn {
     display: flex;
@@ -127,12 +135,7 @@ const tableOptions = {
   ],
   rooms: ["Room", "Room Type", "Amenities", "Price", "Offer Price", "Status"],
   contact: ["Date & ID", "Customer Dates", "Subject & Comment", "Action"],
-  users: ["Name", "Email", "Start Date", "Description", "Contact", "Status"],
-};
-
-const toCapitalCase = (string) => {
-  const newStr = string.split(/(?=[A-Z])/).join(" ");
-  return `${newStr[0].toUpperCase()}${newStr.slice(1, newStr.length)}`;
+  users: ["Name", "Start Date", "Description", "Contact", "Status"],
 };
 
 function Table(props) {

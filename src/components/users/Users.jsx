@@ -27,10 +27,11 @@ function Users() {
             <div>
               <p>{item.fullName}</p>
               <p className="idField">#{item.id}</p>
+              <p className="idField">{item.email}</p>
             </div>
           </div>
         </td>
-        <td>{item.email}</td>
+        {/* <td>{item.email}</td> */}
         <td>{item.startDate}</td>
         <td>${item.description}</td>
         <td>{item.contact}</td>
