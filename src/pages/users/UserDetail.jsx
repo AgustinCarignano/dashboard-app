@@ -7,6 +7,7 @@ import MainContainer from "../../components/MainContainer";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faPenToSquare } from "@fortawesome/free-solid-svg-icons";
 import Button from "../../components/Button";
+import { formatDate } from "../../utils";
 
 const Container = styled.div`
   grid-column: 1/5;
@@ -92,6 +93,7 @@ function UserDetail() {
 
   async function getUserData() {
     const data = await getItemData("users_data.json", id);
+    data.startDate = formatDate(data.startDate)[0];
     setUser(data);
   }
 

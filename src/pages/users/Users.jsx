@@ -9,6 +9,7 @@ import Table, {
   RowDataSmaller,
 } from "../../components/Table";
 import Modal from "../../components/Modal";
+import { formatDate } from "../../utils";
 
 const availableStates = {
   ACTIVE: 6,
@@ -31,13 +32,14 @@ function Users() {
 
   const tableHeader = [
     { label: "Name", action: () => setOrderBy("fullName") },
-    { label: "Start Date" },
+    { label: "Start Date", action: () => setOrderBy("startDate") },
     { label: "Description" },
     { label: "Contact" },
     { label: "Status" },
   ];
 
   const rowsToRender = (item) => {
+    const [userDate] = formatDate(item.startDate);
     return (
       <>
         <td>
@@ -55,7 +57,7 @@ function Users() {
             </div>
           </RowContainer>
         </td>
-        <td>{item.startDate}</td>
+        <td>{userDate}</td>
         <td>
           <Modal
             title="Description"
@@ -74,28 +76,6 @@ function Users() {
       </>
     );
   };
-
-  /* function filterData(dataArr, filterOption, orderBy) {
-    const orderList = (arr, criteria) => {
-      arr.sort((a, b) => {
-        if (a[criteria] > b[criteria]) return 1;
-        else if (a[criteria] < b[criteria]) return -1;
-        return 0;
-      });
-      return arr;
-    };
-    let filterArr = [];
-    switch (filterOption) {
-      case "Active Employee":
-        filterArr = dataArr.filter((item) => item.status === "ACTIVE");
-        return orderList(filterArr, orderBy);
-      case "Inactive Employee":
-        filterArr = dataArr.filter((item) => item.status === "INACTIVE");
-        return orderList(filterArr, orderBy);
-      default:
-        return orderList(dataArr, orderBy);
-    }
-  } */
 
   async function getData() {
     const newData = await getAllData("users_data.json");
@@ -136,7 +116,7 @@ function Users() {
         setSearchTerms={setSearchTerms}
         rows={rowsToRender}
         newBtn="New User"
-        newestAction={() => setOrderBy("startDate")}
+        //newestAction={() => setOrderBy("startDate")}
         paginate={true}
       />
     </MainContainer>

@@ -23,6 +23,7 @@ const StyledAside = styled.aside`
   flex-direction: column;
   align-items: center;
   gap: 30px;
+  height: 100%;
   box-shadow: 13px 3px 40px #00000005;
   transform: translateX(${(props) => (props.show ? "0px" : "-400px")});
 `;
@@ -74,6 +75,7 @@ const UserCard = styled.div`
 `;
 
 const Credits = styled.div`
+  margin-top: auto;
   h3 {
     font: normal 600 16px/25px Poppins, sans-serif;
     color: #212121;

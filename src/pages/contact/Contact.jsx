@@ -5,6 +5,8 @@ import ContactPreview from "../../components/ContactPreview";
 import MainContainer from "../../components/MainContainer";
 import Modal from "../../components/Modal";
 import Table from "../../components/Table";
+import { formatDate } from "../../utils";
+import { RowDataSmaller } from "../../components/Table";
 
 function Contact() {
   const [data, setData] = useState([]);
@@ -32,12 +34,13 @@ function Contact() {
   ];
 
   const rowsToRender = (item) => {
+    const [contactDate] = formatDate(item.date);
     return (
       <>
         <td>
           <div>
-            <p>{item.date}</p>
-            <p>{item.id}</p>
+            <p>{contactDate}</p>
+            <RowDataSmaller>#{item.id}</RowDataSmaller>
           </div>
         </td>
         <td>

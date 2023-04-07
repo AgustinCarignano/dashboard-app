@@ -16,6 +16,7 @@ import {
   TextArea,
   Submit,
 } from "../../components/FormComponents";
+import { formatDate } from "../../utils";
 
 const availableRoles = [
   "(Select one role)",
@@ -54,7 +55,7 @@ function NewUser() {
       if (key === "id") continue;
       if (!data[key]) return false;
     }
-    if (data.password !== verifyPass) return false;
+    if (!id && data.password !== verifyPass) return false;
     return true;
   }
 
@@ -68,9 +69,12 @@ function NewUser() {
     const copyOfData = { ...newUser };
     const correctForm = verifyForm(copyOfData);
     if (correctForm) {
-      const randomNumber = Math.round(Math.random() * 10000);
-      copyOfData.id = `newId-${randomNumber}`;
-      copyOfData.password = hashPassword(copyOfData.password);
+      if (!id) {
+        const randomNumber = Math.round(Math.random() * 10000);
+        copyOfData.id = `newId-${randomNumber}`;
+        copyOfData.password = hashPassword(copyOfData.password);
+      }
+      copyOfData.startDate = new Date(copyOfData.startDate).getTime();
       console.log(copyOfData);
       setNewUser(initialState);
       setVerifyPass("");
@@ -81,6 +85,7 @@ function NewUser() {
 
   async function getUserData() {
     const data = await getItemData("users_data.json", id);
+    data.startDate = formatDate(data.startDate)[2];
     setNewUser(data);
   }
 
@@ -195,6 +200,7 @@ function NewUser() {
               <Label>Start Date</Label>
               <Input
                 name="startDate"
+                type="date"
                 value={newUser.startDate}
                 onChange={handleInputsChange}
               />
