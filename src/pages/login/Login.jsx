@@ -1,7 +1,8 @@
-import React, { useState } from "react";
-import { useNavigate } from "react-router-dom";
+import React, { useEffect, useState } from "react";
 import styled from "styled-components";
-import Button from "../sharedComponents/Button";
+import { useNavigate } from "react-router-dom";
+import { getItemData } from "../../mockService/service";
+import Button from "../../components/Button";
 
 const FormContainer = styled.div`
   width: 100%;
@@ -20,7 +21,7 @@ const Form = styled.form`
   min-width: 650px;
   margin: 0 auto;
   background-color: #fff;
-  padding: 50px;
+  padding: 40px;
   gap: 40px;
   border-radius: 30px;
   box-shadow: 0px 30px 16px rgba(0, 0, 0, 0.25);
@@ -57,45 +58,39 @@ const Field = styled.div`
   align-items: center;
 `;
 
-const Credentials = styled.div`
-  position: absolute;
-  width: 100%;
-  bottom: 10px;
-  left: 0;
-  margin: 0 auto;
-  display: flex;
-  justify-content: center;
-  gap: 30px;
-  font-size: 14px;
-`;
-
 function Login(props) {
-  const [userName, setUserName] = useState("");
-  const [password, setPassword] = useState("");
+  const { auth, setAuth, setLoggedUser } = props;
+  const [userName, setUserName] = useState("agustinC");
+  const [password, setPassword] = useState("12345");
   const navigate = useNavigate();
-  const { auth, setAuth } = props;
+
+  async function getUserData() {
+    const data = await getItemData("users_data.json", "480261654-6");
+    setLoggedUser(data);
+  }
 
   function handleSubmit(e) {
     e.preventDefault();
     if (userName === "agustinC" && password === "12345") {
+      getUserData();
       setAuth(true);
+      navigate("/dashboard-app/");
     }
   }
 
-  if (auth) {
-    console.log(auth);
-    return navigate("/dashboard-app/");
-  }
+  useEffect(() => {
+    if (auth) {
+      return navigate("/dashboard-app/");
+    }
+  }, [auth]);
+
   return (
     <FormContainer>
       <Form onSubmit={handleSubmit}>
-        <h1 className="title">Type Your Credentials </h1>
+        <h1>Type Your Credentials </h1>
         <Field>
-          <label className="label" htmlFor="userName">
-            User name
-          </label>
+          <label htmlFor="userName">User name</label>
           <input
-            className="input"
             type="text"
             name="userName"
             id="userName"
@@ -105,11 +100,8 @@ function Login(props) {
           />
         </Field>
         <Field>
-          <label className="label" htmlFor="password">
-            Pasword
-          </label>
+          <label htmlFor="password">Pasword</label>
           <input
-            className="input"
             type="password"
             name="password"
             id="password"
@@ -117,14 +109,9 @@ function Login(props) {
             value={password}
           />
         </Field>
-        {/* <input type="submit" value="Enter" /> */}
         <Button variant={1} onClick={handleSubmit}>
           Sign In
         </Button>
-        <Credentials>
-          <p>User: agustinC</p>
-          <p>Password: 12345</p>
-        </Credentials>
       </Form>
     </FormContainer>
   );

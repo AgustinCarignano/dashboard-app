@@ -36,6 +36,7 @@ export const Label = styled.label`
 export const Input = styled.input`
   font-size: 20px;
   color: #393939;
+  font-family: "Poppins", sans-serif;
   width: 60%;
   max-width: 300px;
   padding: 10px;
@@ -73,6 +74,7 @@ export const ExtraContainer = styled.div`
 export const TextArea = styled.textarea`
   font-size: 20px;
   color: #393939;
+  font-family: "Poppins", sans-serif;
   width: 55%;
   padding: 10px;
   border-radius: 8px;

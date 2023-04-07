@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from "react";
 import styled from "styled-components";
 import Button from "./Button";
+import Modal from "./Modal";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
   faChevronRight,
@@ -13,24 +14,22 @@ const CardsContainer = styled.div`
   box-shadow: ${(props) => (props.shadow ? "0px 4px 4px #00000005" : "none")};
   border-radius: 20px;
   padding: 30px;
+  padding-bottom: ${(props) => (props.extraPadding ? "70px" : "30px")};
   display: grid;
   grid-template-columns: repeat(3, 1fr);
-  gap: 40px;
+  column-gap: 40px;
   position: relative;
-  .title {
-    font: normal 400 20px/30px "Poppins", sans-serif;
-    color: #393939;
-    margin: 0;
-  }
-  .cards {
-    display: flex;
-    margin: 30px 0;
-    gap: 40px;
-  }
+`;
+const Title = styled.h2`
+  font: normal 400 20px/30px "Poppins", sans-serif;
+  color: #393939;
+  margin: 0 0 20px 0;
+  grid-column: 1/4;
 `;
 const MyCard = styled.div`
   background-color: #ffffff;
   padding: 30px;
+  min-height: 223px;
   max-height: 400px;
   overflow: hidden;
   display: flex;
@@ -41,42 +40,50 @@ const MyCard = styled.div`
   :hover {
     box-shadow: 0px 16px 30px #00000014;
   }
-  .field {
-    font: normal 600 16px/25px "Poppins", sans-serif;
-    color: #262626;
-    margin: 5px 0;
-  }
-  .content {
-    font: normal 400 16px/28px "Poppins", sans-serif;
-    color: #4e4e4e;
-  }
 `;
 
-const Field = styled.p`
+const Name = styled.h3`
   font: normal 600 16px/25px "Poppins", sans-serif;
   color: #262626;
-  margin: 5px 0;
+  margin: 0px 0;
 `;
-const Content = styled.p`
-  font: normal 400 16px/28px "Poppins", sans-serif;
+const Contact = styled.p`
+  font: normal 400 12px/20px "Poppins", sans-serif;
+  color: #6e6e6e;
+  margin: 0;
+`;
+const Subject = styled(Contact)`
+  font-size: 16px;
+  margin: 5px 0px;
+  padding-top: 5px;
   color: #4e4e4e;
+  border-top: solid 1px #f5f5f5;
 `;
+const messageStyle = {
+  font: "normal 400 14px/20px 'Poppins', sans-serif",
+  color: "#6e6e6e",
+  margin: "0",
+  cursor: "pointer",
+};
 
 const ButtonContainer = styled.div`
-  //grid-column: 3/4;
   width: 100%;
   display: flex;
   position: absolute;
-  top: 13rem;
+  top: calc(50% - 24.3px);
   justify-content: space-between;
   margin-left: auto;
   Button {
     padding: 13px 20px;
+    transition: transform 0.3s;
+    &:hover {
+      transform: scale(1.1);
+    }
   }
 `;
 
 function ContactPreview(props) {
-  const { data, bg_color, shadow } = props;
+  const { title, data, bg_color, shadow } = props;
   const [dataToRender, setDataToRender] = useState([]);
   const [totalPages, setTotalPages] = useState(1);
   const [currentPage, setCurrentPage] = useState(1);
@@ -108,35 +115,29 @@ function ContactPreview(props) {
   }, [data, currentPage]);
 
   return (
-    <CardsContainer bg_color={bg_color} shadow={shadow}>
+    <CardsContainer bg_color={bg_color} shadow={shadow} extraPadding={!!title}>
+      {title && <Title>{title}</Title>}
       {dataToRender.map((item, index) => {
         return (
           <MyCard key={index}>
-            <Field>Name</Field>
-            <Content>{item.fullName}</Content>
-            <Field>Email</Field>
-            <Content>{item.email}</Content>
-            <Field>Phone</Field>
-            <Content>{item.phone}</Content>
-            <Field>Subject</Field>
-            <Content>{item.subject}</Content>
-            <Field>Message</Field>
-            <Content>{item.message}</Content>
+            <Name>{item.fullName}</Name>
+            <Contact>
+              {item.email} | {item.phone}
+            </Contact>
+            <Subject>{item.subject}</Subject>
+            <Modal
+              title={item.fullName}
+              content={item.message}
+              preview={
+                item.message.length > 150
+                  ? item.message.slice(0, 150) + "..."
+                  : item.message
+              }
+              previewStyle={messageStyle}
+            />
           </MyCard>
         );
       })}
-      {/* <MyCard>
-        <p className="field">Name</p>
-        <p className="content">{name}</p>
-        <p className="field">Email</p>
-        <p className="content">{email}</p>
-        <p className="field">Phone</p>
-        <p className="content">{phone}</p>
-        <p className="field">Subject</p>
-        <p className="content">{subject}</p>
-        <p className="field">Message</p>
-        <p className="content">{message}</p>
-      </MyCard> */}
       <ButtonContainer>
         <Button
           variant={4}

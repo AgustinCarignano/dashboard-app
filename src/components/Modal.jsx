@@ -6,7 +6,7 @@ import { faXmark } from "@fortawesome/free-solid-svg-icons";
 
 const ModalContainer = styled.div`
   width: 100%;
-  position: absolute;
+  position: fixed;
   top: 0;
   left: 0;
   width: 100%;
@@ -33,8 +33,8 @@ const ModalWindow = styled.div`
     margin-bottom: 20px;
   }
   p {
-    font: normal 400 14px/21px Poppins, Sans-serif;
-    color: #363636;
+    font: normal 400 20px/30px Poppins, Sans-serif;
+    color: #6e6e6e;
     text-align: justify;
     margin-bottom: 50px;
   }
@@ -49,18 +49,22 @@ const ModalWindow = styled.div`
 
 function Modal(props) {
   const [openModal, setOpenModal] = useState(false);
-  const { title, content } = props;
+  const { preview, title, content, previewStyle } = props;
   return (
     <div>
-      <Button
-        variant={content ? 3 : 4}
+      <p
+        style={previewStyle}
         onClick={content ? () => setOpenModal(true) : null}
       >
-        View Notes
-      </Button>
+        {preview}
+      </p>
       {openModal && (
-        <ModalContainer>
-          <ModalWindow>
+        <ModalContainer
+          onClick={(e) => {
+            !e.target.id.includes("modalWindow") && setOpenModal(false);
+          }}
+        >
+          <ModalWindow id="modalWindow">
             <FontAwesomeIcon
               icon={faXmark}
               size="lg"

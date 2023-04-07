@@ -1,7 +1,9 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import bcryprt from "bcryptjs";
-import Button from "../sharedComponents/Button";
-import MainContainer from "../sharedComponents/MainContainer";
+import { useParams } from "react-router-dom";
+import { getItemData } from "../../mockService/service";
+import Button from "../../components/Button";
+import MainContainer from "../../components/MainContainer";
 import {
   Container,
   Title,
@@ -13,7 +15,7 @@ import {
   Select,
   TextArea,
   Submit,
-} from "../sharedComponents/SmallComponents";
+} from "../../components/FormComponents";
 
 const availableRoles = [
   "(Select one role)",
@@ -37,6 +39,7 @@ const initialState = {
 function NewUser() {
   const [newUser, setNewUser] = useState(initialState);
   const [verifyPass, setVerifyPass] = useState("");
+  const { id } = useParams();
 
   function handleInputsChange(e) {
     const copyOfData = { ...newUser };
@@ -75,6 +78,17 @@ function NewUser() {
       console.log("Something was wrong");
     }
   }
+
+  async function getUserData() {
+    const data = await getItemData("users_data.json", id);
+    setNewUser(data);
+  }
+
+  useEffect(() => {
+    if (id) {
+      getUserData();
+    }
+  }, []);
 
   return (
     <MainContainer style={{ minHeight: "calc(100vh - 145px)" }}>
@@ -115,23 +129,27 @@ function NewUser() {
                 onChange={handleInputsChange}
               />
             </Field>
-            <Field>
-              <Label>Password</Label>
-              <Input
-                type="password"
-                name="password"
-                value={newUser.password}
-                onChange={handleInputsChange}
-              />
-            </Field>
-            <Field>
-              <Label>Repeat Password</Label>
-              <Input
-                type="password"
-                value={verifyPass}
-                onChange={(e) => setVerifyPass(e.target.value)}
-              />
-            </Field>
+            {!id && (
+              <>
+                <Field>
+                  <Label>Password</Label>
+                  <Input
+                    type="password"
+                    name="password"
+                    value={newUser.password}
+                    onChange={handleInputsChange}
+                  />
+                </Field>
+                <Field>
+                  <Label>Repeat Password</Label>
+                  <Input
+                    type="password"
+                    value={verifyPass}
+                    onChange={(e) => setVerifyPass(e.target.value)}
+                  />
+                </Field>
+              </>
+            )}
           </Column>
           <Column>
             <Field>
@@ -192,7 +210,7 @@ function NewUser() {
           </Column>
           <Submit>
             <Button variant={1} onClick={handleOnSubmit}>
-              CREATE
+              {id ? "SAVE" : "CREATE"}
             </Button>
           </Submit>
         </FormContainer>

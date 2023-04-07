@@ -2,7 +2,7 @@ import React, { useEffect, useState } from "react";
 import styled from "styled-components";
 import { useLocation, useNavigate } from "react-router-dom";
 import { Link } from "react-router-dom";
-import { getItemData } from "../../mockService/service";
+import { getItemData } from "../mockService/service";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
   faArrowRightToBracket,
@@ -94,27 +94,15 @@ const Logo = styled.div`
 `;
 
 function Aside(props) {
-  const { sidebarVisibility, auth } = props;
-  const [user, setUser] = useState({});
+  const { sidebarVisibility, auth, loggedUser } = props;
   const { pathname } = useLocation();
   const navigate = useNavigate();
   const pathArray = pathname.split("/");
 
-  async function getUserData() {
-    const data = await getItemData("mockData/users_data.json", "677439179-6");
-    setUser(data);
-  }
-
   function handleNavigate() {
-    const path = `/dashboard-app/users/update/${user.id}`;
+    const path = `/dashboard-app/users/update/${loggedUser.id}`;
     navigate(path);
   }
-
-  useEffect(() => {
-    if (auth) {
-      getUserData();
-    }
-  }, [auth]);
 
   return (
     <StyledAside show={sidebarVisibility}>
@@ -124,7 +112,7 @@ function Aside(props) {
       {!auth ? (
         <LinkContainer active={true} style={{ marginBottom: "100%" }}>
           <FontAwesomeIcon icon={faArrowRightToBracket} />
-          <Link to="/dashboard-app/login">
+          <Link to="dashboard-app/login">
             <p>Login</p>
           </Link>
         </LinkContainer>
@@ -132,38 +120,38 @@ function Aside(props) {
         <>
           <LinkContainer active={pathArray[2] === ""}>
             <FontAwesomeIcon icon={faTableColumns} />
-            <Link to="/dashboard-app/">
+            <Link to="dashboard-app/">
               <p>Dashboard</p>
             </Link>
           </LinkContainer>
           <LinkContainer active={pathArray[2] === "bookings"}>
             <FontAwesomeIcon icon={faCalendarCheck} />
-            <Link to="/dashboard-app/bookings">
-              <p>Booking</p>
+            <Link to="dashboard-app/bookings">
+              <p>Bookings</p>
             </Link>
           </LinkContainer>
           <LinkContainer active={pathArray[2] === "rooms"}>
             <FontAwesomeIcon icon={faKey} />
-            <Link to="/dashboard-app/rooms">
+            <Link to="dashboard-app/rooms">
               <p>Rooms</p>
             </Link>
           </LinkContainer>
           <LinkContainer active={pathArray[2] === "contact"}>
             <FontAwesomeIcon icon={faMessage} />
-            <Link to="/dashboard-app/contact">
+            <Link to="dashboard-app/contact">
               <p>Contact</p>
             </Link>
           </LinkContainer>
           <LinkContainer active={pathArray[2] === "users"}>
             <FontAwesomeIcon icon={faUser} />
-            <Link to="/dashboard-app/users">
+            <Link to="dashboard-app/users">
               <p>Users</p>
             </Link>
           </LinkContainer>
           <UserCard>
-            <img src={user.photo} alt="" />
-            <h3>{user.fullName}</h3>
-            <p>{user.email}</p>
+            <img src={loggedUser.photo} alt="" />
+            <h3>{loggedUser.fullName}</h3>
+            <p>{loggedUser.email}</p>
             <Button variant={2} onClick={handleNavigate}>
               Edit
             </Button>

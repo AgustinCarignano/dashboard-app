@@ -1,6 +1,8 @@
-import React, { useState } from "react";
-import Button from "../sharedComponents/Button";
-import MainContainer from "../sharedComponents/MainContainer";
+import React, { useEffect, useState } from "react";
+import { useNavigate, useParams } from "react-router-dom";
+import { getItemData } from "../../mockService/service";
+import Button from "../../components/Button";
+import MainContainer from "../../components/MainContainer";
 import {
   Container,
   Title,
@@ -14,7 +16,7 @@ import {
   Submit,
   PhotoInput,
   ExtraContainer,
-} from "../sharedComponents/SmallComponents";
+} from "../../components/FormComponents";
 
 const availableAmenities = [
   "Air Conditioner",
@@ -50,6 +52,8 @@ const initialState = {
 
 function NewRoom() {
   const [newRoom, setNewRoom] = useState(initialState);
+  const { id } = useParams();
+  const navigate = useNavigate();
 
   function handleInputsChange(e) {
     const copyOfData = structuredClone(newRoom);
@@ -113,10 +117,25 @@ function NewRoom() {
     if (correctForm) {
       console.log(newRoom);
       setNewRoom(initialState);
+      if (id) {
+        const path = `/dashboard-app/rooms/${id}`;
+        navigate(path);
+      }
     } else {
       console.log("Something was wrong");
     }
   }
+
+  async function getRoomData() {
+    const data = await getItemData("rooms_data.json", id);
+    setNewRoom(data);
+  }
+
+  useEffect(() => {
+    if (id) {
+      getRoomData();
+    }
+  }, [id]);
 
   return (
     <MainContainer style={{ minHeight: "calc(100vh - 145px)" }}>
@@ -147,6 +166,7 @@ function NewRoom() {
             <Field>
               <Label>Room Number</Label>
               <Input
+                autoComplete="off"
                 name="roomNumber"
                 value={newRoom.roomNumber}
                 onChange={handleInputsChange}
@@ -213,6 +233,7 @@ function NewRoom() {
               <ExtraContainer direction="column" style={{ width: "60%" }}>
                 {newRoom.photos.map((item, index) => (
                   <PhotoInput
+                    key={index}
                     name={`photo_${index}`}
                     value={newRoom.photos[index]}
                     onChange={handleInputsChange}
@@ -260,7 +281,7 @@ function NewRoom() {
           </Column>
           <Submit>
             <Button variant={1} onClick={handleOnSubmit}>
-              CREATE
+              {id ? "SAVE" : "CREATE"}
             </Button>
           </Submit>
         </FormContainer>

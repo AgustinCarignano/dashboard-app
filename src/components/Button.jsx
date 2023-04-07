@@ -1,4 +1,3 @@
-import React from "react";
 import styled from "styled-components";
 
 const colorOptions = {
@@ -54,11 +53,5 @@ const Button = styled.button`
   border-radius: 12px;
   cursor: pointer;
 `;
-/* function Button(props) {
-  console.log(props.color);
 
-  return <MyBtn color="white">{props.children}</MyBtn>;
-} */
-
-//export default Button;
 export default Button;

@@ -13,31 +13,41 @@ const MyCard = styled.div`
   gap: 20px;
   background-color: #ffffff;
   border-radius: 12px;
+  cursor: pointer;
+  transition: all 0.3s;
+  &:hover {
+    box-shadow: 0px 16px 30px #00000014;
+    & .icon {
+      background-color: #e23428;
+      color: #ffffff;
+    }
+  }
   .icon {
-    background-color: ${(props) => (props.active ? "#E23428" : "#FFEDEC")};
-    color: ${(props) => (props.active ? "#FFFFFF" : "#E23428")};
+    background-color: #ffedec;
+    color: #e23428;
     padding: 20px;
     border-radius: 8px;
+    transition: all 0.3s;
   }
-  .number {
-    font: normal 600 30px/46px "Poppins", sans-serif;
-    color: #393939;
-    margin: 0;
-  }
-  .legend {
-    font: normal 300 14px/21px "Poppins", sans-serif;
-    color: #787878;
-    margin: 0;
-  }
+`;
+const CardNumber = styled.p`
+  font: normal 600 30px/46px "Poppins", sans-serif;
+  color: #393939;
+  margin: 0;
+`;
+const CardLegend = styled.p`
+  font: normal 300 14px/21px "Poppins", sans-serif;
+  color: #787878;
+  margin: 0;
 `;
 const cardsTypes = {
   newBooking: {
     icon: faBed,
-    legend: "New Booking",
+    legend: "Total Bookings",
   },
   schedule: {
     icon: faCalendarCheck,
-    legend: "Scheduled Room",
+    legend: "Ocupation Rate",
   },
   checkIn: {
     icon: faArrowRightToBracket,
@@ -61,8 +71,8 @@ function SmallCard(props) {
         rotation={type === "checkOut" ? 180 : 0}
       />
       <div>
-        <p className="number">{number}</p>
-        <p className="legend">{cardsTypes[type].legend}</p>
+        <CardNumber>{number}</CardNumber>
+        <CardLegend>{cardsTypes[type].legend}</CardLegend>
       </div>
     </MyCard>
   );

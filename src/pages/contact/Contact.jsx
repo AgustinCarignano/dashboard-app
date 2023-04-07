@@ -1,11 +1,10 @@
 import React, { useEffect, useState } from "react";
 import { getAllData } from "../../mockService/service";
-import Button from "../sharedComponents/Button";
-import ContactCard from "../sharedComponents/ContactCard";
-import ContactContainer from "../sharedComponents/ContactContainer";
-import ContactPreview from "../sharedComponents/ContactPreview";
-import MainContainer from "../sharedComponents/MainContainer";
-import Table from "../sharedComponents/Table";
+import Button from "../../components/Button";
+import ContactPreview from "../../components/ContactPreview";
+import MainContainer from "../../components/MainContainer";
+import Modal from "../../components/Modal";
+import Table from "../../components/Table";
 
 function Contact() {
   const [data, setData] = useState([]);
@@ -14,7 +13,7 @@ function Contact() {
   const tabs = ["All Contacts", "Archived"];
 
   async function getData() {
-    const newData = await getAllData("mockData/contact_data.json");
+    const newData = await getAllData("contact_data.json");
     setData(newData);
   }
 
@@ -24,6 +23,13 @@ function Contact() {
     item.archived = type === "archived";
     setData(copyOfData);
   }
+
+  const tableHeader = [
+    { label: "Date & ID" },
+    { label: "Customer Dates" },
+    { label: "Subject & Comment" },
+    { label: "Action" },
+  ];
 
   const rowsToRender = (item) => {
     return (
@@ -44,7 +50,16 @@ function Contact() {
         <td>
           <div>
             <p>{item.subject}</p>
-            <p>{item.message}</p>
+            <Modal
+              title={item.fullName}
+              content={item.message}
+              preview={
+                item.message.length > 100
+                  ? item.message.slice(0, 100) + "..."
+                  : item.message
+              }
+              previewStyle={{ cursor: "Pointer" }}
+            />
           </div>
         </td>
         <td>
@@ -74,6 +89,11 @@ function Contact() {
       activeTab === "Archived"
         ? copyOfData.filter((item) => item.archived)
         : copyOfData.filter((item) => !item.archived);
+    filterData.sort((a, b) => {
+      if (a["date"] > b["date"]) return 1;
+      else if (a["date"] < b["date"]) return -1;
+      else return 0;
+    });
     setDataToRender(filterData);
   }, [activeTab, data]);
 
@@ -87,10 +107,12 @@ function Contact() {
       <Table
         data={dataToRender}
         option="contact"
+        tableHeader={tableHeader}
         tabs={tabs}
         activeTab={activeTab}
         setActiveTab={setActiveTab}
         rows={rowsToRender}
+        paginate={true}
       />
     </MainContainer>
   );

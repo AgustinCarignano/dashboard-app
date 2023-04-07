@@ -1,22 +1,27 @@
 import React, { useState, useEffect } from "react";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
-import Bookings from "./components/bookings/Bookings";
-import BookingsItem from "./components/bookings/BookingsItem";
-import Contact from "./components/contact/Contact";
-import Dashboard from "./components/dashboard/Dashboard";
-import Login from "./components/login/Login";
-import NewRoom from "./components/rooms/NewRoom";
-import Rooms from "./components/rooms/Rooms";
-import Aside from "./components/sharedComponents/Aside";
-import Header from "./components/sharedComponents/Header";
-import Layout from "./components/sharedComponents/Layout";
-import RequiredAuth from "./components/sharedComponents/RequiredAuth";
-import NewUser from "./components/users/NewUser";
-import UpdateUser from "./components/users/UpdateUser";
-import Users from "./components/users/Users";
+import Bookings from "./pages/bookings/Bookings";
+import BookingDetail from "./pages/bookings/BookingDetail";
+import Contact from "./pages/contact/Contact";
+import Dashboard from "./pages/dashboard/Dashboard";
+import Login from "./pages/login/Login";
+import NewRoom from "./pages/rooms/NewRoom";
+import RoomDetail from "./pages/rooms/RoomDetail";
+import Rooms from "./pages/rooms/Rooms";
+import NewUser from "./pages/users/NewUser";
+import Users from "./pages/users/Users";
+import UserDetail from "./pages/users/UserDetail";
+import Aside from "./components/Aside";
+import Header from "./components/Header";
+import Layout from "./components/Layout";
+import RequiredAuth from "./components/RequiredAuth";
+import NewBooking from "./pages/bookings/NewBooking";
 
 function App() {
-  const [auth, setAuth] = useState(localStorage.getItem("auth"));
+  const [auth, setAuth] = useState(localStorage.getItem("auth") || false);
+  const [loggedUser, setLoggedUser] = useState(
+    JSON.parse(localStorage.getItem("user")) || []
+  );
   const [showSidebar, setShowSidebar] = useState(true);
 
   function handleSidebarVisibility() {
@@ -30,8 +35,10 @@ function App() {
   useEffect(() => {
     if (auth) {
       localStorage.setItem("auth", auth);
+      localStorage.setItem("user", JSON.stringify(loggedUser));
     } else {
       localStorage.removeItem("auth");
+      localStorage.removeItem("user");
     }
   });
 
@@ -39,7 +46,11 @@ function App() {
     <BrowserRouter>
       <div className="App">
         <Layout showAside={showSidebar}>
-          <Aside sidebarVisibility={showSidebar} auth={auth} />
+          <Aside
+            sidebarVisibility={showSidebar}
+            auth={auth}
+            loggedUser={loggedUser}
+          />
           <Header
             handleSidebarVisibility={handleSidebarVisibility}
             handleCheckOut={handleCheckOut}
@@ -49,17 +60,19 @@ function App() {
           <Routes>
             <Route
               path="/dashboard-app/login"
-              element={<Login auth={auth} setAuth={setAuth} />}
+              element={
+                <Login
+                  auth={auth}
+                  setAuth={setAuth}
+                  setLoggedUser={setLoggedUser}
+                />
+              }
             />
             <Route
               path="/dashboard-app/"
               element={
                 <RequiredAuth auth={auth}>
-                  {/* <Layout showAside={showSidebar}> */}
-                  {/* <Aside sidebarVisibility={showSidebar} /> */}
-                  {/* <Header handleSidebarVisibility={handleSidebarVisibility} /> */}
                   <Dashboard />
-                  {/* </Layout> */}
                 </RequiredAuth>
               }
             />
@@ -67,11 +80,7 @@ function App() {
               path="/dashboard-app/bookings"
               element={
                 <RequiredAuth auth={auth}>
-                  {/* <Layout showAside={showSidebar}> */}
-                  {/* <Aside sidebarVisibility={showSidebar} /> */}
-                  {/* <Header handleSidebarVisibility={handleSidebarVisibility} /> */}
                   <Bookings />
-                  {/* </Layout> */}
                 </RequiredAuth>
               }
             ></Route>
@@ -79,11 +88,23 @@ function App() {
               path="/dashboard-app/bookings/:id"
               element={
                 <RequiredAuth auth={auth}>
-                  {/* <Layout showAside={showSidebar}> */}
-                  {/* <Aside sidebarVisibility={showSidebar} /> */}
-                  {/* <Header handleSidebarVisibility={handleSidebarVisibility} /> */}
-                  <BookingsItem />
-                  {/* </Layout> */}
+                  <BookingDetail />
+                </RequiredAuth>
+              }
+            ></Route>
+            <Route
+              path="/dashboard-app/bookings/create"
+              element={
+                <RequiredAuth auth={auth}>
+                  <NewBooking />
+                </RequiredAuth>
+              }
+            ></Route>
+            <Route
+              path="/dashboard-app/bookings/update/:id"
+              element={
+                <RequiredAuth auth={auth}>
+                  <NewBooking />
                 </RequiredAuth>
               }
             ></Route>
@@ -91,11 +112,7 @@ function App() {
               path="/dashboard-app/rooms"
               element={
                 <RequiredAuth auth={auth}>
-                  {/* <Layout showAside={showSidebar}> */}
-                  {/* <Aside sidebarVisibility={showSidebar} /> */}
-                  {/* <Header handleSidebarVisibility={handleSidebarVisibility} /> */}
                   <Rooms />
-                  {/* </Layout> */}
                 </RequiredAuth>
               }
             ></Route>
@@ -103,11 +120,7 @@ function App() {
               path="/dashboard-app/rooms/:id"
               element={
                 <RequiredAuth auth={auth}>
-                  {/* <Layout showAside={showSidebar}> */}
-                  {/* <Aside sidebarVisibility={showSidebar} /> */}
-                  {/* <Header handleSidebarVisibility={handleSidebarVisibility} /> */}
-                  <Rooms />
-                  {/* </Layout> */}
+                  <RoomDetail />
                 </RequiredAuth>
               }
             ></Route>
@@ -115,11 +128,7 @@ function App() {
               path="/dashboard-app/rooms/create"
               element={
                 <RequiredAuth auth={auth}>
-                  {/* <Layout showAside={showSidebar}> */}
-                  {/* <Aside sidebarVisibility={showSidebar} /> */}
-                  {/* <Header handleSidebarVisibility={handleSidebarVisibility} /> */}
                   <NewRoom />
-                  {/* </Layout> */}
                 </RequiredAuth>
               }
             ></Route>
@@ -127,11 +136,7 @@ function App() {
               path="/dashboard-app/rooms/update/:id"
               element={
                 <RequiredAuth auth={auth}>
-                  {/* <Layout showAside={showSidebar}> */}
-                  {/* <Aside sidebarVisibility={showSidebar} /> */}
-                  {/* <Header handleSidebarVisibility={handleSidebarVisibility} /> */}
-                  <Rooms />
-                  {/* </Layout> */}
+                  <NewRoom />
                 </RequiredAuth>
               }
             ></Route>
@@ -139,11 +144,7 @@ function App() {
               path="/dashboard-app/users"
               element={
                 <RequiredAuth auth={auth}>
-                  {/* <Layout showAside={showSidebar}> */}
-                  {/* <Aside sidebarVisibility={showSidebar} /> */}
-                  {/* <Header handleSidebarVisibility={handleSidebarVisibility} /> */}
                   <Users />
-                  {/* </Layout> */}
                 </RequiredAuth>
               }
             />
@@ -151,11 +152,7 @@ function App() {
               path="/dashboard-app/users/:id"
               element={
                 <RequiredAuth auth={auth}>
-                  {/* <Layout showAside={showSidebar}> */}
-                  {/* <Aside sidebarVisibility={showSidebar} /> */}
-                  {/* <Header handleSidebarVisibility={handleSidebarVisibility} /> */}
-                  <Users />
-                  {/* </Layout> */}
+                  <UserDetail />
                 </RequiredAuth>
               }
             />
@@ -163,11 +160,7 @@ function App() {
               path="/dashboard-app/users/create"
               element={
                 <RequiredAuth auth={auth}>
-                  {/* <Layout showAside={showSidebar}> */}
-                  {/* <Aside sidebarVisibility={showSidebar} /> */}
-                  {/* <Header handleSidebarVisibility={handleSidebarVisibility} /> */}
                   <NewUser />
-                  {/* </Layout> */}
                 </RequiredAuth>
               }
             />
@@ -175,11 +168,7 @@ function App() {
               path="/dashboard-app/users/update/:id"
               element={
                 <RequiredAuth auth={auth}>
-                  {/* <Layout showAside={showSidebar}> */}
-                  {/* <Aside sidebarVisibility={showSidebar} /> */}
-                  {/* <Header handleSidebarVisibility={handleSidebarVisibility} /> */}
-                  <UpdateUser />
-                  {/* </Layout> */}
+                  <NewUser />
                 </RequiredAuth>
               }
             />
@@ -187,11 +176,7 @@ function App() {
               path="/dashboard-app/contact"
               element={
                 <RequiredAuth auth={auth}>
-                  {/* <Layout showAside={showSidebar}> */}
-                  {/* <Aside sidebarVisibility={showSidebar} /> */}
-                  {/* <Header handleSidebarVisibility={handleSidebarVisibility} /> */}
                   <Contact />
-                  {/* </Layout> */}
                 </RequiredAuth>
               }
             />

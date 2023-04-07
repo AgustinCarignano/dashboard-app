@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import styled from "styled-components";
-import { useLocation } from "react-router-dom";
+import { useLocation, useNavigate } from "react-router-dom";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
   faArrowRightArrowLeft,
@@ -8,6 +8,7 @@ import {
   faBell,
   faArrowRightFromBracket,
 } from "@fortawesome/free-solid-svg-icons";
+import { getAllData } from "../mockService/service";
 
 const StyleHeader = styled.header`
   display: flex;
@@ -27,10 +28,14 @@ const Title = styled.h1`
 
 const Breadcrumb = styled.p`
   font: normal 400 14px/21px "Poppins", sans-serif;
-  color: #135846;
+  /* color: #135846;
   span {
     color: #6e6e6e;
-  }
+  } */
+`;
+const BreadcrumbLink = styled.span`
+  color: ${(props) => (props.onClick ? "#135846" : "#6e6e6e")};
+  cursor: ${(props) => (props.onClick ? "Pointer" : "auto")};
 `;
 
 const TitleContainer = styled.div`
@@ -47,6 +52,7 @@ const Container = styled.div`
 const IconContainer = styled.div`
   color: #135846;
   position: relative;
+  cursor: pointer;
   span {
     background-color: #e23428;
     border-radius: 8px;
@@ -65,12 +71,12 @@ function Header(props) {
   const { handleSidebarVisibility, handleCheckOut, auth } = props;
   const [breadcrumb, setBreadcrumb] = useState("");
   const [pathArray, setPathArray] = useState([]);
+  const [notifications, setNotifications] = useState(0);
+  const [messages, setMessages] = useState(5);
   const { pathname } = useLocation();
+  const navigate = useNavigate();
 
-  const messages = 2;
-  const notifications = 87;
-
-  const titleList = {
+  const TitleList = {
     "": "Dashboard",
     bookings: "Bookings",
     rooms: "Rooms",
@@ -79,15 +85,34 @@ function Header(props) {
     login: "Login",
   };
 
+  function handleNavigate() {
+    const path = `/dashboard-app/${pathArray[2]}/`;
+    navigate(path);
+  }
+
+  async function getBookingsData() {
+    const data = await getAllData("bookings_data.json");
+    const filterData = data.filter(
+      (item) => new Date(item.orderDate).getMonth() === new Date().getMonth()
+    );
+    setNotifications(filterData.length);
+  }
+
+  async function getContactData() {
+    const data = await getAllData("contact_data.json");
+    const filterData = data.filter((item) => item.archived === false);
+    setMessages(filterData.length);
+  }
+
   useEffect(() => {
     const array = pathname.split("/");
     if (array[3]) {
       if (array[3] === "create") {
-        setBreadcrumb(`New ${titleList[array[2]]}`);
+        setBreadcrumb(`New ${TitleList[array[2]]}`);
       } else if (array[3] === "update") {
-        setBreadcrumb(`New ${titleList[array[2]]}`);
+        setBreadcrumb(`Update ${TitleList[array[2]]} / ${array[4]}`);
       } else {
-        setBreadcrumb("some ID");
+        setBreadcrumb(array[3]);
       }
     } else {
       setBreadcrumb("");
@@ -95,20 +120,32 @@ function Header(props) {
     setPathArray(array);
   }, [pathname]);
 
+  useEffect(() => {
+    if (!auth) return;
+    getBookingsData();
+    getContactData();
+  }, []);
+
   return (
     <StyleHeader>
       <Container>
-        <FontAwesomeIcon
-          icon={faArrowRightArrowLeft}
-          size="lg"
-          onClick={handleSidebarVisibility}
-          style={{ cursor: "Pointer" }}
-        />
+        <IconContainer>
+          <FontAwesomeIcon
+            icon={faArrowRightArrowLeft}
+            size="lg"
+            onClick={handleSidebarVisibility}
+            style={{ cursor: "Pointer" }}
+          />
+        </IconContainer>
         <TitleContainer>
-          <Title>{titleList[pathArray[2]]}</Title>
+          <Title>{TitleList[pathArray[2]] || "Dashboard"}</Title>
           {breadcrumb && (
             <Breadcrumb>
-              {titleList[pathArray[2]]} / <span>{breadcrumb}</span>
+              <BreadcrumbLink onClick={handleNavigate}>
+                {TitleList[pathArray[2]]} /
+              </BreadcrumbLink>
+              <BreadcrumbLink> {breadcrumb}</BreadcrumbLink>
+              {/* {TitleList[pathArray[2]]} / <span>{breadcrumb}</span> */}
             </Breadcrumb>
           )}
         </TitleContainer>
