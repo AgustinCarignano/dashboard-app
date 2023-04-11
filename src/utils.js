@@ -37,3 +37,11 @@ export function formatDate(date) {
   }-${day.toString().length < 2 ? "0" + day : day}`;
   return [shortDate, timeDate, calendarDate];
 }
+
+export function generateId() {
+  let id = "";
+  for (let i = 0; i < 15; i++) {
+    id += Math.floor(Math.random() * 10);
+  }
+  return id;
+}

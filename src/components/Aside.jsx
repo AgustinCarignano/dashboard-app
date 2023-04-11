@@ -1,7 +1,7 @@
-import React, { useEffect, useState } from "react";
+import React, { useContext, useEffect, useState } from "react";
 import styled from "styled-components";
-import { useLocation, useNavigate } from "react-router-dom";
-import { Link } from "react-router-dom";
+import { useLocation, useNavigate, Link } from "react-router-dom";
+import { loginContext } from "../context/LoginContext";
 import { getItemData } from "../mockService/service";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
@@ -14,6 +14,8 @@ import {
   faHeart,
 } from "@fortawesome/free-solid-svg-icons";
 import Button from "./Button";
+import Modal from "./Modal";
+import { Input } from "./FormComponents";
 
 const StyledAside = styled.aside`
   grid-area: aside;
@@ -49,6 +51,7 @@ const LinkContainer = styled.div`
 
 const UserCard = styled.div`
   display: flex;
+  gap: 15px;
   flex-direction: column;
   text-align: center;
   padding: 24px;
@@ -65,12 +68,11 @@ const UserCard = styled.div`
   h3 {
     font: normal 400 16px/25px Poppins, sans-serif;
     color: #393939;
-    margin: 15px auto 10px;
   }
   p {
     font: normal 300 12px/18px Poppins, sans-serif;
     color: #b2b2b2;
-    margin-bottom: 15px;
+    margin-top: -5px;
   }
 `;
 
@@ -96,14 +98,26 @@ const Logo = styled.div`
 `;
 
 function Aside(props) {
-  const { sidebarVisibility, auth, loggedUser } = props;
+  const { sidebarVisibility } = props;
+  const { state, dispatch } = useContext(loginContext);
+  const [updating, setUpdating] = useState(false);
+  const [userFullName, setUserFullName] = useState(state.fullName);
+  const [userEmail, setUserEmail] = useState(state.email);
   const { pathname } = useLocation();
-  const navigate = useNavigate();
   const pathArray = pathname.split("/");
 
-  function handleNavigate() {
-    const path = `/dashboard-app/users/update/${loggedUser.id}`;
-    navigate(path);
+  function handleUpdating() {
+    setUpdating((prev) => !prev);
+  }
+
+  function handleEdit() {
+    if (userFullName !== state.fullName || userEmail !== state.email) {
+      dispatch({
+        type: "updateUser",
+        payload: { fullName: userFullName, email: userEmail },
+      });
+    }
+    setUpdating((prev) => !prev);
   }
 
   return (
@@ -111,7 +125,7 @@ function Aside(props) {
       <Logo>
         <img src="https://i.imgur.com/WlUcHWA.png" alt="logo" />
       </Logo>
-      {!auth ? (
+      {!state.auth ? (
         <LinkContainer active={true} style={{ marginBottom: "100%" }}>
           <FontAwesomeIcon icon={faArrowRightToBracket} />
           <Link to="dashboard-app/login">
@@ -151,12 +165,32 @@ function Aside(props) {
             </Link>
           </LinkContainer>
           <UserCard>
-            <img src={loggedUser.photo} alt="" />
-            <h3>{loggedUser.fullName}</h3>
-            <p>{loggedUser.email}</p>
-            <Button variant={2} onClick={handleNavigate}>
-              Edit
-            </Button>
+            <img src={state.photo} alt="" />
+            {updating ? (
+              <>
+                <Input
+                  style={{ width: "100%", fontSize: "14px" }}
+                  value={userFullName}
+                  onChange={(e) => setUserFullName(e.target.value)}
+                />
+                <Input
+                  style={{ width: "100%", fontSize: "14px" }}
+                  value={userEmail}
+                  onChange={(e) => setUserEmail(e.target.value)}
+                />
+                <Button variant={2} onClick={handleEdit}>
+                  Acept
+                </Button>
+              </>
+            ) : (
+              <>
+                <h3>{state.fullName}</h3>
+                <p>{state.email}</p>
+                <Button variant={2} onClick={handleUpdating}>
+                  Edit
+                </Button>
+              </>
+            )}
           </UserCard>
         </>
       )}

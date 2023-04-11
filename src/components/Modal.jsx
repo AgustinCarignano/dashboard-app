@@ -4,7 +4,7 @@ import Button from "./Button";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faXmark } from "@fortawesome/free-solid-svg-icons";
 
-const ModalContainer = styled.div`
+export const ModalContainer = styled.div`
   width: 100%;
   position: fixed;
   top: 0;
@@ -15,7 +15,8 @@ const ModalContainer = styled.div`
   background-color: #1111111a;
 `;
 
-const ModalWindow = styled.div`
+export const ModalWindow = styled.div`
+  text-align: center;
   position: fixed;
   background-color: #fff;
   width: 80%;
@@ -41,9 +42,6 @@ const ModalWindow = styled.div`
   svg {
     margin-left: 97.5%;
     cursor: pointer;
-  }
-  Button {
-    margin: 0px 40%;
   }
 `;
 

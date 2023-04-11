@@ -1,6 +1,13 @@
 import React, { useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
-import { getAllData, getItemData } from "../../mockService/service";
+import { useSelector, useDispatch } from "react-redux";
+import {
+  createBooking,
+  getBookingDetails,
+  selectBookingDetail,
+  updateBooking,
+} from "./bookingSlice";
+import { getRoomsData, selectRooms } from "../rooms/roomSlice.js";
 import Button from "../../components/Button";
 import MainContainer from "../../components/MainContainer";
 import {
@@ -31,6 +38,9 @@ const initialState = {
 };
 
 function NewBooking() {
+  const bookingData = useSelector(selectBookingDetail);
+  const roomsData = useSelector(selectRooms);
+  const dispatch = useDispatch();
   const [newBooking, setNewBooking] = useState(initialState);
   const [availableRooms, setAvailableRooms] = useState([]);
   const { id } = useParams();
@@ -61,49 +71,44 @@ function NewBooking() {
     e.preventDefault();
     const copyOfData = { ...newBooking };
     const correctForm = verifyForm(copyOfData);
-    console.log(copyOfData);
     if (correctForm) {
-      const randomNumber = Math.round(Math.random() * 10000);
-      if (!id) copyOfData.id = `newBookingId-${randomNumber}`;
       copyOfData.checkIn = new Date(copyOfData.checkIn).getTime();
       copyOfData.checkOut = new Date(copyOfData.checkOut).getTime();
-      console.log(copyOfData);
+      if (id) {
+        dispatch(updateBooking({ body: copyOfData, id }));
+        //navigate(`/dashboard-app/bookings/${id}`);
+      } else {
+        dispatch(createBooking(copyOfData));
+      }
       setNewBooking(initialState);
-      if (id) navigate(`/dashboard-app/bookings/${id}`);
     } else {
       console.log("Something was wrong");
     }
   }
 
-  async function getBookingData() {
-    const data = await getItemData("bookings_data.json", id);
-    const [checkInDate, checkInTime, checkInCalendarDate] = formatDate(
-      data.checkIn
-    );
-    const [checkOutDate, checkOutTime, checkOutCalendarDate] = formatDate(
-      data.checkOut
-    );
-    data.checkIn = checkInCalendarDate;
-    data.checkOut = checkOutCalendarDate;
-    setNewBooking(data);
-  }
+  useEffect(() => {
+    if (id) {
+      const copyOfBooking = structuredClone(bookingData);
+      copyOfBooking.checkIn = formatDate(bookingData.checkIn)[2];
+      copyOfBooking.checkOut = formatDate(bookingData.checkOut)[2];
+      setNewBooking(copyOfBooking);
+    }
+  }, [bookingData]);
 
-  async function getRoomsData() {
-    const data = await getAllData("rooms_data.json");
-    const availables = data
+  useEffect(() => {
+    const availableRooms = roomsData
       .filter((item) => item.status === "Available")
       .sort((a, b) => {
         if (a.roomType > b.roomType) return 1;
         else if (a.roomType < b.roomType) return -1;
         else return 0;
       });
-    setAvailableRooms(availables);
-  }
+    setAvailableRooms(availableRooms);
+  }, [roomsData]);
 
   useEffect(() => {
-    getRoomsData();
-    if (!id) return;
-    getBookingData();
+    dispatch(getRoomsData());
+    if (id) dispatch(getBookingDetails(id));
   }, []);
 
   return (

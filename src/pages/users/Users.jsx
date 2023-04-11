@@ -1,5 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
+import { useSelector, useDispatch } from "react-redux";
+import { getUsersData, selectUsers, selectIsLoading } from "./usersSlice.js";
 import { getAllData } from "../../mockService/service";
 import Button from "../../components/Button";
 import MainContainer from "../../components/MainContainer";
@@ -10,6 +12,7 @@ import Table, {
 } from "../../components/Table";
 import Modal from "../../components/Modal";
 import { formatDate } from "../../utils";
+import Loader from "../../components/Loader";
 
 const availableStates = {
   ACTIVE: 6,
@@ -17,7 +20,10 @@ const availableStates = {
 };
 
 function Users() {
-  const [data, setData] = useState([]);
+  const data = useSelector(selectUsers);
+  const isLoadingData = useSelector(selectIsLoading);
+  const dispatch = useDispatch();
+  //const [data, setData] = useState([]);
   const [modifydData, setModifydData] = useState([]);
   const [activeTab, setActiveTab] = useState("All Employee");
   const [orderBy, setOrderBy] = useState("startDate");
@@ -77,10 +83,10 @@ function Users() {
     );
   };
 
-  async function getData() {
+  /* async function getData() {
     const newData = await getAllData("users_data.json");
     setData(newData);
-  }
+  } */
 
   useEffect(() => {
     const newData = structuredClone(data);
@@ -102,23 +108,28 @@ function Users() {
   }, [data, activeTab, orderBy, searchTerms]);
 
   useEffect(() => {
-    getData();
+    //getData();
+    dispatch(getUsersData());
   }, []);
   return (
     <MainContainer>
-      <Table
-        data={modifydData}
-        option="users"
-        tableHeader={tableHeader}
-        tabs={tabs}
-        activeTab={activeTab}
-        setActiveTab={setActiveTab}
-        setSearchTerms={setSearchTerms}
-        rows={rowsToRender}
-        newBtn="New User"
-        //newestAction={() => setOrderBy("startDate")}
-        paginate={true}
-      />
+      {isLoadingData ? (
+        <Loader />
+      ) : (
+        <Table
+          data={modifydData}
+          option="users"
+          tableHeader={tableHeader}
+          tabs={tabs}
+          activeTab={activeTab}
+          setActiveTab={setActiveTab}
+          setSearchTerms={setSearchTerms}
+          rows={rowsToRender}
+          newBtn="New User"
+          //newestAction={() => setOrderBy("startDate")}
+          paginate={true}
+        />
+      )}
     </MainContainer>
   );
 }

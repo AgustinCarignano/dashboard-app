@@ -1,6 +1,7 @@
-import React, { useEffect, useState } from "react";
+import React, { useContext, useEffect, useState } from "react";
 import styled from "styled-components";
 import { useLocation, useNavigate } from "react-router-dom";
+import { loginContext } from "../context/LoginContext";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
   faArrowRightArrowLeft,
@@ -68,7 +69,8 @@ const IconContainer = styled.div`
 `;
 
 function Header(props) {
-  const { handleSidebarVisibility, handleCheckOut, auth } = props;
+  const { handleSidebarVisibility } = props;
+  const { state, dispatch } = useContext(loginContext);
   const [breadcrumb, setBreadcrumb] = useState("");
   const [pathArray, setPathArray] = useState([]);
   const [notifications, setNotifications] = useState(0);
@@ -121,7 +123,7 @@ function Header(props) {
   }, [pathname]);
 
   useEffect(() => {
-    if (!auth) return;
+    if (!state.auth) return;
     getBookingsData();
     getContactData();
   }, []);
@@ -150,7 +152,7 @@ function Header(props) {
           )}
         </TitleContainer>
       </Container>
-      {auth && (
+      {state.auth && (
         <Container>
           <IconContainer>
             <FontAwesomeIcon icon={faEnvelope} size="lg" />
@@ -164,7 +166,7 @@ function Header(props) {
             <FontAwesomeIcon
               icon={faArrowRightFromBracket}
               size="lg"
-              onClick={handleCheckOut}
+              onClick={() => dispatch({ type: "logout" })}
             />
           </IconContainer>
         </Container>

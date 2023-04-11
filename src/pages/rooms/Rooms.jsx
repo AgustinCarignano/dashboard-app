@@ -1,5 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
+import { useSelector, useDispatch } from "react-redux";
+import { selectRooms, selectIsLoading, getRoomsData } from "./roomSlice";
 import { getAllData } from "../../mockService/service";
 import Button from "../../components/Button";
 import MainContainer from "../../components/MainContainer";
@@ -8,6 +10,7 @@ import Table, {
   RowContainer,
   RowDataSmaller,
 } from "../../components/Table";
+import Loader from "../../components/Loader";
 
 const availableStates = {
   Available: 6,
@@ -15,7 +18,10 @@ const availableStates = {
 };
 
 function Rooms() {
-  const [data, setData] = useState([]);
+  const data = useSelector(selectRooms);
+  const isLoadingData = useSelector(selectIsLoading);
+  const dispatch = useDispatch();
+  //const [data, setData] = useState([]);
   const [dataToRender, setDataToRender] = useState([]);
   const [activeTab, setActiveTab] = useState("All Rooms");
   const [orderBy, setOrderBy] = useState("roomNumber");
@@ -83,10 +89,10 @@ function Rooms() {
     );
   };
 
-  async function getData() {
+  /* async function getData() {
     const newData = await getAllData("rooms_data.json");
     setData(newData);
-  }
+  } */
 
   useEffect(() => {
     const newData = structuredClone(data);
@@ -108,22 +114,27 @@ function Rooms() {
   }, [activeTab, data, orderBy, ascPrice]);
 
   useEffect(() => {
-    getData();
+    //getData();
+    dispatch(getRoomsData());
   }, []);
 
   return (
     <MainContainer>
-      <Table
-        data={dataToRender}
-        option="rooms"
-        tableHeader={tableHeader}
-        tabs={tabs}
-        activeTab={activeTab}
-        setActiveTab={setActiveTab}
-        rows={rowsToRender}
-        newBtn="New Room"
-        paginate={true}
-      />
+      {isLoadingData ? (
+        <Loader />
+      ) : (
+        <Table
+          data={dataToRender}
+          option="rooms"
+          tableHeader={tableHeader}
+          tabs={tabs}
+          activeTab={activeTab}
+          setActiveTab={setActiveTab}
+          rows={rowsToRender}
+          newBtn="New Room"
+          paginate={true}
+        />
+      )}
     </MainContainer>
   );
 }

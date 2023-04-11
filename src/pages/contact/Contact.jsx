@@ -1,4 +1,10 @@
 import React, { useEffect, useState } from "react";
+import { useSelector, useDispatch } from "react-redux";
+import {
+  getAllContacts,
+  selectContacts,
+  selectIsLoading,
+} from "./contactSlice.js";
 import { getAllData } from "../../mockService/service";
 import Button from "../../components/Button";
 import ContactPreview from "../../components/ContactPreview";
@@ -7,23 +13,27 @@ import Modal from "../../components/Modal";
 import Table from "../../components/Table";
 import { formatDate } from "../../utils";
 import { RowDataSmaller } from "../../components/Table";
+import Loader from "../../components/Loader.jsx";
 
 function Contact() {
-  const [data, setData] = useState([]);
+  const data = useSelector(selectContacts);
+  const isLoadingData = useSelector(selectIsLoading);
+  const dispatch = useDispatch();
+  //const [data, setData] = useState([]);
   const [dataToRender, setDataToRender] = useState([]);
   const [activeTab, setActiveTab] = useState("All Contacts");
   const tabs = ["All Contacts", "Archived"];
 
-  async function getData() {
+  /* async function getData() {
     const newData = await getAllData("contact_data.json");
     setData(newData);
-  }
+  } */
 
   function handleAction(id, type) {
     const copyOfData = structuredClone(data);
     const item = copyOfData.find((el) => el.id === id);
     item.archived = type === "archived";
-    setData(copyOfData);
+    //setData(copyOfData);
   }
 
   const tableHeader = [
@@ -101,22 +111,29 @@ function Contact() {
   }, [activeTab, data]);
 
   useEffect(() => {
-    getData();
+    //getData();
+    dispatch(getAllContacts());
   }, []);
 
   return (
     <MainContainer>
-      <ContactPreview data={data} bg_color="none" shadow={false} />
-      <Table
-        data={dataToRender}
-        option="contact"
-        tableHeader={tableHeader}
-        tabs={tabs}
-        activeTab={activeTab}
-        setActiveTab={setActiveTab}
-        rows={rowsToRender}
-        paginate={true}
-      />
+      {isLoadingData ? (
+        <Loader />
+      ) : (
+        <>
+          <ContactPreview data={data} bg_color="none" shadow={false} />
+          <Table
+            data={dataToRender}
+            option="contact"
+            tableHeader={tableHeader}
+            tabs={tabs}
+            activeTab={activeTab}
+            setActiveTab={setActiveTab}
+            rows={rowsToRender}
+            paginate={true}
+          />
+        </>
+      )}
     </MainContainer>
   );
 }

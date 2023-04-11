@@ -1,6 +1,5 @@
 import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { getAllData } from "../../mockService/service";
 import MainContainer from "../../components/MainContainer";
 import Table, { RowContainer } from "../../components/Table";
 import Button from "../../components/Button";
@@ -10,6 +9,15 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faEllipsisVertical } from "@fortawesome/free-solid-svg-icons";
 import { RowDataBigger, RowDataSmaller } from "../../components/Table";
 import Popup from "../../components/Popup";
+import { useSelector, useDispatch } from "react-redux";
+import {
+  selectBookings,
+  selectIsLoading,
+  selectHasError,
+  getBookingsData,
+  deleteBooking,
+} from "./bookingSlice";
+import Loader from "../../components/Loader";
 
 const availableStates = {
   "Check In": 6,
@@ -18,7 +26,9 @@ const availableStates = {
 };
 
 function Bookings() {
-  const [data, setData] = useState([]);
+  const data = useSelector(selectBookings);
+  const isLoadingData = useSelector(selectIsLoading);
+  const dispatch = useDispatch();
   const [orderedData, setOrderedData] = useState([]);
   const [activeTab, setActiveTab] = useState("All Bookings");
   const [searchTerms, setSearchTerms] = useState("");
@@ -36,7 +46,7 @@ function Bookings() {
     },
     {
       label: "Delete",
-      action: (itemId) => console.log(`Delete item with id ${itemId}`),
+      action: (itemId) => dispatch(deleteBooking(itemId)),
     },
   ];
 
@@ -87,7 +97,7 @@ function Bookings() {
             <Button variant={availableStates[item.status]}>
               {item.status}
             </Button>
-            <Popup
+            {/* <Popup
               options={optionsMenu}
               itemId={item.id}
               preview={
@@ -95,21 +105,14 @@ function Bookings() {
                   color="#6E6E6E"
                   icon={faEllipsisVertical}
                   size="xl"
-                  //onClick={() => console.log("fetch to delete this booking")}
                 />
               }
-            />
+            /> */}
           </RowContainer>
         </td>
       </>
     );
   };
-
-  async function getData() {
-    const newData = await getAllData("bookings_data.json");
-    setData(newData);
-    setOrderedData(newData);
-  }
 
   function filterData(dataArr, tab) {
     const orderList = (arr, criteria) => {
@@ -145,24 +148,28 @@ function Bookings() {
   }, [data, activeTab, searchTerms]);
 
   useEffect(() => {
-    getData();
+    dispatch(getBookingsData());
   }, []);
 
   return (
     <MainContainer>
-      <Table
-        data={orderedData}
-        option="bookings"
-        tableHeader={tableHeader}
-        tabs={tabs}
-        activeTab={activeTab}
-        setActiveTab={setActiveTab}
-        setSearchTerms={setSearchTerms}
-        rows={rowsToRender}
-        newBtn="New Booking"
-        newestAction={() => setActiveTab("All Bookings")}
-        paginate={true}
-      />
+      {isLoadingData ? (
+        <Loader />
+      ) : (
+        <Table
+          data={orderedData}
+          option="bookings"
+          tableHeader={tableHeader}
+          tabs={tabs}
+          activeTab={activeTab}
+          setActiveTab={setActiveTab}
+          setSearchTerms={setSearchTerms}
+          rows={rowsToRender}
+          newBtn="New Booking"
+          newestAction={() => setActiveTab("All Bookings")}
+          paginate={true}
+        />
+      )}
     </MainContainer>
   );
 }

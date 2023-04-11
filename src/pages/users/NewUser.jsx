@@ -98,7 +98,7 @@ function NewUser() {
   return (
     <MainContainer style={{ minHeight: "calc(100vh - 145px)" }}>
       <Container>
-        <Title>Add a new User</Title>
+        <Title>{id ? "Edit User" : "New User"}</Title>
         <FormContainer>
           <Column>
             <Field>

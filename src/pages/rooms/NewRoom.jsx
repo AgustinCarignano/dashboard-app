@@ -140,7 +140,7 @@ function NewRoom() {
   return (
     <MainContainer style={{ minHeight: "calc(100vh - 145px)" }}>
       <Container>
-        <Title>Add a New Room</Title>
+        <Title>{id ? "Edit Room" : "New Room"}</Title>
         <FormContainer>
           <Column>
             <Field>

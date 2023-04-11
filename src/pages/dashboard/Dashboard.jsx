@@ -1,11 +1,22 @@
 import React, { useEffect, useState } from "react";
+import { useSelector, useDispatch } from "react-redux";
+import {
+  getAllContacts,
+  selectContacts,
+  selectIsLoading as selectLoadingBookings,
+} from "../contact/contactSlice.js";
+import {
+  getBookingsData,
+  selectBookings,
+  selectIsLoading as selectLoadingContacts,
+} from "../bookings/bookingSlice.js";
 import SmallCard from "../../components/SmallCard";
 import MainContainer from "../../components/MainContainer";
 import ContactPreview from "../../components/ContactPreview";
-import { getAllData } from "../../mockService/service";
 import { formatDate } from "../../utils";
 import Table from "../../components/Table";
 import styled from "styled-components";
+import Loader from "../../components/Loader.jsx";
 
 const FirstColumn = styled.div`
   display: flex;
@@ -37,11 +48,17 @@ const cardsInfo = [
 ];
 
 function Dashboard() {
-  const [bookingsData, setBookingsData] = useState([]);
-  const [latestContact, setLatestContact] = useState([]);
-  const [period, setPeriod] = useState({});
+  const bookingsData = useSelector(selectBookings);
+  const isLoadingBookings = useSelector(selectLoadingBookings);
+  const latestContact = useSelector(selectContacts);
+  const isLoadingContacts = useSelector(selectLoadingContacts);
+  const dispatch = useDispatch();
+  const [period, setPeriod] = useState({
+    start: 1647298800000,
+    end: 1649973600000,
+  });
   const [filteredBookings, setFilteredBookings] = useState([]);
-  const hardcodedDate = { start: 1647298800000, end: 1649973600000 };
+  //const hardcodedDate = { start: 1647298800000, end: 1649973600000 };
 
   const tableHeader = [
     { label: "Room" },
@@ -56,7 +73,7 @@ function Dashboard() {
       <>
         <td style={{ width: "375px" }}>
           <FirstColumn>
-            <img src={item.roomImg} />
+            <img src={item.roomImg} alt={"room" + item.roomNumber} />
             <div>
               <h4>{item.roomType}</h4>
               <p>{item.roomNumber}</p>
@@ -76,21 +93,11 @@ function Dashboard() {
     );
   };
 
-  async function getBookingData() {
-    const data = await getAllData("bookings_data.json");
-    setBookingsData(data);
-  }
-
-  async function getContacts() {
-    const data = await getAllData("contact_data.json");
-    setLatestContact(data);
-  }
-
   useEffect(() => {
-    getBookingData();
-    getContacts();
-    setPeriod(hardcodedDate);
-  }, []);
+    dispatch(getBookingsData());
+    dispatch(getAllContacts());
+    //setPeriod({ ...hardcodedDate });
+  }, [dispatch]);
 
   useEffect(() => {
     const filterData = bookingsData.filter(
@@ -104,17 +111,21 @@ function Dashboard() {
       {cardsInfo.map((item, index) => (
         <SmallCard type={item.type} number={item.number} key={index} />
       ))}
-      {filteredBookings.length !== 0 && (
-        <Table
-          data={filteredBookings}
-          option="dashboard"
-          tableHeader={tableHeader}
-          rows={rowsToRender}
-          paginate={false}
-        />
+      {isLoadingBookings ? (
+        <Loader />
+      ) : (
+        filteredBookings.length !== 0 && (
+          <Table
+            data={filteredBookings}
+            option="dashboard"
+            tableHeader={tableHeader}
+            rows={rowsToRender}
+            paginate={false}
+          />
+        )
       )}
-      {latestContact.length === 0 ? (
-        <h3>Loading</h3>
+      {isLoadingContacts ? (
+        <Loader />
       ) : (
         <ContactPreview
           title="Latest Contacts"

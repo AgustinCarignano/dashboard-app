@@ -1,6 +1,7 @@
-import React, { useEffect, useState } from "react";
+import React, { useContext, useEffect, useState } from "react";
 import styled from "styled-components";
 import { useNavigate } from "react-router-dom";
+import { loginContext } from "../../context/LoginContext";
 import { getItemData } from "../../mockService/service";
 import Button from "../../components/Button";
 
@@ -59,30 +60,36 @@ const Field = styled.div`
 `;
 
 function Login(props) {
-  const { auth, setAuth, setLoggedUser } = props;
+  const { state, dispatch } = useContext(loginContext);
   const [userName, setUserName] = useState("agustinC");
   const [password, setPassword] = useState("12345");
   const navigate = useNavigate();
 
   async function getUserData() {
-    const data = await getItemData("users_data.json", "480261654-6");
-    setLoggedUser(data);
+    const data = await getItemData("users_data.json", "705693001-8");
+    return data;
   }
 
-  function handleSubmit(e) {
+  async function handleSubmit(e) {
     e.preventDefault();
     if (userName === "agustinC" && password === "12345") {
-      getUserData();
-      setAuth(true);
-      navigate("/dashboard-app/");
+      const user = await getUserData();
+      dispatch({
+        type: "login",
+        payload: {
+          fullName: user.fullName,
+          email: user.email,
+          photo: user.photo,
+        },
+      });
     }
   }
 
   useEffect(() => {
-    if (auth) {
+    if (state.auth) {
       return navigate("/dashboard-app/");
     }
-  }, [auth]);
+  }, [state]);
 
   return (
     <FormContainer>
