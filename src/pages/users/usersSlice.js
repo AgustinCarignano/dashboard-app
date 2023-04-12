@@ -1,5 +1,10 @@
 import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
-import { getAllData, getItemData } from "../../mockService/service.js";
+import {
+  getAllData,
+  getItemData,
+  delayFunction,
+} from "../../mockService/service.js";
+import { generateId } from "../../utils";
 
 const initialState = {
   users: [],
@@ -20,6 +25,25 @@ export const getUserDetails = createAsyncThunk(
     return { data };
   }
 );
+
+export const createUser = createAsyncThunk("users/create", async (body) => {
+  const id = generateId();
+  const data = await delayFunction({ ...body, id });
+  return { data };
+});
+
+export const updateUser = createAsyncThunk(
+  "users/update",
+  async ({ body, id }) => {
+    const data = await delayFunction({ ...body, id });
+    return { data };
+  }
+);
+
+export const deleteUser = createAsyncThunk("users/delete", async (userId) => {
+  const id = await delayFunction(userId);
+  return { id };
+});
 
 export const usersSlice = createSlice({
   name: "users",
@@ -51,6 +75,27 @@ export const usersSlice = createSlice({
         state.isLoading = false;
         state.hasError = false;
         state.user = action.payload.data;
+      })
+      .addCase(createUser.fulfilled, (state, action) => {
+        state.isLoading = false;
+        state.hasError = false;
+        state.users.push(action.payload.data);
+      })
+      .addCase(updateUser.fulfilled, (state, action) => {
+        state.isLoading = false;
+        state.hasError = false;
+        const index = state.users.findIndex(
+          (user) => user.id === action.payload.data.id
+        );
+        state.users.splice(index, 1, action.payload.data);
+      })
+      .addCase(deleteUser.fulfilled, (state, action) => {
+        state.isLoading = false;
+        state.hasError = false;
+        const index = state.users.findIndex(
+          (user) => user.id === action.payload.id
+        );
+        if (index > 0) state.users.splice(index, 1);
       });
   },
 });

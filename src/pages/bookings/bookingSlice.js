@@ -31,9 +31,9 @@ export const getBookingDetails = createAsyncThunk(
 
 export const createBooking = createAsyncThunk(
   "bookings/create",
-  async (bookingInfo) => {
+  async (body) => {
     const id = generateId();
-    const data = await delayFunction({ ...bookingInfo, id });
+    const data = await delayFunction({ ...body, id });
     return { data };
   }
 );

@@ -1,5 +1,10 @@
 import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
-import { getAllData, getItemData } from "../../mockService/service";
+import {
+  getAllData,
+  getItemData,
+  delayFunction,
+} from "../../mockService/service";
+import { generateId } from "../../utils";
 
 const initialState = {
   rooms: [],
@@ -20,6 +25,25 @@ export const getRoomDetails = createAsyncThunk(
     return { data };
   }
 );
+
+export const createRoom = createAsyncThunk("rooms/create", async (body) => {
+  const id = generateId();
+  const data = await delayFunction({ ...body, id });
+  return { data };
+});
+
+export const updateRoom = createAsyncThunk(
+  "rooms/update",
+  async ({ body, id }) => {
+    const data = await delayFunction({ ...body, id });
+    return { data };
+  }
+);
+
+export const deleteRoom = createAsyncThunk("rooms/delete", async (roomId) => {
+  const id = await delayFunction(roomId);
+  return { id };
+});
 
 export const roomsSlice = createSlice({
   name: "rooms",
@@ -51,6 +75,27 @@ export const roomsSlice = createSlice({
         state.isLoading = false;
         state.hasError = false;
         state.room = action.payload.data;
+      })
+      .addCase(createRoom.fulfilled, (state, action) => {
+        state.isLoading = false;
+        state.hasError = false;
+        state.rooms.push(action.payload.data);
+      })
+      .addCase(updateRoom.fulfilled, (state, action) => {
+        state.isLoading = false;
+        state.hasError = false;
+        const index = state.rooms.findIndex(
+          (room) => room.id === action.payload.data.id
+        );
+        state.rooms.splice(index, 1, action.payload.data);
+      })
+      .addCase(deleteRoom.fulfilled, (state, action) => {
+        state.isLoading = false;
+        state.hasError = false;
+        const index = state.rooms.findIndex(
+          (room) => room.id === action.payload.id
+        );
+        if (index > 0) state.rooms.splice(index, 1);
       });
   },
 });
