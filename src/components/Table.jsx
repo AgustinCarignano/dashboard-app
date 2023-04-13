@@ -1,9 +1,10 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useContext } from "react";
 import { useNavigate } from "react-router-dom";
 import styled from "styled-components";
 import Button from "./Button";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faMagnifyingGlass } from "@fortawesome/free-solid-svg-icons";
+import { themeContext } from "../context/ThemeContext";
 
 const TableContainer = styled.div`
   display: flex;
@@ -18,15 +19,20 @@ const TabList = styled.div`
 
 const TabLinks = styled.div`
   display: grid;
-  /* grid-template-columns: repeat(4, 1fr); */
   grid-template-columns: ${(props) => `repeat(${props.columns},1fr)`};
   font: normal 400 16px/25px Poppins, sans-serif;
-  color: #6e6e6e;
+  color: ${(props) => props.theme[9]};
+  /* color: #6e6e6e; */
 `;
 const Link = styled.p`
-  color: ${(props) => (props.active ? "#135846" : "#6e6e6e")};
+  color: ${(props) => (props.active ? props.theme[15] : props.theme[9])};
+  /* color: ${(props) => (props.active ? "#135846" : "#6e6e6e")}; */
   border-bottom: ${(props) =>
-    props.active ? "solid 2px #135846" : "solid 1px #6e6e6e8d"};
+    props.active
+      ? `solid 2px ${props.theme[15]}`
+      : `solid 1px ${props.theme[7]}`};
+  /* border-bottom: ${(props) =>
+    props.active ? "solid 2px #135846" : "solid 1px #6e6e6e8d"}; */
   padding: 13px 26px;
   cursor: pointer;
 `;
@@ -34,15 +40,16 @@ const SearchContainer = styled.div`
   display: flex;
   align-items: center;
   gap: 10px;
-  border-bottom: solid 1px #6e6e6e8d;
-  color: #6e6e6e;
+  border-bottom: solid 1px ${(props) => props.theme[7]};
+  color: ${(props) => props.theme[9]};
 `;
 const Search = styled.input`
   border: none;
   outline: none;
   font: normal 400 16px/25px Poppins, sans-serif;
   background-color: transparent;
-  color: #6e6e6e;
+  color: ${(props) => props.theme[9]};
+  /* color: #6e6e6e; */
 `;
 
 const BtnsContainer = styled.div`
@@ -55,9 +62,11 @@ const MyTable = styled.table`
   margin: 30px 0;
   border-radius: 20px;
   font: normal 400 16px/25px Poppins, sans-serif;
-  color: #393939;
+  color: ${(props) => props.theme[17]};
+  /* color: #393939; */
   text-align: left;
-  background-color: #fff;
+  background-color: ${(props) => props.theme[1]};
+  /* background-color: #fff; */
   tr {
     transition: all 0.3s;
   }
@@ -71,10 +80,12 @@ const MyTable = styled.table`
       cursor: pointer;
     }
     tr:nth-child(odd) {
-      background-color: #fdfdfd;
+      background-color: ${(props) => props.theme[29]};
+      /* background-color: #fdfdfd; */
     }
     tr:hover {
-      box-shadow: 0px 4px 30px #0000001a;
+      box-shadow: 0px 4px 30px ${(props) => props.theme[28]};
+      /* box-shadow: 0px 4px 30px #0000001a; */
     }
   }
 `;
@@ -94,7 +105,8 @@ export const RowDataBigger = styled.p`
   font-weight: 500;
 `;
 export const RowDataSmaller = styled.p`
-  color: #799283;
+  color: ${(props) => props.theme[12]};
+  /* color: #799283; */
   font-size: 14px;
   font-weight: 300;
 `;
@@ -111,7 +123,8 @@ const PaginateContainer = styled.div`
   justify-content: space-between;
   width: 100%;
   font: normal 400 16px/25px Poppins, sans-serif;
-  color: #393939;
+  color: ${(props) => props.theme[17]};
+  /* color: #393939; */
   align-items: center;
 `;
 
@@ -130,8 +143,11 @@ const PaginateItem = styled.span`
   padding: 13px 0;
   text-align: center;
   border-radius: 12px;
-  background-color: ${(props) => (props.active ? "#135846" : "#f5f5f5")};
-  color: ${(props) => (props.active ? "#ffffff" : "#393939")};
+  background-color: ${(props) =>
+    props.active ? props.theme[15] : props.theme[6]};
+  /* background-color: ${(props) => (props.active ? "#135846" : "#f5f5f5")}; */
+  color: ${(props) => (props.active ? props.theme[25] : props.theme[9])};
+  /* color: ${(props) => (props.active ? "#ffffff" : "#393939")}; */
   cursor: pointer;
 `;
 
@@ -170,6 +186,7 @@ function Table(props) {
   const [currentPage, setCurrentPage] = useState(1);
   const [paginateBar, setPaginateBar] = useState([]);
   const [itemsPerPage, setItemsPerPage] = useState(0);
+  const { theme } = useContext(themeContext);
   const navigate = useNavigate();
 
   function MoveNextPage() {
@@ -209,12 +226,13 @@ function Table(props) {
     <TableContainer>
       {tabs && (
         <TabList>
-          <TabLinks columns={tabs.length}>
+          <TabLinks columns={tabs.length} theme={theme}>
             {tabs.map((item, index) => {
               return (
                 <Link
                   key={index}
                   active={activeTab === item}
+                  theme={theme}
                   onClick={() => setActiveTab(item)}
                 >
                   {item}
@@ -223,9 +241,10 @@ function Table(props) {
             })}
           </TabLinks>
           {setSearchTerms && (
-            <SearchContainer>
+            <SearchContainer theme={theme}>
               <FontAwesomeIcon icon={faMagnifyingGlass} />
               <Search
+                theme={theme}
                 placeholder="Search by name..."
                 onChange={(e) => setSearchTerms(e.target.value)}
               />
@@ -245,7 +264,7 @@ function Table(props) {
           </BtnsContainer>
         </TabList>
       )}
-      <MyTable>
+      <MyTable theme={theme}>
         <thead>
           <tr>
             {tableHeader.map((item, index) => (
@@ -261,12 +280,23 @@ function Table(props) {
         <tbody>
           {dataToRender.length > 0 &&
             dataToRender.map((item, index) => {
-              return <tr key={index}>{rows(item)}</tr>;
+              return (
+                <tr
+                  key={index}
+                  style={
+                    option === "contact" && !item.read
+                      ? { fontWeight: "600" }
+                      : {}
+                  }
+                >
+                  {rows(item)}
+                </tr>
+              );
             })}
         </tbody>
       </MyTable>
       {paginate && (
-        <PaginateContainer>
+        <PaginateContainer theme={theme}>
           <p>
             Showing {itemsPerPage} of {data.length} Data
           </p>
@@ -278,6 +308,7 @@ function Table(props) {
               {paginateBar.map((item) => (
                 <PaginateItem
                   key={item}
+                  theme={theme}
                   active={item === currentPage}
                   onClick={() => setCurrentPage(item)}
                 >

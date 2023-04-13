@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useContext, useState } from "react";
 import styled from "styled-components";
 import Button from "./Button";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
@@ -6,6 +6,7 @@ import {
   faChevronRight,
   faChevronLeft,
 } from "@fortawesome/free-solid-svg-icons";
+import { themeContext } from "../context/ThemeContext";
 
 const SliderContainer = styled.div`
   position: relative;
@@ -17,7 +18,8 @@ const SliderContainer = styled.div`
 `;
 
 const ControlContainer = styled.div`
-  background-color: #fff;
+  background-color: ${(props) => props.theme[3]};
+  /* background-color: #fff; */
   width: 50px;
   height: 50px;
   padding: 15px;
@@ -29,12 +31,14 @@ const ControlContainer = styled.div`
   display: flex;
   align-items: center;
   justify-content: center;
-  color: #135846;
+  color: ${(props) => props.theme[27]};
+  /* color: #135846; */
   cursor: pointer;
 `;
 
 function Slider({ photos }) {
   const [index, setIndex] = useState(0);
+  const { theme } = useContext(themeContext);
 
   function showNextPhoto() {
     if (index === photos.length - 1) setIndex(0);
@@ -48,10 +52,10 @@ function Slider({ photos }) {
   return (
     <SliderContainer>
       <img src={photos[index]} />
-      <ControlContainer type="prev" onClick={showPrevPhoto}>
+      <ControlContainer type="prev" theme={theme} onClick={showPrevPhoto}>
         <FontAwesomeIcon icon={faChevronLeft} size="lg" />
       </ControlContainer>
-      <ControlContainer type="next" onClick={showNextPhoto}>
+      <ControlContainer type="next" theme={theme} onClick={showNextPhoto}>
         <FontAwesomeIcon icon={faChevronRight} size="lg" />
       </ControlContainer>
     </SliderContainer>

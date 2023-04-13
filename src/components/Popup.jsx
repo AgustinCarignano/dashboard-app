@@ -1,11 +1,12 @@
-import React, { useEffect, useState } from "react";
+import React, { useContext, useEffect, useState } from "react";
 import styled from "styled-components";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faChevronDown } from "@fortawesome/free-solid-svg-icons";
+import { themeContext } from "../context/ThemeContext";
 
 const Wrapp = styled.div`
-  width: 100%;
   position: relative;
+  min-width: 10px;
 `;
 
 const Preview = styled.div`
@@ -16,19 +17,24 @@ const Preview = styled.div`
 
 const Container = styled.div`
   display: flex;
+  z-index: 100;
   width: 100%;
-  border: 1px solid rgb(121, 146, 131);
-  font: 600 16px/22px "Poppins", sans-serif;
-  color: rgb(121, 146, 131);
+  min-width: 130px;
+  border: 1px solid ${(props) => props.theme[12]};
+  /* border: 1px solid rgb(121, 146, 131); */
+  font: 600 14px/20px "Poppins", sans-serif;
+  color: ${(props) => props.theme[12]};
+  /* color: rgb(121, 146, 131); */
   flex-direction: column;
   justify-content: space-between;
   gap: 10px;
   position: absolute;
-  background-color: #fff;
+  background-color: ${(props) => props.theme[1]};
+  /* background-color: #fff; */
   padding: 20px;
   border-radius: 10px;
   right: 0px;
-  top: 50px;
+  top: ${(props) => props.position};
   display: ${(props) => (props.visible ? "flex" : "none")};
 `;
 
@@ -46,14 +52,25 @@ const ArrowIcon = styled.div`
   position: absolute;
   top: 13px;
   right: 10px;
-  color: #135846;
+  color: ${(props) => props.theme[15]};
+  /* color: #135846; */
   transition: transform 0.3s;
   transform: ${(props) => props.turnArrow && "rotate(180deg)"};
 `;
 
+const ExtraWindow = styled.div`
+  position: fixed;
+  width: 100vw;
+  height: 100vh;
+  z-index: 10;
+  top: 0;
+  left: 0;
+`;
+
 function Popup(props) {
   const [show, setShow] = useState(false);
-  const { preview, options, itemId } = props;
+  const { theme } = useContext(themeContext);
+  const { preview, options, itemId, withArrow } = props;
 
   function handleVisibility() {
     setShow((prev) => !prev);
@@ -67,18 +84,32 @@ function Popup(props) {
   return (
     <Wrapp>
       <Preview onClick={handleVisibility}>
-        {preview}{" "}
-        <ArrowIcon turnArrow={show}>
-          <FontAwesomeIcon icon={faChevronDown} size="lg" />
-        </ArrowIcon>
+        {preview}
+        {withArrow && (
+          <ArrowIcon turnArrow={show} theme={theme}>
+            <FontAwesomeIcon icon={faChevronDown} size="lg" />
+          </ArrowIcon>
+        )}
       </Preview>
-      <Container visible={show}>
+      <Container
+        visible={show}
+        theme={theme}
+        position={withArrow ? "50px" : "30px"}
+      >
         {options.map((item, index) => (
           <Option key={index} onClick={() => handleAction(item.action)}>
             {item.label}
           </Option>
         ))}
       </Container>
+      {show && (
+        <ExtraWindow
+          id="closePopup"
+          onClick={(e) =>
+            e.target.id.includes("closePopup") && handleVisibility()
+          }
+        />
+      )}
     </Wrapp>
   );
 }

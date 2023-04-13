@@ -7,7 +7,8 @@
     "subject": "dictumst maecenas ut",
     "message": "Sed sagittis. Nam congue, risus semper porta volutpat, quam pede lobortis ligula, sit amet eleifend pede libero quis orci. Nullam molestie nibh in lectus.",
     "date": 1669800542000,
-    "archived": true
+    "read": true,
+    "archived": false
   },
   {
     "id": "920229141-1",
@@ -17,6 +18,7 @@
     "subject": "consequat ut",
     "message": "Etiam vel augue. Vestibulum rutrum rutrum neque. Aenean auctor gravida sem.",
     "date": 1664473320000,
+    "read": true,
     "archived": true
   },
   {
@@ -27,6 +29,7 @@
     "subject": "posuere metus",
     "message": "Integer ac leo. Pellentesque ultrices mattis odio. Donec vitae nisi.",
     "date": 1658292318000,
+    "read": false,
     "archived": false
   },
   {
@@ -37,6 +40,7 @@
     "subject": "ac diam",
     "message": "Praesent id massa id nisl venenatis lacinia. Aenean sit amet justo. Morbi ut odio.",
     "date": 1668449098000,
+    "read": true,
     "archived": true
   },
   {
@@ -47,7 +51,8 @@
     "subject": "vitae",
     "message": "Mauris enim leo, rhoncus sed, vestibulum sit amet, cursus id, turpis. Integer aliquet, massa id lobortis convallis, tortor risus dapibus augue, vel accumsan tellus nisi eu orci. Mauris lacinia sapien quis libero.",
     "date": 1678973673000,
-    "archived": true
+    "read": false,
+    "archived": false
   },
   {
     "id": "808476442-X",
@@ -57,6 +62,7 @@
     "subject": "lacus",
     "message": "Sed sagittis. Nam congue, risus semper porta volutpat, quam pede lobortis ligula, sit amet eleifend pede libero quis orci. Nullam molestie nibh in lectus.",
     "date": 1676008323000,
+    "read": true,
     "archived": true
   },
   {
@@ -67,7 +73,8 @@
     "subject": "tortor sollicitudin",
     "message": "Cras non velit nec nisi vulputate nonummy. Maecenas tincidunt lacus at velit. Vivamus vel nulla eget eros elementum pellentesque.",
     "date": 1653406240000,
-    "archived": true
+    "read": true,
+    "archived": false
   },
   {
     "id": "936149746-4",
@@ -77,7 +84,8 @@
     "subject": "amet turpis",
     "message": "Proin interdum mauris non ligula pellentesque ultrices. Phasellus id sapien in sapien iaculis congue. Vivamus metus arcu, adipiscing molestie, hendrerit at, vulputate vitae, nisl.",
     "date": 1669000216000,
-    "archived": true
+    "read": true,
+    "archived": false
   },
   {
     "id": "251807884-3",
@@ -87,6 +95,7 @@
     "subject": "dapibus duis at",
     "message": "Cras mi pede, malesuada in, imperdiet et, commodo vulputate, justo. In blandit ultrices enim. Lorem ipsum dolor sit amet, consectetuer adipiscing elit.",
     "date": 1659737930000,
+    "read": true,
     "archived": true
   },
   {
@@ -97,6 +106,7 @@
     "subject": "feugiat non",
     "message": "In hac habitasse platea dictumst. Morbi vestibulum, velit id pretium iaculis, diam erat fermentum justo, nec condimentum neque sapien placerat ante. Nulla justo.",
     "date": 1652162870000,
+    "read": true,
     "archived": true
   },
   {
@@ -107,6 +117,7 @@
     "subject": "lectus",
     "message": "Morbi non lectus. Aliquam sit amet diam in magna bibendum imperdiet. Nullam orci pede, venenatis non, sodales sed, tincidunt eu, felis.",
     "date": 1664156814000,
+    "read": true,
     "archived": true
   },
   {
@@ -117,6 +128,7 @@
     "subject": "nam tristique",
     "message": "Proin interdum mauris non ligula pellentesque ultrices. Phasellus id sapien in sapien iaculis congue. Vivamus metus arcu, adipiscing molestie, hendrerit at, vulputate vitae, nisl.",
     "date": 1656569559000,
+    "read": false,
     "archived": false
   },
   {
@@ -127,6 +139,7 @@
     "subject": "erat fermentum justo",
     "message": "Suspendisse potenti. In eleifend quam a odio. In hac habitasse platea dictumst.",
     "date": 1679622347000,
+    "read": false,
     "archived": false
   },
   {
@@ -137,6 +150,7 @@
     "subject": "risus praesent",
     "message": "Curabitur in libero ut massa volutpat convallis. Morbi odio odio, elementum eu, interdum eu, tincidunt in, leo. Maecenas pulvinar lobortis est.",
     "date": 1663328810000,
+    "read": true,
     "archived": false
   },
   {
@@ -147,6 +161,7 @@
     "subject": "lorem ipsum",
     "message": "Nullam porttitor lacus at turpis. Donec posuere metus vitae ipsum. Aliquam non mauris.",
     "date": 1665801343000,
+    "read": true,
     "archived": false
   },
   {
@@ -157,6 +172,7 @@
     "subject": "quam sollicitudin",
     "message": "Vestibulum ac est lacinia nisi venenatis tristique. Fusce congue, diam id ornare imperdiet, sapien urna pretium nisl, ut volutpat sapien arcu sed augue. Aliquam erat volutpat.",
     "date": 1662194993000,
+    "read": true,
     "archived": false
   },
   {
@@ -167,6 +183,7 @@
     "subject": "morbi non",
     "message": "Aenean lectus. Pellentesque eget nunc. Donec quis orci eget orci vehicula condimentum.",
     "date": 1670614371000,
+    "read": true,
     "archived": true
   },
   {
@@ -177,7 +194,8 @@
     "subject": "suscipit ligula",
     "message": "Curabitur gravida nisi at nibh. In hac habitasse platea dictumst. Aliquam augue quam, sollicitudin vitae, consectetuer eget, rutrum at, lorem.",
     "date": 1649370371000,
-    "archived": true
+    "read": false,
+    "archived": false
   },
   {
     "id": "824156095-8",
@@ -187,6 +205,7 @@
     "subject": "vel",
     "message": "Nullam sit amet turpis elementum ligula vehicula consequat. Morbi a ipsum. Integer a nibh.",
     "date": 1667604072000,
+    "read": true,
     "archived": true
   },
   {
@@ -197,7 +216,8 @@
     "subject": "elementum nullam varius",
     "message": "Curabitur gravida nisi at nibh. In hac habitasse platea dictumst. Aliquam augue quam, sollicitudin vitae, consectetuer eget, rutrum at, lorem.",
     "date": 1657486529000,
-    "archived": true
+    "read": true,
+    "archived": false
   },
   {
     "id": "168489690-8",
@@ -207,6 +227,7 @@
     "subject": "donec vitae",
     "message": "Pellentesque at nulla. Suspendisse potenti. Cras in purus eu magna vulputate luctus.",
     "date": 1648772471000,
+    "read": true,
     "archived": true
   },
   {
@@ -217,6 +238,7 @@
     "subject": "quam pharetra",
     "message": "Nullam sit amet turpis elementum ligula vehicula consequat. Morbi a ipsum. Integer a nibh.",
     "date": 1672246899000,
+    "read": true,
     "archived": true
   },
   {
@@ -227,6 +249,7 @@
     "subject": "ultrices phasellus id",
     "message": "Curabitur in libero ut massa volutpat convallis. Morbi odio odio, elementum eu, interdum eu, tincidunt in, leo. Maecenas pulvinar lobortis est.",
     "date": 1679453127000,
+    "read": true,
     "archived": false
   },
   {
@@ -237,6 +260,7 @@
     "subject": "cubilia curae",
     "message": "Vestibulum ac est lacinia nisi venenatis tristique. Fusce congue, diam id ornare imperdiet, sapien urna pretium nisl, ut volutpat sapien arcu sed augue. Aliquam erat volutpat.",
     "date": 1658702259000,
+    "read": true,
     "archived": false
   },
   {
@@ -247,6 +271,7 @@
     "subject": "duis bibendum felis",
     "message": "Lorem ipsum dolor sit amet, consectetuer adipiscing elit. Proin risus. Praesent lectus.",
     "date": 1671102595000,
+    "read": false,
     "archived": false
   }
 ]

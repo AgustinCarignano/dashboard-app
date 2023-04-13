@@ -1,17 +1,27 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useContext } from "react";
 import styled from "styled-components";
+import { themeContext } from "../context/ThemeContext";
 import Button from "./Button";
 import Modal from "./Modal";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
   faChevronRight,
   faChevronLeft,
+  faCircleXmark,
+  faCircleCheck,
 } from "@fortawesome/free-solid-svg-icons";
+import { updateContact } from "../pages/contact/contactSlice";
+import { useDispatch } from "react-redux";
 
 const CardsContainer = styled.div`
   grid-column: 1/5;
-  background-color: ${(props) => props.bg_color};
-  box-shadow: ${(props) => (props.shadow ? "0px 4px 4px #00000005" : "none")};
+  background-color: ${(props) =>
+    props.variant === 1 ? props.theme[1] : "none"};
+  /* background-color: ${(props) => props.bg_color}; */
+  box-shadow: ${(props) =>
+    props.variant === 1 ? `0px 4px 4px ${props.theme[20]}` : "none"};
+  /* box-shadow: ${(props) =>
+    props.shadow ? "0px 4px 4px #00000005" : "none"}; */
   border-radius: 20px;
   padding: 30px;
   padding-bottom: ${(props) => (props.extraPadding ? "70px" : "30px")};
@@ -22,57 +32,57 @@ const CardsContainer = styled.div`
 `;
 const Title = styled.h2`
   font: normal 400 20px/30px "Poppins", sans-serif;
-  color: #393939;
+  color: ${(props) => props.theme[17]};
+  /* color: #393939; */
   margin: 0 0 20px 0;
   grid-column: 1/4;
 `;
 const MyCard = styled.div`
-  background-color: #ffffff;
+  position: relative;
+  background-color: ${(props) => props.theme[1]};
+  /* background-color: #ffffff; */
   padding: 30px;
   min-height: 223px;
   max-height: 400px;
   overflow: hidden;
   display: flex;
   flex-direction: column;
-  border: 1px solid #ebebeb;
+  border: 1px solid ${(props) => props.theme[22]};
+  /* border: 1px solid #ebebeb; */
   border-radius: 20px;
   transition: all 0.3s;
   :hover {
-    box-shadow: 0px 16px 30px #00000014;
+    box-shadow: 0px 16px 30px ${(props) => props.theme[18]};
+    /* box-shadow: 0px 16px 30px #00000014; */
   }
 `;
 
 const Name = styled.h3`
   font: normal 600 16px/25px "Poppins", sans-serif;
-  color: #262626;
+  color: ${(props) => props.theme[21]};
+  /* color: #262626; */
   margin: 0px 0;
 `;
 const Contact = styled.p`
   font: normal 400 12px/20px "Poppins", sans-serif;
-  color: #6e6e6e;
+  color: ${(props) => props.theme[9]};
+  /* color: #6e6e6e; */
   margin: 0;
 `;
 const Subject = styled(Contact)`
   font-size: 16px;
   margin: 5px 0px;
   padding-top: 5px;
-  color: #4e4e4e;
-  border-top: solid 1px #f5f5f5;
+  color: ${(props) => props.theme[23]};
+  /* color: #4e4e4e; */
+  border-top: solid 1px ${(props) => props.theme[6]};
+  /* border-top: solid 1px #f5f5f5; */
 `;
-const messageStyle = {
-  font: "normal 400 14px/20px 'Poppins', sans-serif",
-  color: "#6e6e6e",
-  margin: "0",
-  cursor: "pointer",
-};
 
-const ButtonContainer = styled.div`
-  width: 100%;
-  display: flex;
+const ButtonRigth = styled.div`
   position: absolute;
   top: calc(50% - 24.3px);
-  justify-content: space-between;
-  margin-left: auto;
+  right: 0;
   Button {
     padding: 13px 20px;
     transition: transform 0.3s;
@@ -81,12 +91,37 @@ const ButtonContainer = styled.div`
     }
   }
 `;
+const ButtonLeft = styled(ButtonRigth)`
+  left: 0;
+  right: 100%;
+`;
+
+const StatusContainer = styled.div`
+  position: absolute;
+  display: flex;
+  gap: 10px;
+  right: 20px;
+  top: 10px;
+`;
 
 function ContactPreview(props) {
-  const { title, data, bg_color, shadow } = props;
+  const { title, data, variant } = props;
   const [dataToRender, setDataToRender] = useState([]);
   const [totalPages, setTotalPages] = useState(1);
   const [currentPage, setCurrentPage] = useState(1);
+  const { theme } = useContext(themeContext);
+  const dispatch = useDispatch();
+
+  const messageStyle = (remark) => {
+    return {
+      font: "normal 400 14px/20px 'Poppins', sans-serif",
+      color: `${theme[9]}`,
+      // color: "#6e6e6e",
+      margin: "0",
+      cursor: "pointer",
+      fontWeight: `${remark ? "600" : "normal"}`,
+    };
+  };
 
   function handlePaginate(direction) {
     switch (direction) {
@@ -115,16 +150,16 @@ function ContactPreview(props) {
   }, [data, currentPage]);
 
   return (
-    <CardsContainer bg_color={bg_color} shadow={shadow} extraPadding={!!title}>
-      {title && <Title>{title}</Title>}
+    <CardsContainer variant={variant} extraPadding={!!title} theme={theme}>
+      {title && <Title theme={theme}>{title}</Title>}
       {dataToRender.map((item, index) => {
         return (
-          <MyCard key={index}>
-            <Name>{item.fullName}</Name>
-            <Contact>
+          <MyCard key={index} theme={theme}>
+            <Name theme={theme}>{item.fullName}</Name>
+            <Contact theme={theme}>
               {item.email} | {item.phone}
             </Contact>
-            <Subject>{item.subject}</Subject>
+            <Subject theme={theme}>{item.subject}</Subject>
             <Modal
               title={item.fullName}
               content={item.message}
@@ -133,27 +168,61 @@ function ContactPreview(props) {
                   ? item.message.slice(0, 150) + "..."
                   : item.message
               }
-              previewStyle={messageStyle}
+              previewStyle={messageStyle(!item.read)}
+              changeToOpen={
+                !item.read &&
+                (() =>
+                  dispatch(
+                    updateContact({
+                      body: { read: !item.read },
+                      id: item.id,
+                    })
+                  ))
+              }
             />
+            <StatusContainer>
+              {item.read && (
+                <FontAwesomeIcon
+                  icon={faCircleCheck}
+                  size="xl"
+                  style={{
+                    backgroundColor: "transparent",
+                    color: `${theme[14]}`,
+                  }}
+                />
+              )}
+              {item.archived && (
+                <FontAwesomeIcon
+                  icon={faCircleXmark}
+                  size="xl"
+                  style={{
+                    backgroundColor: "transparent",
+                    color: `${theme[11]}`,
+                  }}
+                />
+              )}
+            </StatusContainer>
           </MyCard>
         );
       })}
-      <ButtonContainer>
+      <ButtonLeft>
         <Button
-          variant={4}
+          variant={1}
           available={currentPage > 1}
           onClick={() => handlePaginate("prev")}
         >
           <FontAwesomeIcon icon={faChevronLeft} size="lg" />
         </Button>
+      </ButtonLeft>
+      <ButtonRigth>
         <Button
-          variant={4}
+          variant={1}
           available={currentPage < totalPages}
           onClick={() => handlePaginate("next")}
         >
           <FontAwesomeIcon icon={faChevronRight} size="lg" />
         </Button>
-      </ButtonContainer>
+      </ButtonRigth>
     </CardsContainer>
   );
 }

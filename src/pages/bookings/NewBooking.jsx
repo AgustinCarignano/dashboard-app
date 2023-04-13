@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useContext, useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import { useSelector, useDispatch } from "react-redux";
 import {
@@ -23,6 +23,7 @@ import {
   Submit,
 } from "../../components/FormComponents";
 import { formatDate } from "../../utils";
+import { themeContext } from "../../context/ThemeContext";
 
 const initialState = {
   id: "",
@@ -43,6 +44,7 @@ function NewBooking() {
   const dispatch = useDispatch();
   const [newBooking, setNewBooking] = useState(initialState);
   const [availableRooms, setAvailableRooms] = useState([]);
+  const { theme } = useContext(themeContext);
   const { id } = useParams();
   const navigate = useNavigate();
 
@@ -67,7 +69,7 @@ function NewBooking() {
     return true;
   }
 
-  function handleOnSubmit(e) {
+  async function handleOnSubmit(e) {
     e.preventDefault();
     const copyOfData = { ...newBooking };
     const correctForm = verifyForm(copyOfData);
@@ -75,8 +77,12 @@ function NewBooking() {
       copyOfData.checkIn = new Date(copyOfData.checkIn).getTime();
       copyOfData.checkOut = new Date(copyOfData.checkOut).getTime();
       if (id) {
-        dispatch(updateBooking({ body: copyOfData, id }));
-        //navigate(`/dashboard-app/bookings/${id}`);
+        try {
+          await dispatch(updateBooking({ body: copyOfData, id })).unwrap();
+          navigate(`/dashboard-app/bookings/${id}`);
+        } catch (error) {
+          console.log("there has been an error", error);
+        }
       } else {
         dispatch(createBooking(copyOfData));
       }
@@ -113,13 +119,15 @@ function NewBooking() {
 
   return (
     <MainContainer>
-      <Container>
-        <Title>{id ? "Edit Booking" : "New Booking"}</Title>
+      <Container theme={theme}>
+        <Title theme={theme}>{id ? "Edit Booking" : "New Booking"}</Title>
         <FormContainer>
           <Column>
             <Field>
-              <Label>Guest Full Name</Label>
+              <Label theme={theme}>Guest Full Name</Label>
               <Input
+                autoComplete="off"
+                theme={theme}
                 type="text"
                 name="guest"
                 value={newBooking.guest}
@@ -127,8 +135,10 @@ function NewBooking() {
               />
             </Field>
             <Field>
-              <Label>Check In</Label>
+              <Label theme={theme}>Check In</Label>
               <Input
+                autoComplete="off"
+                theme={theme}
                 type="date"
                 name="checkIn"
                 value={newBooking.checkIn}
@@ -136,8 +146,10 @@ function NewBooking() {
               />
             </Field>
             <Field>
-              <Label>Check Out</Label>
+              <Label theme={theme}>Check Out</Label>
               <Input
+                autoComplete="off"
+                theme={theme}
                 type="date"
                 name="checkOut"
                 value={newBooking.checkOut}
@@ -147,8 +159,9 @@ function NewBooking() {
           </Column>
           <Column>
             <Field>
-              <Label>Room</Label>
+              <Label theme={theme}>Room</Label>
               <Select
+                theme={theme}
                 name="roomId"
                 value={newBooking.roomId}
                 onChange={handleInputsChange}
@@ -167,8 +180,9 @@ function NewBooking() {
               </Select>
             </Field>
             <Field>
-              <Label>Special Request</Label>
+              <Label theme={theme}>Special Request</Label>
               <TextArea
+                theme={theme}
                 name="specialRequest"
                 value={newBooking.specialRequest}
                 onChange={handleInputsChange}

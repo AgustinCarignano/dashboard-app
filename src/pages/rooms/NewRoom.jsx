@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useContext, useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import { getItemData } from "../../mockService/service";
 import Button from "../../components/Button";
@@ -17,6 +17,9 @@ import {
   PhotoInput,
   ExtraContainer,
 } from "../../components/FormComponents";
+import { themeContext } from "../../context/ThemeContext";
+import { useDispatch } from "react-redux";
+import { createRoom, updateRoom } from "./roomSlice";
 
 const availableAmenities = [
   "Air Conditioner",
@@ -53,6 +56,8 @@ const initialState = {
 function NewRoom() {
   const [newRoom, setNewRoom] = useState(initialState);
   const { id } = useParams();
+  const { theme } = useContext(themeContext);
+  const dispatch = useDispatch();
   const navigate = useNavigate();
 
   function handleInputsChange(e) {
@@ -60,6 +65,7 @@ function NewRoom() {
     const key = e.target.name;
     const value = e.target.value;
     if (key === "offer") {
+      console.log(value);
       copyOfData[key] = value === "true";
       if (value === "false") copyOfData.discount = "";
     } else if (key.includes("photo")) {
@@ -109,18 +115,22 @@ function NewRoom() {
     return true;
   }
 
-  function handleOnSubmit(e) {
+  async function handleOnSubmit(e) {
     e.preventDefault();
     const copyOfData = structuredClone(newRoom);
     const correctForm = verifyForm(copyOfData);
-    console.log(correctForm);
     if (correctForm) {
-      console.log(newRoom);
-      setNewRoom(initialState);
       if (id) {
-        const path = `/dashboard-app/rooms/${id}`;
-        navigate(path);
+        try {
+          await dispatch(updateRoom({ body: copyOfData, id })).unwrap();
+          navigate(`/dashboard-app/rooms/${id}`);
+        } catch (error) {
+          console.log("there has been an error", error);
+        }
+      } else {
+        dispatch(createRoom(copyOfData));
       }
+      setNewRoom(initialState);
     } else {
       console.log("Something was wrong");
     }
@@ -139,13 +149,14 @@ function NewRoom() {
 
   return (
     <MainContainer style={{ minHeight: "calc(100vh - 145px)" }}>
-      <Container>
-        <Title>{id ? "Edit Room" : "New Room"}</Title>
+      <Container theme={theme}>
+        <Title theme={theme}>{id ? "Edit Room" : "New Room"}</Title>
         <FormContainer>
           <Column>
             <Field>
-              <Label>Room Type</Label>
+              <Label theme={theme}>Room Type</Label>
               <Select
+                theme={theme}
                 name="roomType"
                 value={newRoom.roomType}
                 onChange={handleInputsChange}
@@ -164,8 +175,9 @@ function NewRoom() {
               </Select>
             </Field>
             <Field>
-              <Label>Room Number</Label>
+              <Label theme={theme}>Room Number</Label>
               <Input
+                theme={theme}
                 autoComplete="off"
                 name="roomNumber"
                 value={newRoom.roomNumber}
@@ -173,7 +185,7 @@ function NewRoom() {
               />
             </Field>
             <Field>
-              <Label>Offer</Label>
+              <Label theme={theme}>Offer</Label>
               <Button
                 variant={newRoom.offer ? 1 : 4}
                 name="offer"
@@ -192,8 +204,9 @@ function NewRoom() {
               </Button>
             </Field>
             <Field>
-              <Label>Price</Label>
+              <Label theme={theme}>Price</Label>
               <Input
+                theme={theme}
                 name="price"
                 value={newRoom.price}
                 onChange={handleInputsChange}
@@ -201,8 +214,9 @@ function NewRoom() {
               />
             </Field>
             <Field>
-              <Label>Discount</Label>
+              <Label theme={theme}>Discount</Label>
               <Input
+                theme={theme}
                 name="discount"
                 onChange={handleInputsChange}
                 disabled={!newRoom.offer}
@@ -210,7 +224,7 @@ function NewRoom() {
               />
             </Field>
             <Field>
-              <Label>Amenities</Label>
+              <Label theme={theme}>Amenities</Label>
               <ExtraContainer direction="row">
                 {availableAmenities.map((item, index) => {
                   let variant = newRoom.amenities.includes(item) ? 1 : 4;
@@ -229,10 +243,11 @@ function NewRoom() {
           </Column>
           <Column>
             <Field>
-              <Label>Photos</Label>
+              <Label theme={theme}>Photos</Label>
               <ExtraContainer direction="column" style={{ width: "60%" }}>
                 {newRoom.photos.map((item, index) => (
                   <PhotoInput
+                    theme={theme}
                     key={index}
                     name={`photo_${index}`}
                     value={newRoom.photos[index]}
@@ -261,8 +276,9 @@ function NewRoom() {
               </ExtraContainer>
             </Field>
             <Field>
-              <Label>Description</Label>
+              <Label theme={theme}>Description</Label>
               <TextArea
+                theme={theme}
                 name="description"
                 style={{ width: "70%" }}
                 value={newRoom.description}
@@ -270,8 +286,9 @@ function NewRoom() {
               />
             </Field>
             <Field>
-              <Label>Cancellation</Label>
+              <Label theme={theme}>Cancellation</Label>
               <TextArea
+                theme={theme}
                 name="cancellation"
                 style={{ width: "70%" }}
                 value={newRoom.cancellation}

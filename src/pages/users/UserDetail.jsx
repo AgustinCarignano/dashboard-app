@@ -1,10 +1,11 @@
-import React, { useEffect, useState } from "react";
+import React, { useContext, useEffect, useState } from "react";
 import styled from "styled-components";
 import { useSelector, useDispatch } from "react-redux";
 import {
   getUserDetails,
   selectUserDetail,
   selectIsLoading,
+  deleteUser,
 } from "./usersSlice";
 import { useParams, useNavigate } from "react-router-dom";
 import MainContainer from "../../components/MainContainer";
@@ -27,6 +28,7 @@ import {
 } from "../../components/DetailComponents";
 import Popup from "../../components/Popup";
 import DeleteItem from "../../components/DeleteItem";
+import { themeContext } from "../../context/ThemeContext";
 
 const Container = styled(ItemContainer)`
   position: relative;
@@ -37,16 +39,19 @@ const Container = styled(ItemContainer)`
   margin: 0 auto;
 `;
 const DetailStatus = styled(DetailSmaller)`
-  color: #5ad07a;
+  color: ${(props) => props.theme[14]};
+  /* color: #5ad07a; */
 `;
 
 function UserDetail() {
   const [showConfirm, setShowConfirm] = useState(false);
   const user = useSelector(selectUserDetail);
   const isLoadingData = useSelector(selectIsLoading);
+  const { theme } = useContext(themeContext);
   const dispatch = useDispatch();
   const { id } = useParams();
   const navigate = useNavigate();
+  const tabSpace = "\u00A0\u00A0";
 
   const optionsMenu = [
     {
@@ -61,10 +66,15 @@ function UserDetail() {
     },
   ];
 
-  /* function handleDeleteItem() {
-    dispatch(deleteUser(user.id));
-    navigate(`/dashboard-app/users`);
-  } */
+  async function handleDeleteItem() {
+    try {
+      await dispatch(deleteUser(user.id)).unwrap();
+      navigate(`/dashboard-app/users`);
+    } catch (error) {
+      setShowConfirm(false);
+      console.log("there has been an error", error);
+    }
+  }
 
   useEffect(() => {
     dispatch(getUserDetails(id));
@@ -75,12 +85,12 @@ function UserDetail() {
       {isLoadingData ? (
         <Loader />
       ) : (
-        <Container>
+        <Container theme={theme}>
           <PrimaryContainer>
             <DetailImg>
               <img src={user.photo} alt="" />
             </DetailImg>
-            <DetailHeader>
+            <DetailHeader theme={theme}>
               <h1 style={{ maxWidth: "240px" }}>{user.fullName}</h1>
               <p>ID {user.id}</p>
               <p>{user.email}</p>
@@ -88,17 +98,19 @@ function UserDetail() {
             </DetailHeader>
           </PrimaryContainer>
           <div>
-            <DetailBigger>{user.role}</DetailBigger>
-            <TextContent>{user.description}</TextContent>
+            <DetailBigger theme={theme}>{user.role}</DetailBigger>
+            <TextContent theme={theme}>{user.description}</TextContent>
           </div>
-          <SecondaryContainer border={false} padding={false}>
+          <SecondaryContainer border={false} padding={false} theme={theme}>
             <div>
-              <Subtitle>Start Date</Subtitle>
-              <DetailSmaller>{formatDate(user.startDate)[0]}</DetailSmaller>
+              <Subtitle theme={theme}>Start Date</Subtitle>
+              <DetailSmaller theme={theme}>
+                {formatDate(user.startDate)[0]}
+              </DetailSmaller>
             </div>
             <div>
-              <Subtitle>Status</Subtitle>
-              <DetailStatus>{user.status}</DetailStatus>
+              <Subtitle theme={theme}>Status</Subtitle>
+              <DetailStatus theme={theme}>{user.status}</DetailStatus>
             </div>
           </SecondaryContainer>
           <EditBtn>
@@ -106,11 +118,12 @@ function UserDetail() {
               preview={
                 <Button variant={5} style={{ fontSize: "20px" }}>
                   <FontAwesomeIcon icon={faPenToSquare} />
-                  Actions
+                  {tabSpace} Actions {tabSpace}
                 </Button>
               }
               options={optionsMenu}
               itemId={user.id}
+              withArrow
             />
           </EditBtn>
         </Container>
@@ -118,7 +131,7 @@ function UserDetail() {
       {showConfirm && (
         <DeleteItem
           handleClose={() => setShowConfirm((prev) => !prev)}
-          handleDelete={() => console.log("put the function handleDeleteItem")}
+          handleDelete={handleDeleteItem}
         />
       )}
     </MainContainer>

@@ -95,7 +95,7 @@ export const roomsSlice = createSlice({
         const index = state.rooms.findIndex(
           (room) => room.id === action.payload.id
         );
-        if (index > 0) state.rooms.splice(index, 1);
+        if (index !== -1) state.rooms.splice(index, 1);
       });
   },
 });

@@ -100,7 +100,7 @@ export const bookingsSlice = createSlice({
         const index = state.bookings.findIndex(
           (book) => book.id === action.payload.id
         );
-        if (index > 0) state.bookings.splice(index, 1);
+        if (index !== -1) state.bookings.splice(index, 1);
       });
   },
 });

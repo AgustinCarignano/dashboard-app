@@ -1,8 +1,9 @@
-import React, { useState } from "react";
+import React, { useContext, useState } from "react";
 import styled from "styled-components";
 import Button from "./Button";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faXmark } from "@fortawesome/free-solid-svg-icons";
+import { themeContext } from "../context/ThemeContext";
 
 export const ModalContainer = styled.div`
   width: 100%;
@@ -12,13 +13,15 @@ export const ModalContainer = styled.div`
   width: 100%;
   height: 100%;
   z-index: 100;
-  background-color: #1111111a;
+  background-color: ${(props) => props.theme[26]};
+  /* background-color: #1111111a; */
 `;
 
 export const ModalWindow = styled.div`
   text-align: center;
   position: fixed;
-  background-color: #fff;
+  background-color: ${(props) => props.theme[1]};
+  /* background-color: #fff; */
   width: 80%;
   max-width: 450px;
   top: 20vh;
@@ -30,12 +33,14 @@ export const ModalWindow = styled.div`
   h3 {
     text-align: center;
     font: normal 600 30px/46px Poppins, Sans-serif;
-    color: #212121;
+    color: ${(props) => props.theme[19]};
+    /* color: #212121; */
     margin-bottom: 20px;
   }
   p {
     font: normal 400 20px/30px Poppins, Sans-serif;
-    color: #6e6e6e;
+    color: ${(props) => props.theme[9]};
+    /* color: #6e6e6e; */
     text-align: justify;
     margin-bottom: 50px;
   }
@@ -47,22 +52,31 @@ export const ModalWindow = styled.div`
 
 function Modal(props) {
   const [openModal, setOpenModal] = useState(false);
-  const { preview, title, content, previewStyle } = props;
+  const { theme } = useContext(themeContext);
+  const { preview, title, content, previewStyle, changeToOpen } = props;
+
+  function handleOpenMessage() {
+    setOpenModal(true);
+    changeToOpen && changeToOpen();
+  }
+
   return (
     <div>
-      <p
-        style={previewStyle}
-        onClick={content ? () => setOpenModal(true) : null}
-      >
+      <p style={previewStyle} onClick={content ? handleOpenMessage : null}>
         {preview}
       </p>
       {openModal && (
         <ModalContainer
+          id="closeWindow"
+          theme={theme}
           onClick={(e) => {
-            !e.target.id.includes("modalWindow") && setOpenModal(false);
+            e.target.id.includes("closeWindow") && setOpenModal(false);
           }}
+          /* onClick={(e) => {
+            !e.target.id.includes("modalWindow") && setOpenModal(false);
+          }} */
         >
-          <ModalWindow id="modalWindow">
+          <ModalWindow id="modalWindow" theme={theme}>
             <FontAwesomeIcon
               icon={faXmark}
               size="lg"

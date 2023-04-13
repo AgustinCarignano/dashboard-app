@@ -5,6 +5,7 @@ import {
   getRoomDetails,
   selectRoomDetails,
   selectIsLoading,
+  deleteRoom,
 } from "./roomSlice.js";
 import MainContainer from "../../components/MainContainer.jsx";
 import Button from "../../components/Button.jsx";
@@ -28,14 +29,18 @@ import {
 } from "../../components/DetailComponents.jsx";
 import Popup from "../../components/Popup.jsx";
 import DeleteItem from "../../components/DeleteItem.jsx";
+import { useContext } from "react";
+import { themeContext } from "../../context/ThemeContext.jsx";
 
 function RoomDetail() {
   const [showConfirm, setShowConfirm] = useState(false);
   const item = useSelector(selectRoomDetails);
   const isLoadingData = useSelector(selectIsLoading);
+  const { theme } = useContext(themeContext);
   const dispatch = useDispatch();
   const { id } = useParams();
   const navigate = useNavigate();
+  const tabSpace = "\u00A0\u00A0";
 
   const optionsMenu = [
     {
@@ -50,10 +55,15 @@ function RoomDetail() {
     },
   ];
 
-  /* function handleDeleteItem() {
-    dispatch(deleteRoom(item.id));
-    navigate(`/dashboard-app/rooms`);
-  } */
+  async function handleDeleteItem() {
+    try {
+      await dispatch(deleteRoom(item.id)).unwrap();
+      navigate(`/dashboard-app/rooms`);
+    } catch (error) {
+      setShowConfirm(false);
+      console.log("there has been an error", error);
+    }
+  }
 
   useEffect(() => {
     dispatch(getRoomDetails(id));
@@ -61,45 +71,47 @@ function RoomDetail() {
 
   return (
     <MainContainer>
-      {isLoadingData ? (
+      {isLoadingData && item ? (
         <Loader />
       ) : (
-        <ItemContainer>
+        <ItemContainer theme={theme}>
           <LeftColumn>
             <PrimaryContainer>
               <DetailImg>
                 <img src={item.photos[0]} alt="" />
               </DetailImg>
-              <DetailHeader>
+              <DetailHeader theme={theme}>
                 <h1>{item.roomNumber}</h1>
                 <p>ID {item.id}</p>
               </DetailHeader>
             </PrimaryContainer>
-            <SecondaryContainer border={false} padding={false}>
+            <SecondaryContainer border={false} padding={false} theme={theme}>
               <div>
-                <Subtitle>Type</Subtitle>
-                <DetailBigger>{item.roomType}</DetailBigger>
+                <Subtitle theme={theme}>Type</Subtitle>
+                <DetailBigger theme={theme}>{item.roomType}</DetailBigger>
               </div>
               <div>
-                <Subtitle>Price</Subtitle>
-                <DetailBigger>{item.price}</DetailBigger>
+                <Subtitle theme={theme}>Price</Subtitle>
+                <DetailBigger theme={theme}>{item.price}</DetailBigger>
               </div>
             </SecondaryContainer>
-            <SecondaryContainer border={true} padding={true}>
+            <SecondaryContainer border={true} padding={true} theme={theme}>
               <div>
-                <Subtitle>Offer</Subtitle>
-                <DetailBigger>{item.offer ? "YES" : "NO"}</DetailBigger>
+                <Subtitle theme={theme}>Offer</Subtitle>
+                <DetailBigger theme={theme}>
+                  {item.offer ? "YES" : "NO"}
+                </DetailBigger>
               </div>
               <div>
-                <Subtitle>Discount</Subtitle>
-                <DetailBigger>
+                <Subtitle theme={theme}>Discount</Subtitle>
+                <DetailBigger theme={theme}>
                   {item.discount ? item.discount : "N/A"}
                 </DetailBigger>
               </div>
             </SecondaryContainer>
-            <TextContent>{item.cancellation}</TextContent>
+            <TextContent theme={theme}>{item.cancellation}</TextContent>
             <div>
-              <Subtitle>Amenities</Subtitle>
+              <Subtitle theme={theme}>Amenities</Subtitle>
               <AmenitiesContainer>
                 {item.amenities.map((item, index) => (
                   <Button variant={2} key={index}>
@@ -113,15 +125,16 @@ function RoomDetail() {
                 preview={
                   <Button variant={5} style={{ fontSize: "20px" }}>
                     <FontAwesomeIcon icon={faPenToSquare} />
-                    Actions
+                    {tabSpace} Actions {tabSpace}
                   </Button>
                 }
                 options={optionsMenu}
                 itemId={item.id}
+                withArrow
               />
             </EditBtn>
           </LeftColumn>
-          <RightColumn justify="center" background="#c5c5c5">
+          <RightColumn justify="center" background theme={theme}>
             <Slider photos={item.photos} />
           </RightColumn>
         </ItemContainer>
@@ -129,7 +142,7 @@ function RoomDetail() {
       {showConfirm && (
         <DeleteItem
           handleClose={() => setShowConfirm((prev) => !prev)}
-          handleDelete={() => console.log("put the function handleDeleteItem")}
+          handleDelete={handleDeleteItem}
         />
       )}
     </MainContainer>

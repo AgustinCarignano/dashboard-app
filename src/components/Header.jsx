@@ -1,41 +1,45 @@
 import React, { useContext, useEffect, useState } from "react";
 import styled from "styled-components";
 import { useLocation, useNavigate } from "react-router-dom";
+import { useSelector } from "react-redux";
 import { loginContext } from "../context/LoginContext";
+import { selectUnreadContacts } from "../pages/contact/contactSlice";
+import { selectBookings } from "../pages/bookings/bookingSlice";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
   faArrowRightArrowLeft,
   faEnvelope,
   faBell,
   faArrowRightFromBracket,
+  faCircleHalfStroke,
 } from "@fortawesome/free-solid-svg-icons";
-import { getAllData } from "../mockService/service";
+import { themeContext } from "../context/ThemeContext";
 
 const StyleHeader = styled.header`
   display: flex;
   justify-content: space-between;
   align-items: center;
-  background-color: #fff;
+  background-color: ${(props) => props.theme[1]};
+  /* background-color: #fff; */
   padding: 40px 50px;
   min-height: 145px;
-  box-shadow: 0px 3px 10px #00000005;
+  box-shadow: 0px 3px 10px ${(props) => props.theme[20]};
+  /* box-shadow: 0px 3px 10px #00000005; */
 `;
 
 const Title = styled.h1`
   font: normal 600 28px "Poppins", sans-serif;
-  color: #262626;
+  color: ${(props) => props.theme[21]};
+  /* color: #262626; */
   margin: 0;
 `;
 
 const Breadcrumb = styled.p`
   font: normal 400 14px/21px "Poppins", sans-serif;
-  /* color: #135846;
-  span {
-    color: #6e6e6e;
-  } */
 `;
 const BreadcrumbLink = styled.span`
-  color: ${(props) => (props.onClick ? "#135846" : "#6e6e6e")};
+  color: ${(props) => (props.onClick ? props.theme[15] : props.theme[9])};
+  /* color: ${(props) => (props.onClick ? "#135846" : "#6e6e6e")}; */
   cursor: ${(props) => (props.onClick ? "Pointer" : "auto")};
 `;
 
@@ -51,13 +55,16 @@ const Container = styled.div`
 `;
 
 const IconContainer = styled.div`
-  color: #135846;
+  color: ${(props) => props.theme[15]};
+  /* color: #135846; */
   position: relative;
-  cursor: pointer;
+  cursor: ${(props) => (props.hasAction ? "Pointer" : "default")};
   span {
-    background-color: #e23428;
+    background-color: ${(props) => props.theme[11]};
+    /* background-color: #e23428; */
     border-radius: 8px;
-    color: #ffffff;
+    color: ${(props) => props.theme[25]};
+    /* color: #ffffff; */
     font-size: 14px;
     width: 30px;
     padding: 6px 0;
@@ -73,8 +80,9 @@ function Header(props) {
   const { state, dispatch } = useContext(loginContext);
   const [breadcrumb, setBreadcrumb] = useState("");
   const [pathArray, setPathArray] = useState([]);
-  const [notifications, setNotifications] = useState(0);
-  const [messages, setMessages] = useState(5);
+  const { theme, handleThemeChange } = useContext(themeContext);
+  const messages = useSelector(selectUnreadContacts);
+  const bookings = useSelector(selectBookings);
   const { pathname } = useLocation();
   const navigate = useNavigate();
 
@@ -92,19 +100,9 @@ function Header(props) {
     navigate(path);
   }
 
-  async function getBookingsData() {
-    const data = await getAllData("bookings_data.json");
-    const filterData = data.filter(
-      (item) => new Date(item.orderDate).getMonth() === new Date().getMonth()
-    );
-    setNotifications(filterData.length);
-  }
-
-  async function getContactData() {
-    const data = await getAllData("contact_data.json");
-    const filterData = data.filter((item) => item.archived === false);
-    setMessages(filterData.length);
-  }
+  const notifications = bookings.filter(
+    (book) => new Date(book.orderDate).getMonth() === new Date().getMonth()
+  ).length;
 
   useEffect(() => {
     const array = pathname.split("/");
@@ -124,14 +122,12 @@ function Header(props) {
 
   useEffect(() => {
     if (!state.auth) return;
-    getBookingsData();
-    getContactData();
   }, []);
 
   return (
-    <StyleHeader>
+    <StyleHeader theme={theme}>
       <Container>
-        <IconContainer>
+        <IconContainer theme={theme}>
           <FontAwesomeIcon
             icon={faArrowRightArrowLeft}
             size="lg"
@@ -140,13 +136,13 @@ function Header(props) {
           />
         </IconContainer>
         <TitleContainer>
-          <Title>{TitleList[pathArray[2]] || "Dashboard"}</Title>
+          <Title theme={theme}>{TitleList[pathArray[2]] || "Dashboard"}</Title>
           {breadcrumb && (
             <Breadcrumb>
-              <BreadcrumbLink onClick={handleNavigate}>
+              <BreadcrumbLink onClick={handleNavigate} theme={theme}>
                 {TitleList[pathArray[2]]} /
               </BreadcrumbLink>
-              <BreadcrumbLink> {breadcrumb}</BreadcrumbLink>
+              <BreadcrumbLink theme={theme}> {breadcrumb}</BreadcrumbLink>
               {/* {TitleList[pathArray[2]]} / <span>{breadcrumb}</span> */}
             </Breadcrumb>
           )}
@@ -154,15 +150,23 @@ function Header(props) {
       </Container>
       {state.auth && (
         <Container>
-          <IconContainer>
+          <IconContainer theme={theme}>
             <FontAwesomeIcon icon={faEnvelope} size="lg" />
-            {messages !== 0 && <span>{messages}</span>}
+            {messages && <span>{messages}</span>}
           </IconContainer>
-          <IconContainer>
+          <IconContainer theme={theme}>
             <FontAwesomeIcon icon={faBell} size="lg" />
             {notifications !== 0 && <span>{notifications}</span>}
           </IconContainer>
-          <IconContainer>
+          <IconContainer theme={theme}>
+            <FontAwesomeIcon
+              icon={faCircleHalfStroke}
+              size="lg"
+              onClick={handleThemeChange}
+              style={{ cursor: "Pointer" }}
+            />
+          </IconContainer>
+          <IconContainer hasAction theme={theme}>
             <FontAwesomeIcon
               icon={faArrowRightFromBracket}
               size="lg"

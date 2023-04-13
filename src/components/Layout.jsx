@@ -1,7 +1,9 @@
+import { useContext } from "react";
 import styled from "styled-components";
+import { themeContext } from "../context/ThemeContext";
 
-const Layout = styled.div`
-  background-color: #f8f8f8;
+const GeneralLayout = styled.div`
+  background-color: ${(props) => props.theme[2]};
   display: grid;
   grid-template-areas:
     "aside header"
@@ -12,4 +14,11 @@ const Layout = styled.div`
   align-items: start;
 `;
 
-export default Layout;
+export default function Layout({ children, showAside }) {
+  const { theme } = useContext(themeContext);
+  return (
+    <GeneralLayout showAside={showAside} theme={theme}>
+      {children}
+    </GeneralLayout>
+  );
+}

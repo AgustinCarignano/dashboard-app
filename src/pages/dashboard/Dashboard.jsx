@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useContext, useEffect, useState } from "react";
 import { useSelector, useDispatch } from "react-redux";
 import {
   getAllContacts,
@@ -17,6 +17,7 @@ import { formatDate } from "../../utils";
 import Table from "../../components/Table";
 import styled from "styled-components";
 import Loader from "../../components/Loader.jsx";
+import { themeContext } from "../../context/ThemeContext.jsx";
 
 const FirstColumn = styled.div`
   display: flex;
@@ -31,11 +32,13 @@ const FirstColumn = styled.div`
     width: 50%;
     h4 {
       font: normal 500 20px/30px "Poppins", Sans-Serif;
-      color: #393939;
+      color: ${(props) => props.theme[17]};
+      /* color: #393939; */
     }
     p {
       font: normal 400 14px/21px "Poppins", Sans-Serif;
-      color: #4e4e4e;
+      color: ${(props) => props.theme[23]};
+      /* color: #4e4e4e; */
     }
   }
 `;
@@ -52,6 +55,7 @@ function Dashboard() {
   const isLoadingBookings = useSelector(selectLoadingBookings);
   const latestContact = useSelector(selectContacts);
   const isLoadingContacts = useSelector(selectLoadingContacts);
+  const theme = useContext(themeContext);
   const dispatch = useDispatch();
   const [period, setPeriod] = useState({
     start: 1647298800000,
@@ -72,7 +76,7 @@ function Dashboard() {
     return (
       <>
         <td style={{ width: "375px" }}>
-          <FirstColumn>
+          <FirstColumn theme={theme}>
             <img src={item.roomImg} alt={"room" + item.roomNumber} />
             <div>
               <h4>{item.roomType}</h4>
@@ -130,8 +134,8 @@ function Dashboard() {
         <ContactPreview
           title="Latest Contacts"
           data={latestContact}
-          bg_color="#fff"
-          shadow="0px 4px 4px #00000005"
+          variant={1}
+          //shadow="0px 4px 4px #00000005"
         />
       )}
     </MainContainer>

@@ -95,7 +95,7 @@ export const usersSlice = createSlice({
         const index = state.users.findIndex(
           (user) => user.id === action.payload.id
         );
-        if (index > 0) state.users.splice(index, 1);
+        if (index !== -1) state.users.splice(index, 1);
       });
   },
 });

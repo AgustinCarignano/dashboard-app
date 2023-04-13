@@ -1,11 +1,11 @@
-import React, { useEffect, useState } from "react";
+import React, { useContext, useEffect, useState } from "react";
 import { useSelector, useDispatch } from "react-redux";
 import {
   getAllContacts,
+  updateContact,
   selectContacts,
   selectIsLoading,
 } from "./contactSlice.js";
-import { getAllData } from "../../mockService/service";
 import Button from "../../components/Button";
 import ContactPreview from "../../components/ContactPreview";
 import MainContainer from "../../components/MainContainer";
@@ -14,26 +14,22 @@ import Table from "../../components/Table";
 import { formatDate } from "../../utils";
 import { RowDataSmaller } from "../../components/Table";
 import Loader from "../../components/Loader.jsx";
+import { themeContext } from "../../context/ThemeContext.jsx";
 
 function Contact() {
-  const data = useSelector(selectContacts);
+  const data = useSelector(selectContacts) || [];
   const isLoadingData = useSelector(selectIsLoading);
   const dispatch = useDispatch();
-  //const [data, setData] = useState([]);
   const [dataToRender, setDataToRender] = useState([]);
+  const [previewData, setPreviewData] = useState([]);
   const [activeTab, setActiveTab] = useState("All Contacts");
+  const { theme } = useContext(themeContext);
   const tabs = ["All Contacts", "Archived"];
-
-  /* async function getData() {
-    const newData = await getAllData("contact_data.json");
-    setData(newData);
-  } */
 
   function handleAction(id, type) {
     const copyOfData = structuredClone(data);
     const item = copyOfData.find((el) => el.id === id);
     item.archived = type === "archived";
-    //setData(copyOfData);
   }
 
   const tableHeader = [
@@ -50,7 +46,7 @@ function Contact() {
         <td>
           <div>
             <p>{contactDate}</p>
-            <RowDataSmaller>#{item.id}</RowDataSmaller>
+            <RowDataSmaller theme={theme}>#{item.id}</RowDataSmaller>
           </div>
         </td>
         <td>
@@ -72,6 +68,16 @@ function Contact() {
                   : item.message
               }
               previewStyle={{ cursor: "Pointer" }}
+              changeToOpen={
+                !item.read &&
+                (() =>
+                  dispatch(
+                    updateContact({
+                      body: { read: !item.read },
+                      id: item.id,
+                    })
+                  ))
+              }
             />
           </div>
         </td>
@@ -79,14 +85,28 @@ function Contact() {
           {item.archived ? (
             <Button
               variant={1}
-              onClick={() => handleAction(item.id, "restore")}
+              onClick={() =>
+                dispatch(
+                  updateContact({
+                    body: { archived: !item.archived },
+                    id: item.id,
+                  })
+                )
+              }
             >
               RESTORE
             </Button>
           ) : (
             <Button
               variant={7}
-              onClick={() => handleAction(item.id, "archived")}
+              onClick={() =>
+                dispatch(
+                  updateContact({
+                    body: { archived: !item.archived },
+                    id: item.id,
+                  })
+                )
+              }
             >
               ARCHIVE
             </Button>
@@ -97,6 +117,30 @@ function Contact() {
   };
 
   useEffect(() => {
+    const orderedList = data
+      .map((item) => item)
+      .sort((a, b) => {
+        if (a["date"] > b["date"]) return 1;
+        else if (a["date"] < b["date"]) return -1;
+        else return 0;
+      });
+    setPreviewData(orderedList);
+  }, [data]);
+
+  useEffect(() => {
+    const copyOfData = structuredClone(data);
+    const filterData =
+      activeTab === "Archived"
+        ? copyOfData.filter((item) => item.archived)
+        : copyOfData;
+    filterData.sort((a, b) => {
+      if (a["date"] > b["date"]) return 1;
+      else if (a["date"] < b["date"]) return -1;
+      else return 0;
+    });
+    setDataToRender(filterData);
+  }, [activeTab, data]);
+  /* useEffect(() => {
     const copyOfData = structuredClone(data);
     const filterData =
       activeTab === "Archived"
@@ -108,10 +152,9 @@ function Contact() {
       else return 0;
     });
     setDataToRender(filterData);
-  }, [activeTab, data]);
+  }, [activeTab, data]); */
 
   useEffect(() => {
-    //getData();
     dispatch(getAllContacts());
   }, []);
 
@@ -121,7 +164,7 @@ function Contact() {
         <Loader />
       ) : (
         <>
-          <ContactPreview data={data} bg_color="none" shadow={false} />
+          <ContactPreview data={previewData} />
           <Table
             data={dataToRender}
             option="contact"

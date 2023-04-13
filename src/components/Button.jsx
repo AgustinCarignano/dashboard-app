@@ -1,57 +1,92 @@
 import styled from "styled-components";
+import { useContext } from "react";
+import { themeContext } from "../context/ThemeContext";
 
-const colorOptions = {
-  1: {
-    background: "#135846",
-    color: "#FFF",
-    border: "solid 1px #135846",
-  },
-  2: {
-    background: "#EBF1EF",
-    color: "#135846",
-    border: "solid 1px #EBF1EF",
-  },
-  3: {
-    background: "#EEF9F2",
-    color: "#212121",
-    border: "solid 1px #EEF9F2",
-  },
-  4: {
-    background: "#fff",
-    color: "#799283",
-    border: "solid 1px #799283",
-  },
-  5: {
-    background: "#FFFFFF",
-    color: "#135846",
-    border: "solid 1px #135846",
-  },
-  6: {
-    background: "#5AD07A",
-    color: "#FFFFFF",
-    border: "solid 1px #5AD07A",
-  },
-  7: {
-    background: "#E23428",
-    color: "#FFFFFF",
-    border: "solid 1px #E23428",
-  },
-  8: {
-    background: "#FF9C3A",
-    color: "#FFFFFF",
-    border: "solid 1px #FF9C3A",
-  },
-};
-
-const Button = styled.button`
-  color: ${(props) => colorOptions[props.variant].color};
-  background-color: ${(props) => colorOptions[props.variant].background};
-  border: ${(props) => colorOptions[props.variant].border};
+const MyButton = styled.button`
+  color: ${(props) => props.color};
+  background-color: ${(props) => props.background};
+  border: ${(props) => props.border};
   font: normal 600 14px/21px "Poppins", sans-serif;
   text-align: center;
   padding: 13px 35px;
   border-radius: 12px;
   cursor: pointer;
 `;
+/* const MyButton = styled.button`
+  color: ${(props) => variantsOption[props.variant].color};
+  background-color: ${(props) => variantsOption[props.variant].background};
+  border: ${(props) => variantsOption[props.variant].border};
+  font: normal 600 14px/21px "Poppins", sans-serif;
+  text-align: center;
+  padding: 13px 35px;
+  border-radius: 12px;
+  cursor: pointer;
+`; */
 
-export default Button;
+export default function Button({ variant, children, onClick, value, name }) {
+  const { theme } = useContext(themeContext);
+
+  const variantsOption = {
+    1: {
+      background: theme[15],
+      color: theme[25],
+      border: `solid 1px ${theme[15]}`,
+    },
+    2: {
+      background: theme[3],
+      color: theme[27],
+      border: `solid 1px ${theme[3]}`,
+    },
+    3: {
+      background: theme[5],
+      color: theme[19],
+      border: `solid 1px ${theme[5]}`,
+    },
+    4: {
+      background: "transparent",
+      color: theme[12],
+      border: `solid 1px ${theme[12]}`,
+    },
+    5: {
+      background: theme[1],
+      color: theme[15],
+      border: `solid 1px ${theme[15]}`,
+    },
+    6: {
+      background: theme[14],
+      color: theme[25],
+      border: `solid 1px ${theme[14]}`,
+    },
+    7: {
+      background: theme[11],
+      color: theme[25],
+      border: `solid 1px ${theme[11]}`,
+    },
+    8: {
+      background: theme[16],
+      color: theme[25],
+      border: `solid 1px ${theme[16]}`,
+    },
+    9: {
+      background: "transparent",
+      color: theme[14],
+      border: `solid 1px transparent`,
+    },
+    10: {
+      background: "transparent",
+      color: theme[11],
+      border: `solid 1px transparent`,
+    },
+  };
+
+  return (
+    <MyButton
+      onClick={onClick}
+      name={name}
+      value={value}
+      {...variantsOption[variant]}
+    >
+      {children}
+    </MyButton>
+  );
+}

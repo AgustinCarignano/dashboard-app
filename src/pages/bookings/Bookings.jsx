@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useContext, useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import MainContainer from "../../components/MainContainer";
 import Table, { RowContainer } from "../../components/Table";
@@ -18,6 +18,8 @@ import {
   deleteBooking,
 } from "./bookingSlice";
 import Loader from "../../components/Loader";
+import DeleteItem from "../../components/DeleteItem";
+import { themeContext } from "../../context/ThemeContext";
 
 const availableStates = {
   "Check In": 6,
@@ -29,15 +31,18 @@ function Bookings() {
   const data = useSelector(selectBookings);
   const isLoadingData = useSelector(selectIsLoading);
   const dispatch = useDispatch();
+  const [showConfirm, setShowConfirm] = useState(false);
+  const [itemToDelete, setItemToDelete] = useState("");
   const [orderedData, setOrderedData] = useState([]);
   const [activeTab, setActiveTab] = useState("All Bookings");
   const [searchTerms, setSearchTerms] = useState("");
+  const { theme } = useContext(themeContext);
   const navigate = useNavigate();
   const tabs = ["All Bookings", "Checking In", "Checking Out", "In Progress"];
 
   const optionsMenu = [
     {
-      label: "View Details",
+      label: "Details",
       action: (itemId) => navigate(`/dashboard-app/bookings/${itemId}`),
     },
     {
@@ -46,7 +51,10 @@ function Bookings() {
     },
     {
       label: "Delete",
-      action: (itemId) => dispatch(deleteBooking(itemId)),
+      action: (itemId) => {
+        setItemToDelete(itemId);
+        setShowConfirm(true);
+      },
     },
   ];
 
@@ -68,7 +76,7 @@ function Bookings() {
       <>
         <td onClick={() => handleRedirect(item.id)}>
           <RowDataBigger>{item.guest}</RowDataBigger>
-          <RowDataSmaller>#{item.id}</RowDataSmaller>
+          <RowDataSmaller theme={theme}>#{item.id}</RowDataSmaller>
         </td>
         <td>
           <p>{orderDate}</p>
@@ -94,10 +102,13 @@ function Bookings() {
         <td>{item.roomType}</td>
         <td>
           <RowContainer justify="space-between">
-            <Button variant={availableStates[item.status]}>
+            <Button
+              variant={availableStates[item.status]}
+              style={{ width: "100%" }}
+            >
               {item.status}
             </Button>
-            {/* <Popup
+            <Popup
               options={optionsMenu}
               itemId={item.id}
               preview={
@@ -107,7 +118,7 @@ function Bookings() {
                   size="xl"
                 />
               }
-            /> */}
+            />
           </RowContainer>
         </td>
       </>
@@ -136,6 +147,11 @@ function Bookings() {
   function handleRedirect(id) {
     const path = `/dashboard-app/bookings/${id}`;
     navigate(path);
+  }
+
+  function handleDeleteItem() {
+    dispatch(deleteBooking(itemToDelete));
+    setShowConfirm(false);
   }
 
   useEffect(() => {
@@ -168,6 +184,12 @@ function Bookings() {
           newBtn="New Booking"
           newestAction={() => setActiveTab("All Bookings")}
           paginate={true}
+        />
+      )}
+      {showConfirm && (
+        <DeleteItem
+          handleClose={() => setShowConfirm((prev) => !prev)}
+          handleDelete={handleDeleteItem}
         />
       )}
     </MainContainer>

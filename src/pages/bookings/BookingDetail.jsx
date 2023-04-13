@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useContext, useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import { useSelector, useDispatch } from "react-redux";
 import MainContainer from "../../components/MainContainer.jsx";
@@ -38,6 +38,7 @@ import {
 } from "../../components/DetailComponents.jsx";
 import Popup from "../../components/Popup.jsx";
 import DeleteItem from "../../components/DeleteItem.jsx";
+import { themeContext } from "../../context/ThemeContext.jsx";
 
 function BookingDetail() {
   const [showConfirm, setShowConfirm] = useState(false);
@@ -45,9 +46,11 @@ function BookingDetail() {
   const isLoadingBookingData = useSelector(loadingBookingData);
   const room = useSelector(selectRoomDetails);
   const isLoadingRoomData = useSelector(loadingRoomData);
+  const { theme } = useContext(themeContext);
   const dispatch = useDispatch();
   const { id } = useParams();
   const navigate = useNavigate();
+  const tabSpace = "\u00A0\u00A0";
 
   const amenitites = [
     "3 Bed Space",
@@ -74,9 +77,14 @@ function BookingDetail() {
     },
   ];
 
-  function handleDeleteItem() {
-    dispatch(deleteBooking(item.id));
-    navigate(`/dashboard-app/bookings`);
+  async function handleDeleteItem() {
+    try {
+      await dispatch(deleteBooking(item.id)).unwrap();
+      navigate(`/dashboard-app/bookings`);
+    } catch (error) {
+      setShowConfirm(false);
+      console.log("there has been an error", error);
+    }
   }
 
   useEffect(() => {
@@ -93,41 +101,41 @@ function BookingDetail() {
       {isLoadingBookingData ? (
         <Loader />
       ) : (
-        <ItemContainer>
+        <ItemContainer theme={theme}>
           <LeftColumn>
             <PrimaryContainer>
-              <DetailHeader>
+              <DetailHeader theme={theme}>
                 <h1>{item.guest}</h1>
                 <p>ID {item.id}</p>
               </DetailHeader>
             </PrimaryContainer>
-            <SecondaryContainer border={true} padding={true}>
+            <SecondaryContainer border={true} padding={true} theme={theme}>
               <div>
-                <Subtitle>Check In</Subtitle>
-                <DetailSmaller>
+                <Subtitle theme={theme}>Check In</Subtitle>
+                <DetailSmaller theme={theme}>
                   {checkInDate} | {checkInTime}
                 </DetailSmaller>
               </div>
               <div>
-                <Subtitle>Check Out</Subtitle>
-                <DetailSmaller>{checkOutDate}</DetailSmaller>
+                <Subtitle theme={theme}>Check Out</Subtitle>
+                <DetailSmaller theme={theme}>{checkOutDate}</DetailSmaller>
               </div>
             </SecondaryContainer>
-            <SecondaryContainer border={false} padding={false}>
+            <SecondaryContainer border={false} padding={false} theme={theme}>
               <div>
-                <Subtitle>Rooms Info</Subtitle>
-                <DetailBigger>{item.roomNumber}</DetailBigger>
+                <Subtitle theme={theme}>Rooms Info</Subtitle>
+                <DetailBigger theme={theme}>{item.roomNumber}</DetailBigger>
               </div>
               <div>
-                <Subtitle>Price</Subtitle>
-                <DetailBigger>$875</DetailBigger>
+                <Subtitle theme={theme}>Price</Subtitle>
+                <DetailBigger theme={theme}>$875</DetailBigger>
               </div>
             </SecondaryContainer>
             {item.specialRequest && (
-              <TextContent>{item.specialRequest}</TextContent>
+              <TextContent theme={theme}>{item.specialRequest}</TextContent>
             )}
             <div>
-              <Subtitle>Amenities</Subtitle>
+              <Subtitle theme={theme}>Amenities</Subtitle>
               <AmenitiesContainer>
                 {amenitites.map((item, index) => (
                   <Button variant={2} key={index}>
@@ -141,22 +149,25 @@ function BookingDetail() {
                 preview={
                   <Button variant={5} style={{ fontSize: "20px" }}>
                     <FontAwesomeIcon icon={faPenToSquare} />
-                    Actions
+                    {tabSpace} Actions {tabSpace}
                   </Button>
                 }
                 options={optionsMenu}
                 itemId={item.id}
+                withArrow
               />
             </EditBtn>
           </LeftColumn>
-          {!isLoadingRoomData && (
-            <RightColumn justify="normal">
+          {room.photos && !isLoadingRoomData && (
+            <RightColumn justify="normal" theme={theme}>
               <Slider photos={room.photos} />
               <RoomInfoContainer>
-                <DetailBigger>{room.roomType}</DetailBigger>
-                <TextContent>{room.description}</TextContent>
+                <DetailBigger theme={theme}>{room.roomType}</DetailBigger>
+                <TextContent theme={theme}>{room.description}</TextContent>
               </RoomInfoContainer>
-              <BookingStatus>{item.status.toUpperCase()}</BookingStatus>
+              <BookingStatus theme={theme}>
+                {item.status.toUpperCase()}
+              </BookingStatus>
             </RightColumn>
           )}
         </ItemContainer>

@@ -3,6 +3,8 @@ import { ModalContainer, ModalWindow } from "./Modal";
 import Button from "./Button";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faXmark } from "@fortawesome/free-solid-svg-icons";
+import { useContext } from "react";
+import { themeContext } from "../context/ThemeContext";
 
 const BtnContainer = styled.div`
   display: flex;
@@ -11,9 +13,10 @@ const BtnContainer = styled.div`
 `;
 
 function DeleteItem({ handleClose, handleDelete }) {
+  const { theme } = useContext(themeContext);
   return (
-    <ModalContainer>
-      <ModalWindow id="modalDeleteWindow">
+    <ModalContainer theme={theme}>
+      <ModalWindow id="modalDeleteWindow" theme={theme}>
         <FontAwesomeIcon icon={faXmark} size="lg" onClick={handleClose} />
         <h3>Do you really want to delete this item?</h3>
         <BtnContainer>

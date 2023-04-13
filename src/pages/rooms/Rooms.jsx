@@ -1,7 +1,12 @@
-import React, { useEffect, useState } from "react";
+import React, { useContext, useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { useSelector, useDispatch } from "react-redux";
-import { selectRooms, selectIsLoading, getRoomsData } from "./roomSlice";
+import {
+  selectRooms,
+  selectIsLoading,
+  getRoomsData,
+  deleteRoom,
+} from "./roomSlice";
 import { getAllData } from "../../mockService/service";
 import Button from "../../components/Button";
 import MainContainer from "../../components/MainContainer";
@@ -11,6 +16,11 @@ import Table, {
   RowDataSmaller,
 } from "../../components/Table";
 import Loader from "../../components/Loader";
+import Popup from "../../components/Popup.jsx";
+import DeleteItem from "../../components/DeleteItem.jsx";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faEllipsisVertical } from "@fortawesome/free-solid-svg-icons";
+import { themeContext } from "../../context/ThemeContext";
 
 const availableStates = {
   Available: 6,
@@ -21,18 +31,33 @@ function Rooms() {
   const data = useSelector(selectRooms);
   const isLoadingData = useSelector(selectIsLoading);
   const dispatch = useDispatch();
-  //const [data, setData] = useState([]);
+  const [showConfirm, setShowConfirm] = useState(false);
+  const [itemToDelete, setItemToDelete] = useState("");
   const [dataToRender, setDataToRender] = useState([]);
   const [activeTab, setActiveTab] = useState("All Rooms");
   const [orderBy, setOrderBy] = useState("roomNumber");
   const [ascPrice, setAscPrice] = useState(false);
+  const { theme } = useContext(themeContext);
   const navigate = useNavigate();
   const tabs = ["All Rooms", "Availables"];
 
-  function handleRedirect(id) {
-    const path = `/dashboard-app/rooms/${id}`;
-    navigate(path);
-  }
+  const optionsMenu = [
+    {
+      label: "Details",
+      action: (itemId) => navigate(`/dashboard-app/rooms/${itemId}`),
+    },
+    {
+      label: "Edit",
+      action: (itemId) => navigate(`/dashboard-app/rooms/update/${itemId}`),
+    },
+    {
+      label: "Delete",
+      action: (itemId) => {
+        setItemToDelete(itemId);
+        setShowConfirm(true);
+      },
+    },
+  ];
 
   const tableHeader = [
     { label: "Room", action: () => setOrderBy("roomNumber") },
@@ -52,6 +77,16 @@ function Rooms() {
     },
   ];
 
+  function handleRedirect(id) {
+    const path = `/dashboard-app/rooms/${id}`;
+    navigate(path);
+  }
+
+  function handleDeleteItem() {
+    dispatch(deleteRoom(itemToDelete));
+    setShowConfirm(false);
+  }
+
   const rowsToRender = (item) => {
     return (
       <>
@@ -65,7 +100,7 @@ function Rooms() {
             </ImgRowContainer>
             <div>
               <p>{item.roomNumber}</p>
-              <RowDataSmaller>#{item.id}</RowDataSmaller>
+              <RowDataSmaller theme={theme}>#{item.id}</RowDataSmaller>
             </div>
           </RowContainer>
         </td>
@@ -83,16 +118,29 @@ function Rooms() {
             : item.price}
         </td>
         <td>
-          <Button variant={availableStates[item.status]}>{item.status}</Button>
+          <RowContainer justify="space-between">
+            <Button
+              variant={availableStates[item.status]}
+              style={{ width: "100%" }}
+            >
+              {item.status}
+            </Button>
+            <Popup
+              options={optionsMenu}
+              itemId={item.id}
+              preview={
+                <FontAwesomeIcon
+                  color="#6E6E6E"
+                  icon={faEllipsisVertical}
+                  size="xl"
+                />
+              }
+            />
+          </RowContainer>
         </td>
       </>
     );
   };
-
-  /* async function getData() {
-    const newData = await getAllData("rooms_data.json");
-    setData(newData);
-  } */
 
   useEffect(() => {
     const newData = structuredClone(data);
@@ -114,7 +162,6 @@ function Rooms() {
   }, [activeTab, data, orderBy, ascPrice]);
 
   useEffect(() => {
-    //getData();
     dispatch(getRoomsData());
   }, []);
 
@@ -133,6 +180,12 @@ function Rooms() {
           rows={rowsToRender}
           newBtn="New Room"
           paginate={true}
+        />
+      )}
+      {showConfirm && (
+        <DeleteItem
+          handleClose={() => setShowConfirm((prev) => !prev)}
+          handleDelete={handleDeleteItem}
         />
       )}
     </MainContainer>

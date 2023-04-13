@@ -1,8 +1,7 @@
-import React, { useContext, useEffect, useState } from "react";
+import React, { useContext, useState } from "react";
 import styled from "styled-components";
-import { useLocation, useNavigate, Link } from "react-router-dom";
+import { useLocation, Link } from "react-router-dom";
 import { loginContext } from "../context/LoginContext";
-import { getItemData } from "../mockService/service";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
   faArrowRightToBracket,
@@ -14,19 +13,21 @@ import {
   faHeart,
 } from "@fortawesome/free-solid-svg-icons";
 import Button from "./Button";
-import Modal from "./Modal";
 import { Input } from "./FormComponents";
+import { themeContext } from "../context/ThemeContext";
 
 const StyledAside = styled.aside`
   grid-area: aside;
   padding-top: 20px;
-  background-color: #fff;
+  /* background-color: #fff; */
+  background-color: ${(props) => props.theme[1]};
   display: flex;
   flex-direction: column;
   align-items: center;
   gap: 30px;
   height: 100%;
-  box-shadow: 13px 3px 40px #00000005;
+  z-index: 10;
+  box-shadow: 13px 3px 40px ${(props) => props.theme[20]};
   transform: translateX(${(props) => (props.show ? "0px" : "-400px")});
 `;
 
@@ -36,11 +37,14 @@ const LinkContainer = styled.div`
   padding: 10px 56px;
   width: 100%;
   align-items: center;
-  font: normal ${(props) => (props.active ? "600" : "400")} 18px/27px Poppins,
+  font: normal ${(props) => (props.active ? "600" : "400")} 18px/27px "Poppins",
     sans-serif;
-  color: ${(props) => (props.active ? "#e23428" : "#799283")};
+  /* color: ${(props) => (props.active ? "#e23428" : "#799283")};
   border-left: ${(props) =>
-    props.active ? "solid 5px #e23428" : "solid 5px #fff"};
+    props.active ? "solid 5px #e23428" : "solid 5px #fff"}; */
+  color: ${(props) => (props.active ? props.theme[11] : props.theme[12])};
+  border-left: solid 5px
+    ${(props) => (props.active ? props.theme[11] : props.theme[1])};
   p {
     transition: transform 0.3s;
   }
@@ -55,7 +59,8 @@ const UserCard = styled.div`
   flex-direction: column;
   text-align: center;
   padding: 24px;
-  box-shadow: 0px 20px 30px #00000014;
+  /* box-shadow: 0px 20px 30px #00000014; */
+  box-shadow: 0px 20px 30px ${(props) => props.theme[18]};
   border-radius: 18px;
   margin: 60px 0;
   width: 60%;
@@ -80,12 +85,14 @@ const Credits = styled.div`
   margin-top: auto;
   h3 {
     font: normal 600 16px/25px Poppins, sans-serif;
-    color: #212121;
+    /* color: #212121; */
+    color: ${(props) => props.theme[19]};
     margin: 0;
   }
   p {
     font: normal 300 14px/21px Poppins, sans-serif;
-    color: #799283;
+    /* color: #799283; */
+    color: ${(props) => props.theme[12]};
     margin: 0 0 65px;
   }
 `;
@@ -105,6 +112,7 @@ function Aside(props) {
   const [userEmail, setUserEmail] = useState(state.email);
   const { pathname } = useLocation();
   const pathArray = pathname.split("/");
+  const { theme } = useContext(themeContext);
 
   function handleUpdating() {
     setUpdating((prev) => !prev);
@@ -121,12 +129,20 @@ function Aside(props) {
   }
 
   return (
-    <StyledAside show={sidebarVisibility}>
+    <StyledAside show={sidebarVisibility} theme={theme}>
       <Logo>
-        <img src="https://i.imgur.com/WlUcHWA.png" alt="logo" />
+        {theme[1] === "#ffffff" ? (
+          <img src="https://i.imgur.com/WlUcHWA.png" alt="logo" />
+        ) : (
+          <img src="https://i.imgur.com/fj3gwNn.png" alt="logo" />
+        )}
       </Logo>
       {!state.auth ? (
-        <LinkContainer active={true} style={{ marginBottom: "100%" }}>
+        <LinkContainer
+          active={true}
+          theme={theme}
+          style={{ marginBottom: "100%" }}
+        >
           <FontAwesomeIcon icon={faArrowRightToBracket} />
           <Link to="dashboard-app/login">
             <p>Login</p>
@@ -134,37 +150,37 @@ function Aside(props) {
         </LinkContainer>
       ) : (
         <>
-          <LinkContainer active={pathArray[2] === ""}>
+          <LinkContainer active={pathArray[2] === ""} theme={theme}>
             <FontAwesomeIcon icon={faTableColumns} />
             <Link to="dashboard-app/">
               <p>Dashboard</p>
             </Link>
           </LinkContainer>
-          <LinkContainer active={pathArray[2] === "bookings"}>
+          <LinkContainer active={pathArray[2] === "bookings"} theme={theme}>
             <FontAwesomeIcon icon={faCalendarCheck} />
             <Link to="dashboard-app/bookings">
               <p>Bookings</p>
             </Link>
           </LinkContainer>
-          <LinkContainer active={pathArray[2] === "rooms"}>
+          <LinkContainer active={pathArray[2] === "rooms"} theme={theme}>
             <FontAwesomeIcon icon={faKey} />
             <Link to="dashboard-app/rooms">
               <p>Rooms</p>
             </Link>
           </LinkContainer>
-          <LinkContainer active={pathArray[2] === "contact"}>
+          <LinkContainer active={pathArray[2] === "contact"} theme={theme}>
             <FontAwesomeIcon icon={faMessage} />
             <Link to="dashboard-app/contact">
               <p>Contact</p>
             </Link>
           </LinkContainer>
-          <LinkContainer active={pathArray[2] === "users"}>
+          <LinkContainer active={pathArray[2] === "users"} theme={theme}>
             <FontAwesomeIcon icon={faUser} />
             <Link to="dashboard-app/users">
               <p>Users</p>
             </Link>
           </LinkContainer>
-          <UserCard>
+          <UserCard theme={theme}>
             <img src={state.photo} alt="" />
             {updating ? (
               <>
@@ -194,7 +210,7 @@ function Aside(props) {
           </UserCard>
         </>
       )}
-      <Credits>
+      <Credits theme={theme}>
         <h3>Travle Hotel Admin Dashboard</h3>
         <p>©2023 All Right Reserved</p>
         <p>

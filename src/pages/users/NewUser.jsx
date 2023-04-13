@@ -1,6 +1,6 @@
-import React, { useEffect, useState } from "react";
+import React, { useContext, useEffect, useState } from "react";
 import bcryprt from "bcryptjs";
-import { useParams } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import { getItemData } from "../../mockService/service";
 import Button from "../../components/Button";
 import MainContainer from "../../components/MainContainer";
@@ -17,6 +17,9 @@ import {
   Submit,
 } from "../../components/FormComponents";
 import { formatDate } from "../../utils";
+import { themeContext } from "../../context/ThemeContext";
+import { useDispatch } from "react-redux";
+import { createUser, updateUser } from "./usersSlice";
 
 const availableRoles = [
   "(Select one role)",
@@ -40,7 +43,10 @@ const initialState = {
 function NewUser() {
   const [newUser, setNewUser] = useState(initialState);
   const [verifyPass, setVerifyPass] = useState("");
+  const { theme } = useContext(themeContext);
   const { id } = useParams();
+  const dispatch = useDispatch();
+  const navigate = useNavigate();
 
   function handleInputsChange(e) {
     const copyOfData = { ...newUser };
@@ -64,11 +70,28 @@ function NewUser() {
     return bcryprt.hashSync(password, salt);
   }
 
-  function handleOnSubmit(e) {
+  async function handleOnSubmit(e) {
     e.preventDefault();
     const copyOfData = { ...newUser };
     const correctForm = verifyForm(copyOfData);
     if (correctForm) {
+      copyOfData.startDate = new Date(copyOfData.startDate).getTime();
+      if (id) {
+        try {
+          await dispatch(updateUser({ body: copyOfData, id })).unwrap();
+          navigate(`dashboard-app/users/${id}`);
+        } catch (error) {
+          console.log("there has been an error", error);
+        }
+      } else {
+        dispatch(createUser(copyOfData));
+      }
+      setNewUser(initialState);
+      setVerifyPass("");
+    } else {
+      console.log("Something was wrong");
+    }
+    /* if (correctForm) {
       if (!id) {
         const randomNumber = Math.round(Math.random() * 10000);
         copyOfData.id = `newId-${randomNumber}`;
@@ -80,7 +103,7 @@ function NewUser() {
       setVerifyPass("");
     } else {
       console.log("Something was wrong");
-    }
+    } */
   }
 
   async function getUserData() {
@@ -97,29 +120,32 @@ function NewUser() {
 
   return (
     <MainContainer style={{ minHeight: "calc(100vh - 145px)" }}>
-      <Container>
-        <Title>{id ? "Edit User" : "New User"}</Title>
+      <Container theme={theme}>
+        <Title theme={theme}>{id ? "Edit User" : "New User"}</Title>
         <FormContainer>
           <Column>
             <Field>
-              <Label>Photo</Label>
+              <Label theme={theme}>Photo</Label>
               <Input
+                theme={theme}
                 name="photo"
                 value={newUser.photo}
                 onChange={handleInputsChange}
               />
             </Field>
             <Field>
-              <Label>Full Name</Label>
+              <Label theme={theme}>Full Name</Label>
               <Input
+                theme={theme}
                 name="fullName"
                 value={newUser.fullName}
                 onChange={handleInputsChange}
               />
             </Field>
             <Field>
-              <Label>Email Address</Label>
+              <Label theme={theme}>Email Address</Label>
               <Input
+                theme={theme}
                 type="email"
                 name="email"
                 value={newUser.email}
@@ -127,8 +153,9 @@ function NewUser() {
               />
             </Field>
             <Field>
-              <Label>Phone Number</Label>
+              <Label theme={theme}>Phone Number</Label>
               <Input
+                theme={theme}
                 name="contact"
                 value={newUser.contact}
                 onChange={handleInputsChange}
@@ -137,8 +164,9 @@ function NewUser() {
             {!id && (
               <>
                 <Field>
-                  <Label>Password</Label>
+                  <Label theme={theme}>Password</Label>
                   <Input
+                    theme={theme}
                     type="password"
                     name="password"
                     value={newUser.password}
@@ -146,8 +174,9 @@ function NewUser() {
                   />
                 </Field>
                 <Field>
-                  <Label>Repeat Password</Label>
+                  <Label theme={theme}>Repeat Password</Label>
                   <Input
+                    theme={theme}
                     type="password"
                     value={verifyPass}
                     onChange={(e) => setVerifyPass(e.target.value)}
@@ -158,8 +187,9 @@ function NewUser() {
           </Column>
           <Column>
             <Field>
-              <Label>Role</Label>
+              <Label theme={theme}>Role</Label>
               <Select
+                theme={theme}
                 name="role"
                 value={newUser.role}
                 onChange={handleInputsChange}
@@ -178,7 +208,7 @@ function NewUser() {
               </Select>
             </Field>
             <Field>
-              <Label>Status</Label>
+              <Label theme={theme}>Status</Label>
               <Button
                 variant={newUser.status === "ACTIVE" ? 1 : 4}
                 name="status"
@@ -197,8 +227,9 @@ function NewUser() {
               </Button>
             </Field>
             <Field>
-              <Label>Start Date</Label>
+              <Label theme={theme}>Start Date</Label>
               <Input
+                theme={theme}
                 name="startDate"
                 type="date"
                 value={newUser.startDate}
@@ -206,8 +237,9 @@ function NewUser() {
               />
             </Field>
             <Field>
-              <Label>Function Description</Label>
+              <Label theme={theme}>Function Description</Label>
               <TextArea
+                theme={theme}
                 name="description"
                 value={newUser.description}
                 onChange={handleInputsChange}

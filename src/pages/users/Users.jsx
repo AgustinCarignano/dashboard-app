@@ -1,8 +1,12 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useContext } from "react";
 import { useNavigate } from "react-router-dom";
 import { useSelector, useDispatch } from "react-redux";
-import { getUsersData, selectUsers, selectIsLoading } from "./usersSlice.js";
-import { getAllData } from "../../mockService/service";
+import {
+  getUsersData,
+  selectUsers,
+  selectIsLoading,
+  deleteUser,
+} from "./usersSlice.js";
 import Button from "../../components/Button";
 import MainContainer from "../../components/MainContainer";
 import Table, {
@@ -13,28 +17,48 @@ import Table, {
 import Modal from "../../components/Modal";
 import { formatDate } from "../../utils";
 import Loader from "../../components/Loader";
+import Popup from "../../components/Popup.jsx";
+import DeleteItem from "../../components/DeleteItem.jsx";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faEllipsisVertical } from "@fortawesome/free-solid-svg-icons";
+import { themeContext } from "../../context/ThemeContext.jsx";
 
 const availableStates = {
-  ACTIVE: 6,
-  INACTIVE: 7,
+  ACTIVE: 9,
+  INACTIVE: 10,
 };
 
 function Users() {
   const data = useSelector(selectUsers);
   const isLoadingData = useSelector(selectIsLoading);
   const dispatch = useDispatch();
-  //const [data, setData] = useState([]);
+  const [showConfirm, setShowConfirm] = useState(false);
+  const [itemToDelete, setItemToDelete] = useState("");
   const [modifydData, setModifydData] = useState([]);
   const [activeTab, setActiveTab] = useState("All Employee");
   const [orderBy, setOrderBy] = useState("startDate");
   const [searchTerms, setSearchTerms] = useState("");
+  const { theme } = useContext(themeContext);
   const navigate = useNavigate();
   const tabs = ["All Employee", "Active Employee", "Inactive Employee"];
 
-  function handleRedirect(id) {
-    const path = `/dashboard-app/users/${id}`;
-    navigate(path);
-  }
+  const optionsMenu = [
+    {
+      label: "Details",
+      action: (itemId) => navigate(`/dashboard-app/users/${itemId}`),
+    },
+    {
+      label: "Edit",
+      action: (itemId) => navigate(`/dashboard-app/users/update/${itemId}`),
+    },
+    {
+      label: "Delete",
+      action: (itemId) => {
+        setItemToDelete(itemId);
+        setShowConfirm(true);
+      },
+    },
+  ];
 
   const tableHeader = [
     { label: "Name", action: () => setOrderBy("fullName") },
@@ -43,6 +67,16 @@ function Users() {
     { label: "Contact" },
     { label: "Status" },
   ];
+
+  function handleRedirect(id) {
+    const path = `/dashboard-app/users/${id}`;
+    navigate(path);
+  }
+
+  function handleDeleteItem() {
+    dispatch(deleteUser(itemToDelete));
+    setShowConfirm(false);
+  }
 
   const rowsToRender = (item) => {
     const [userDate] = formatDate(item.startDate);
@@ -58,8 +92,8 @@ function Users() {
             </ImgRowContainer>
             <div>
               <p>{item.fullName}</p>
-              <RowDataSmaller>#{item.id}</RowDataSmaller>
-              <RowDataSmaller>{item.email}</RowDataSmaller>
+              <RowDataSmaller theme={theme}>#{item.id}</RowDataSmaller>
+              <RowDataSmaller theme={theme}>{item.email}</RowDataSmaller>
             </div>
           </RowContainer>
         </td>
@@ -77,16 +111,26 @@ function Users() {
         </td>
         <td>{item.contact}</td>
         <td>
-          <Button variant={availableStates[item.status]}>{item.status}</Button>
+          <RowContainer justify="space-between">
+            <Button variant={availableStates[item.status]}>
+              {item.status}
+            </Button>
+            <Popup
+              options={optionsMenu}
+              itemId={item.id}
+              preview={
+                <FontAwesomeIcon
+                  color="#6E6E6E"
+                  icon={faEllipsisVertical}
+                  size="xl"
+                />
+              }
+            />
+          </RowContainer>
         </td>
       </>
     );
   };
-
-  /* async function getData() {
-    const newData = await getAllData("users_data.json");
-    setData(newData);
-  } */
 
   useEffect(() => {
     const newData = structuredClone(data);
@@ -128,6 +172,12 @@ function Users() {
           newBtn="New User"
           //newestAction={() => setOrderBy("startDate")}
           paginate={true}
+        />
+      )}
+      {showConfirm && (
+        <DeleteItem
+          handleClose={() => setShowConfirm((prev) => !prev)}
+          handleDelete={handleDeleteItem}
         />
       )}
     </MainContainer>
