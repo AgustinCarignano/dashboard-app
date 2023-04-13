@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useContext } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import { useSelector, useDispatch } from "react-redux";
 import {
@@ -29,7 +29,6 @@ import {
 } from "../../components/DetailComponents.jsx";
 import Popup from "../../components/Popup.jsx";
 import DeleteItem from "../../components/DeleteItem.jsx";
-import { useContext } from "react";
 import { themeContext } from "../../context/ThemeContext.jsx";
 
 function RoomDetail() {
@@ -67,11 +66,11 @@ function RoomDetail() {
 
   useEffect(() => {
     dispatch(getRoomDetails(id));
-  }, []);
+  }, [dispatch, id]);
 
   return (
     <MainContainer>
-      {isLoadingData && item ? (
+      {isLoadingData || !item.photos ? (
         <Loader />
       ) : (
         <ItemContainer theme={theme}>

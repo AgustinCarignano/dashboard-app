@@ -1,6 +1,6 @@
 import React, { useContext, useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
-import { getItemData } from "../../mockService/service";
+import { useDispatch, useSelector } from "react-redux";
 import Button from "../../components/Button";
 import MainContainer from "../../components/MainContainer";
 import {
@@ -18,8 +18,12 @@ import {
   ExtraContainer,
 } from "../../components/FormComponents";
 import { themeContext } from "../../context/ThemeContext";
-import { useDispatch } from "react-redux";
-import { createRoom, updateRoom } from "./roomSlice";
+import {
+  createRoom,
+  getRoomDetails,
+  selectRoomDetails,
+  updateRoom,
+} from "./roomSlice";
 
 const availableAmenities = [
   "Air Conditioner",
@@ -55,6 +59,7 @@ const initialState = {
 
 function NewRoom() {
   const [newRoom, setNewRoom] = useState(initialState);
+  const roomData = useSelector(selectRoomDetails);
   const { id } = useParams();
   const { theme } = useContext(themeContext);
   const dispatch = useDispatch();
@@ -129,23 +134,25 @@ function NewRoom() {
         }
       } else {
         dispatch(createRoom(copyOfData));
+        setNewRoom(initialState);
       }
-      setNewRoom(initialState);
     } else {
       console.log("Something was wrong");
     }
   }
 
-  async function getRoomData() {
-    const data = await getItemData("rooms_data.json", id);
-    setNewRoom(data);
-  }
+  useEffect(() => {
+    if (id) {
+      const copyOfData = structuredClone(roomData);
+      setNewRoom(copyOfData);
+    }
+  }, [dispatch, id, roomData]);
 
   useEffect(() => {
     if (id) {
-      getRoomData();
+      dispatch(getRoomDetails(id));
     }
-  }, [id]);
+  }, [dispatch, id]);
 
   return (
     <MainContainer style={{ minHeight: "calc(100vh - 145px)" }}>

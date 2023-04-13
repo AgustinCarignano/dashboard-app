@@ -1,6 +1,8 @@
 import React, { useState, useEffect, useContext } from "react";
 import { useNavigate } from "react-router-dom";
 import { useSelector, useDispatch } from "react-redux";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faEllipsisVertical } from "@fortawesome/free-solid-svg-icons";
 import {
   getUsersData,
   selectUsers,
@@ -19,14 +21,7 @@ import { formatDate } from "../../utils";
 import Loader from "../../components/Loader";
 import Popup from "../../components/Popup.jsx";
 import DeleteItem from "../../components/DeleteItem.jsx";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faEllipsisVertical } from "@fortawesome/free-solid-svg-icons";
 import { themeContext } from "../../context/ThemeContext.jsx";
-
-const availableStates = {
-  ACTIVE: 9,
-  INACTIVE: 10,
-};
 
 function Users() {
   const data = useSelector(selectUsers);
@@ -80,56 +75,48 @@ function Users() {
 
   const rowsToRender = (item) => {
     const [userDate] = formatDate(item.startDate);
-    return (
-      <>
-        <td>
-          <RowContainer
-            justify="normal"
-            onClick={() => handleRedirect(item.id)}
-          >
-            <ImgRowContainer>
-              <img src={item.photo} alt="employee profile" />
-            </ImgRowContainer>
-            <div>
-              <p>{item.fullName}</p>
-              <RowDataSmaller theme={theme}>#{item.id}</RowDataSmaller>
-              <RowDataSmaller theme={theme}>{item.email}</RowDataSmaller>
-            </div>
-          </RowContainer>
-        </td>
-        <td>{userDate}</td>
-        <td>
-          <Modal
-            title="Description"
-            content={item.description}
+    return {
+      id: item.id,
+      rowData: [
+        <RowContainer justify="normal" onClick={() => handleRedirect(item.id)}>
+          <ImgRowContainer>
+            <img src={item.photo} alt="employee profile" />
+          </ImgRowContainer>
+          <div>
+            <p>{item.fullName}</p>
+            <RowDataSmaller theme={theme}>#{item.id}</RowDataSmaller>
+            <RowDataSmaller theme={theme}>{item.email}</RowDataSmaller>
+          </div>
+        </RowContainer>,
+        userDate,
+        <Modal
+          title="Description"
+          content={item.description}
+          preview={
+            item.description.length > 100
+              ? item.description.slice(0, 100) + "..."
+              : item.description
+          }
+        />,
+        item.contact,
+        <RowContainer justify="space-between">
+          <Button variant={item.status === "ACTIVE" ? 9 : 10}>
+            {item.status}
+          </Button>
+          <Popup
+            options={optionsMenu}
+            itemId={item.id}
             preview={
-              item.description.length > 100
-                ? item.description.slice(0, 100) + "..."
-                : item.description
+              <FontAwesomeIcon
+                color="#6E6E6E"
+                icon={faEllipsisVertical}
+                size="xl"
+              />
             }
           />
-        </td>
-        <td>{item.contact}</td>
-        <td>
-          <RowContainer justify="space-between">
-            <Button variant={availableStates[item.status]}>
-              {item.status}
-            </Button>
-            <Popup
-              options={optionsMenu}
-              itemId={item.id}
-              preview={
-                <FontAwesomeIcon
-                  color="#6E6E6E"
-                  icon={faEllipsisVertical}
-                  size="xl"
-                />
-              }
-            />
-          </RowContainer>
-        </td>
-      </>
-    );
+        </RowContainer>,
+      ],
+    };
   };
 
   useEffect(() => {
@@ -152,9 +139,8 @@ function Users() {
   }, [data, activeTab, orderBy, searchTerms]);
 
   useEffect(() => {
-    //getData();
     dispatch(getUsersData());
-  }, []);
+  }, [dispatch]);
   return (
     <MainContainer>
       {isLoadingData ? (
@@ -168,10 +154,11 @@ function Users() {
           activeTab={activeTab}
           setActiveTab={setActiveTab}
           setSearchTerms={setSearchTerms}
-          rows={rowsToRender}
+          rowsGenerator={rowsToRender}
           newBtn="New User"
           //newestAction={() => setOrderBy("startDate")}
           paginate={true}
+          draggableRow={false}
         />
       )}
       {showConfirm && (

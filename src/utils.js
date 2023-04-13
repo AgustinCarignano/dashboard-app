@@ -1,3 +1,5 @@
+import bcryprt from "bcryptjs";
+
 const months = {
   0: "Jan",
   1: "Feb",
@@ -44,4 +46,9 @@ export function generateId() {
     id += Math.floor(Math.random() * 10);
   }
   return id;
+}
+
+export function hashData(data) {
+  const salt = bcryprt.genSaltSync(10);
+  return bcryprt.hashSync(data, salt);
 }

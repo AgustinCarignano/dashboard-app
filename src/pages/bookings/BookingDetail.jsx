@@ -10,7 +10,6 @@ import { formatDate } from "../../utils.js";
 import {
   selectBookingDetail,
   selectIsLoading as loadingBookingData,
-  selectHasError,
   getBookingDetails,
   deleteBooking,
 } from "./bookingSlice.js";
@@ -89,12 +88,12 @@ function BookingDetail() {
 
   useEffect(() => {
     dispatch(getBookingDetails(id));
-  }, []);
+  }, [dispatch, id]);
 
   useEffect(() => {
     if (!item.roomId) return;
     dispatch(getRoomDetails(item.roomId));
-  }, [item]);
+  }, [item, dispatch]);
 
   return (
     <MainContainer>

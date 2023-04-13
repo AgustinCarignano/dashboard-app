@@ -1,6 +1,5 @@
 import React, { useContext, useState } from "react";
 import styled from "styled-components";
-import Button from "./Button";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
   faChevronRight,
@@ -19,7 +18,6 @@ const SliderContainer = styled.div`
 
 const ControlContainer = styled.div`
   background-color: ${(props) => props.theme[3]};
-  /* background-color: #fff; */
   width: 50px;
   height: 50px;
   padding: 15px;
@@ -32,7 +30,6 @@ const ControlContainer = styled.div`
   align-items: center;
   justify-content: center;
   color: ${(props) => props.theme[27]};
-  /* color: #135846; */
   cursor: pointer;
 `;
 
@@ -51,7 +48,7 @@ function Slider({ photos }) {
 
   return (
     <SliderContainer>
-      <img src={photos[index]} />
+      <img src={photos[index]} alt="hotel room" />
       <ControlContainer type="prev" theme={theme} onClick={showPrevPhoto}>
         <FontAwesomeIcon icon={faChevronLeft} size="lg" />
       </ControlContainer>

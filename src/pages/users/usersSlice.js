@@ -4,7 +4,7 @@ import {
   getItemData,
   delayFunction,
 } from "../../mockService/service.js";
-import { generateId } from "../../utils";
+import { generateId, hashData } from "../../utils";
 
 const initialState = {
   users: [],
@@ -28,7 +28,8 @@ export const getUserDetails = createAsyncThunk(
 
 export const createUser = createAsyncThunk("users/create", async (body) => {
   const id = generateId();
-  const data = await delayFunction({ ...body, id });
+  const hashedPassword = hashData(body.password);
+  const data = await delayFunction({ ...body, id, password: hashedPassword });
   return { data };
 });
 

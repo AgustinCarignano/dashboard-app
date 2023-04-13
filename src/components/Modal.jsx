@@ -47,6 +47,7 @@ export const ModalWindow = styled.div`
   svg {
     margin-left: 97.5%;
     cursor: pointer;
+    color: ${(props) => props.theme[19]};
   }
 `;
 

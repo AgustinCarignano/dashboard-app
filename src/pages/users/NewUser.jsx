@@ -1,7 +1,6 @@
 import React, { useContext, useEffect, useState } from "react";
-import bcryprt from "bcryptjs";
 import { useNavigate, useParams } from "react-router-dom";
-import { getItemData } from "../../mockService/service";
+import { useDispatch, useSelector } from "react-redux";
 import Button from "../../components/Button";
 import MainContainer from "../../components/MainContainer";
 import {
@@ -18,8 +17,12 @@ import {
 } from "../../components/FormComponents";
 import { formatDate } from "../../utils";
 import { themeContext } from "../../context/ThemeContext";
-import { useDispatch } from "react-redux";
-import { createUser, updateUser } from "./usersSlice";
+import {
+  createUser,
+  getUserDetails,
+  selectUserDetail,
+  updateUser,
+} from "./usersSlice";
 
 const availableRoles = [
   "(Select one role)",
@@ -43,6 +46,7 @@ const initialState = {
 function NewUser() {
   const [newUser, setNewUser] = useState(initialState);
   const [verifyPass, setVerifyPass] = useState("");
+  const userData = useSelector(selectUserDetail);
   const { theme } = useContext(themeContext);
   const { id } = useParams();
   const dispatch = useDispatch();
@@ -65,11 +69,6 @@ function NewUser() {
     return true;
   }
 
-  function hashPassword(password) {
-    const salt = bcryprt.genSaltSync(10);
-    return bcryprt.hashSync(password, salt);
-  }
-
   async function handleOnSubmit(e) {
     e.preventDefault();
     const copyOfData = { ...newUser };
@@ -85,38 +84,25 @@ function NewUser() {
         }
       } else {
         dispatch(createUser(copyOfData));
+        setNewUser(initialState);
+        setVerifyPass("");
       }
-      setNewUser(initialState);
-      setVerifyPass("");
     } else {
       console.log("Something was wrong");
     }
-    /* if (correctForm) {
-      if (!id) {
-        const randomNumber = Math.round(Math.random() * 10000);
-        copyOfData.id = `newId-${randomNumber}`;
-        copyOfData.password = hashPassword(copyOfData.password);
-      }
-      copyOfData.startDate = new Date(copyOfData.startDate).getTime();
-      console.log(copyOfData);
-      setNewUser(initialState);
-      setVerifyPass("");
-    } else {
-      console.log("Something was wrong");
-    } */
-  }
-
-  async function getUserData() {
-    const data = await getItemData("users_data.json", id);
-    data.startDate = formatDate(data.startDate)[2];
-    setNewUser(data);
   }
 
   useEffect(() => {
     if (id) {
-      getUserData();
+      setNewUser({ ...userData, startDate: formatDate(userData.startDate)[2] });
     }
-  }, []);
+  }, [userData, id]);
+
+  useEffect(() => {
+    if (id) {
+      dispatch(getUserDetails(id));
+    }
+  }, [dispatch, id]);
 
   return (
     <MainContainer style={{ minHeight: "calc(100vh - 145px)" }}>

@@ -75,6 +75,15 @@ const IconContainer = styled.div`
   }
 `;
 
+const TitleList = {
+  "": "Dashboard",
+  bookings: "Bookings",
+  rooms: "Rooms",
+  contact: "Contact",
+  users: "Users",
+  login: "Login",
+};
+
 function Header(props) {
   const { handleSidebarVisibility } = props;
   const { state, dispatch } = useContext(loginContext);
@@ -85,15 +94,6 @@ function Header(props) {
   const bookings = useSelector(selectBookings);
   const { pathname } = useLocation();
   const navigate = useNavigate();
-
-  const TitleList = {
-    "": "Dashboard",
-    bookings: "Bookings",
-    rooms: "Rooms",
-    contact: "Contact",
-    users: "Users",
-    login: "Login",
-  };
 
   function handleNavigate() {
     const path = `/dashboard-app/${pathArray[2]}/`;
@@ -122,7 +122,7 @@ function Header(props) {
 
   useEffect(() => {
     if (!state.auth) return;
-  }, []);
+  }, [state.auth]);
 
   return (
     <StyleHeader theme={theme}>
@@ -143,12 +143,20 @@ function Header(props) {
                 {TitleList[pathArray[2]]} /
               </BreadcrumbLink>
               <BreadcrumbLink theme={theme}> {breadcrumb}</BreadcrumbLink>
-              {/* {TitleList[pathArray[2]]} / <span>{breadcrumb}</span> */}
             </Breadcrumb>
           )}
         </TitleContainer>
       </Container>
-      {state.auth && (
+      {!state.auth ? (
+        <IconContainer theme={theme}>
+          <FontAwesomeIcon
+            icon={faCircleHalfStroke}
+            size="lg"
+            onClick={handleThemeChange}
+            style={{ cursor: "Pointer" }}
+          />
+        </IconContainer>
+      ) : (
         <Container>
           <IconContainer theme={theme}>
             <FontAwesomeIcon icon={faEnvelope} size="lg" />

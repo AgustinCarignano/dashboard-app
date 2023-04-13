@@ -1,10 +1,15 @@
-import React, { useState, useEffect, useContext } from "react";
+import React, { useState, useEffect, useContext, useCallback } from "react";
 import { useNavigate } from "react-router-dom";
 import styled from "styled-components";
+import update from "immutability-helper";
 import Button from "./Button";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faMagnifyingGlass } from "@fortawesome/free-solid-svg-icons";
 import { themeContext } from "../context/ThemeContext";
+import { DndProvider } from "react-dnd";
+import { HTML5Backend } from "react-dnd-html5-backend";
+import StaticRow from "./StaticRow";
+import DraggableRow from "./DraggableRow";
 
 const TableContainer = styled.div`
   display: flex;
@@ -22,17 +27,13 @@ const TabLinks = styled.div`
   grid-template-columns: ${(props) => `repeat(${props.columns},1fr)`};
   font: normal 400 16px/25px Poppins, sans-serif;
   color: ${(props) => props.theme[9]};
-  /* color: #6e6e6e; */
 `;
 const Link = styled.p`
   color: ${(props) => (props.active ? props.theme[15] : props.theme[9])};
-  /* color: ${(props) => (props.active ? "#135846" : "#6e6e6e")}; */
   border-bottom: ${(props) =>
     props.active
       ? `solid 2px ${props.theme[15]}`
       : `solid 1px ${props.theme[7]}`};
-  /* border-bottom: ${(props) =>
-    props.active ? "solid 2px #135846" : "solid 1px #6e6e6e8d"}; */
   padding: 13px 26px;
   cursor: pointer;
 `;
@@ -49,7 +50,6 @@ const Search = styled.input`
   font: normal 400 16px/25px Poppins, sans-serif;
   background-color: transparent;
   color: ${(props) => props.theme[9]};
-  /* color: #6e6e6e; */
 `;
 
 const BtnsContainer = styled.div`
@@ -63,10 +63,8 @@ const MyTable = styled.table`
   border-radius: 20px;
   font: normal 400 16px/25px Poppins, sans-serif;
   color: ${(props) => props.theme[17]};
-  /* color: #393939; */
   text-align: left;
   background-color: ${(props) => props.theme[1]};
-  /* background-color: #fff; */
   tr {
     transition: all 0.3s;
   }
@@ -81,11 +79,9 @@ const MyTable = styled.table`
     }
     tr:nth-child(odd) {
       background-color: ${(props) => props.theme[29]};
-      /* background-color: #fdfdfd; */
     }
     tr:hover {
       box-shadow: 0px 4px 30px ${(props) => props.theme[28]};
-      /* box-shadow: 0px 4px 30px #0000001a; */
     }
   }
 `;
@@ -106,7 +102,6 @@ export const RowDataBigger = styled.p`
 `;
 export const RowDataSmaller = styled.p`
   color: ${(props) => props.theme[12]};
-  /* color: #799283; */
   font-size: 14px;
   font-weight: 300;
 `;
@@ -124,7 +119,6 @@ const PaginateContainer = styled.div`
   width: 100%;
   font: normal 400 16px/25px Poppins, sans-serif;
   color: ${(props) => props.theme[17]};
-  /* color: #393939; */
   align-items: center;
 `;
 
@@ -145,27 +139,9 @@ const PaginateItem = styled.span`
   border-radius: 12px;
   background-color: ${(props) =>
     props.active ? props.theme[15] : props.theme[6]};
-  /* background-color: ${(props) => (props.active ? "#135846" : "#f5f5f5")}; */
   color: ${(props) => (props.active ? props.theme[25] : props.theme[9])};
-  /* color: ${(props) => (props.active ? "#ffffff" : "#393939")}; */
   cursor: pointer;
 `;
-
-const tableOptions = {
-  bookings: [
-    "Guest",
-    "Order Date",
-    "Check In",
-    "Check Out",
-    "Special Request",
-    "Room Type",
-    "Status",
-  ],
-  rooms: ["Room", "Room Type", "Amenities", "Price", "Offer Price", "Status"],
-  contact: ["Date & ID", "Customer Dates", "Subject & Comment", "Action"],
-  users: ["Name", "Start Date", "Description", "Contact", "Status"],
-  dashboard: ["Room", "Guest", "Check In", "Check Out"],
-};
 
 function Table(props) {
   const {
@@ -176,11 +152,13 @@ function Table(props) {
     activeTab,
     setActiveTab,
     setSearchTerms,
-    rows,
+    rowsGenerator,
     newBtn,
     newestAction,
     paginate,
+    draggableRow,
   } = props;
+  const [rows, setRows] = useState([]);
   const [dataToRender, setDataToRender] = useState([]);
   const [totalPages, setTotalPages] = useState(1);
   const [currentPage, setCurrentPage] = useState(1);
@@ -221,6 +199,38 @@ function Table(props) {
     setTotalPages(total);
     setPaginateBar(pages);
   }, [data, currentPage]);
+
+  useEffect(() => {
+    const rows = dataToRender.map((item) => rowsGenerator(item));
+    setRows(rows);
+  }, [dataToRender, rowsGenerator]);
+
+  const moveRow = useCallback((dragIndex, hoverIndex) => {
+    setRows((prevRows) =>
+      update(prevRows, {
+        $splice: [
+          [dragIndex, 1],
+          [hoverIndex, 0, prevRows[dragIndex]],
+        ],
+      })
+    );
+  }, []);
+
+  const renderRow = useCallback((row, index) => {
+    if (draggableRow) {
+      return (
+        <DraggableRow
+          key={row.id}
+          index={index}
+          id={row.id}
+          rowData={row.rowData}
+          moveRow={moveRow}
+        />
+      );
+    } else {
+      return <StaticRow key={row.id} rowData={row.rowData} />;
+    }
+  }, []);
 
   return (
     <TableContainer>
@@ -264,37 +274,23 @@ function Table(props) {
           </BtnsContainer>
         </TabList>
       )}
-      <MyTable theme={theme}>
-        <thead>
-          <tr>
-            {tableHeader.map((item, index) => (
-              <TableHeader
-                key={index}
-                onClick={item.action ? item.action : null}
-              >
-                {item.label}
-              </TableHeader>
-            ))}
-          </tr>
-        </thead>
-        <tbody>
-          {dataToRender.length > 0 &&
-            dataToRender.map((item, index) => {
-              return (
-                <tr
+      <DndProvider backend={HTML5Backend}>
+        <MyTable theme={theme}>
+          <thead>
+            <tr>
+              {tableHeader.map((item, index) => (
+                <TableHeader
                   key={index}
-                  style={
-                    option === "contact" && !item.read
-                      ? { fontWeight: "600" }
-                      : {}
-                  }
+                  onClick={item.action ? item.action : null}
                 >
-                  {rows(item)}
-                </tr>
-              );
-            })}
-        </tbody>
-      </MyTable>
+                  {item.label}
+                </TableHeader>
+              ))}
+            </tr>
+          </thead>
+          <tbody>{rows.map((row, i) => renderRow(row, i))}</tbody>
+        </MyTable>
+      </DndProvider>
       {paginate && (
         <PaginateContainer theme={theme}>
           <p>

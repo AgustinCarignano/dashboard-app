@@ -1,13 +1,14 @@
 import React, { useContext, useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { useSelector, useDispatch } from "react-redux";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faEllipsisVertical } from "@fortawesome/free-solid-svg-icons";
 import {
   selectRooms,
   selectIsLoading,
   getRoomsData,
   deleteRoom,
 } from "./roomSlice";
-import { getAllData } from "../../mockService/service";
 import Button from "../../components/Button";
 import MainContainer from "../../components/MainContainer";
 import Table, {
@@ -18,8 +19,6 @@ import Table, {
 import Loader from "../../components/Loader";
 import Popup from "../../components/Popup.jsx";
 import DeleteItem from "../../components/DeleteItem.jsx";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faEllipsisVertical } from "@fortawesome/free-solid-svg-icons";
 import { themeContext } from "../../context/ThemeContext";
 
 const availableStates = {
@@ -88,6 +87,54 @@ function Rooms() {
   }
 
   const rowsToRender = (item) => {
+    return {
+      id: item.id,
+      rowData: [
+        <RowContainer justify="normal" onClick={() => handleRedirect(item.id)}>
+          <ImgRowContainer>
+            <img src={item.photos[0]} alt="thumbnail" />
+          </ImgRowContainer>
+          <div>
+            <p>{item.roomNumber}</p>
+            <RowDataSmaller theme={theme}>#{item.id}</RowDataSmaller>
+          </div>
+        </RowContainer>,
+        item.roomType,
+        <div style={{ maxWidth: "375px" }}>
+          {item.amenities.map((el, i, arr) =>
+            i < arr.length - 1 ? `${el}, ` : `${el}.`
+          )}
+        </div>,
+        "$" + item.price,
+        <div>
+          $
+          {item.offer
+            ? item.price * (1 - parseInt(item.discount) / 100)
+            : item.price}
+        </div>,
+        <RowContainer justify="space-between">
+          <Button
+            variant={availableStates[item.status]}
+            style={{ width: "100%" }}
+          >
+            {item.status}
+          </Button>
+          <Popup
+            options={optionsMenu}
+            itemId={item.id}
+            preview={
+              <FontAwesomeIcon
+                color="#6E6E6E"
+                icon={faEllipsisVertical}
+                size="xl"
+              />
+            }
+          />
+        </RowContainer>,
+      ],
+    };
+  };
+  /*  const rowsToRender = (item) => {
     return (
       <>
         <td>
@@ -140,7 +187,7 @@ function Rooms() {
         </td>
       </>
     );
-  };
+  }; */
 
   useEffect(() => {
     const newData = structuredClone(data);
@@ -163,7 +210,7 @@ function Rooms() {
 
   useEffect(() => {
     dispatch(getRoomsData());
-  }, []);
+  }, [dispatch]);
 
   return (
     <MainContainer>
@@ -177,9 +224,10 @@ function Rooms() {
           tabs={tabs}
           activeTab={activeTab}
           setActiveTab={setActiveTab}
-          rows={rowsToRender}
+          rowsGenerator={rowsToRender}
           newBtn="New Room"
           paginate={true}
+          draggableRow={true}
         />
       )}
       {showConfirm && (

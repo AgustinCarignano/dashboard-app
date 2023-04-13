@@ -1,19 +1,21 @@
 import React, { useContext, useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
+import { useSelector, useDispatch } from "react-redux";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faEllipsisVertical } from "@fortawesome/free-solid-svg-icons";
 import MainContainer from "../../components/MainContainer";
-import Table, { RowContainer } from "../../components/Table";
+import Table, {
+  RowContainer,
+  RowDataBigger,
+  RowDataSmaller,
+} from "../../components/Table";
 import Button from "../../components/Button";
 import Modal from "../../components/Modal";
 import { formatDate } from "../../utils";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faEllipsisVertical } from "@fortawesome/free-solid-svg-icons";
-import { RowDataBigger, RowDataSmaller } from "../../components/Table";
 import Popup from "../../components/Popup";
-import { useSelector, useDispatch } from "react-redux";
 import {
   selectBookings,
   selectIsLoading,
-  selectHasError,
   getBookingsData,
   deleteBooking,
 } from "./bookingSlice";
@@ -72,57 +74,54 @@ function Bookings() {
     const [orderDate, orderTime] = formatDate(item.orderDate);
     const [checkInDate, checkInTime] = formatDate(item.checkIn);
     const [checkOutDate, checkOutTime] = formatDate(item.checkOut);
-    return (
-      <>
-        <td onClick={() => handleRedirect(item.id)}>
+    return {
+      id: item.id,
+      rowData: [
+        <div onClick={() => handleRedirect(item.id)}>
           <RowDataBigger>{item.guest}</RowDataBigger>
           <RowDataSmaller theme={theme}>#{item.id}</RowDataSmaller>
-        </td>
-        <td>
+        </div>,
+        <div>
           <p>{orderDate}</p>
           <p>{orderTime}</p>
-        </td>
-        <td>
+        </div>,
+        <div>
           <p>{checkInDate}</p>
           <p>{checkInTime}</p>
-        </td>
-        <td>
+        </div>,
+        <div>
           <p>{checkOutDate}</p>
           <p>{checkOutTime}</p>
-        </td>
-        <td>
-          <Modal
-            title={item.guest}
-            content={item.specialRequest}
+        </div>,
+        <Modal
+          title={item.guest}
+          content={item.specialRequest}
+          preview={
+            <Button variant={item.specialRequest ? 3 : 4}>View Notes</Button>
+          }
+        />,
+        item.roomType,
+        <RowContainer justify="space-between">
+          <Button
+            variant={availableStates[item.status]}
+            style={{ width: "100%" }}
+          >
+            {item.status}
+          </Button>
+          <Popup
+            options={optionsMenu}
+            itemId={item.id}
             preview={
-              <Button variant={item.specialRequest ? 3 : 4}>View Notes</Button>
+              <FontAwesomeIcon
+                color="#6E6E6E"
+                icon={faEllipsisVertical}
+                size="xl"
+              />
             }
           />
-        </td>
-        <td>{item.roomType}</td>
-        <td>
-          <RowContainer justify="space-between">
-            <Button
-              variant={availableStates[item.status]}
-              style={{ width: "100%" }}
-            >
-              {item.status}
-            </Button>
-            <Popup
-              options={optionsMenu}
-              itemId={item.id}
-              preview={
-                <FontAwesomeIcon
-                  color="#6E6E6E"
-                  icon={faEllipsisVertical}
-                  size="xl"
-                />
-              }
-            />
-          </RowContainer>
-        </td>
-      </>
-    );
+        </RowContainer>,
+      ],
+    };
   };
 
   function filterData(dataArr, tab) {
@@ -165,7 +164,7 @@ function Bookings() {
 
   useEffect(() => {
     dispatch(getBookingsData());
-  }, []);
+  }, [dispatch]);
 
   return (
     <MainContainer>
@@ -180,10 +179,11 @@ function Bookings() {
           activeTab={activeTab}
           setActiveTab={setActiveTab}
           setSearchTerms={setSearchTerms}
-          rows={rowsToRender}
+          rowsGenerator={rowsToRender}
           newBtn="New Booking"
           newestAction={() => setActiveTab("All Bookings")}
           paginate={true}
+          draggableRow={false}
         />
       )}
       {showConfirm && (

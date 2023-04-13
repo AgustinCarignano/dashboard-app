@@ -4,11 +4,12 @@ import { useNavigate } from "react-router-dom";
 import { loginContext } from "../../context/LoginContext";
 import { getItemData } from "../../mockService/service";
 import Button from "../../components/Button";
+import { themeContext } from "../../context/ThemeContext";
 
 const FormContainer = styled.div`
   width: 100%;
   min-height: calc(100vh - 145px);
-  background-color: #f8f8f8;
+  background-color: ${(props) => props.theme[2]};
   padding-top: 30px;
 `;
 
@@ -21,12 +22,12 @@ const Form = styled.form`
   width: 35%;
   min-width: 650px;
   margin: 0 auto;
-  background-color: #fff;
+  background-color: ${(props) => props.theme[1]};
   padding: 40px;
   gap: 40px;
   border-radius: 30px;
-  box-shadow: 0px 30px 16px rgba(0, 0, 0, 0.25);
-  color: #262626;
+  box-shadow: 0px 30px 16px ${(props) => props.theme[20]};
+  color: ${(props) => props.theme[21]};
   h1 {
     font: normal 600 40px/60px Poppins, Sans-serif;
     text-align: center;
@@ -40,7 +41,9 @@ const Form = styled.form`
     width: 150px;
   }
   input {
-    border: solid 1px #ebebeb;
+    border: solid 1px ${(props) => props.theme[7]};
+    background-color: ${(props) => props.theme[1]};
+    color: ${(props) => props.theme[17]};
     border-radius: 8px;
     outline: none;
     padding: 10px;
@@ -63,6 +66,7 @@ function Login(props) {
   const { state, dispatch } = useContext(loginContext);
   const [userName, setUserName] = useState("agustinC");
   const [password, setPassword] = useState("12345");
+  const { theme } = useContext(themeContext);
   const navigate = useNavigate();
 
   async function getUserData() {
@@ -89,11 +93,11 @@ function Login(props) {
     if (state.auth) {
       return navigate("/dashboard-app/");
     }
-  }, [state]);
+  }, [state, navigate]);
 
   return (
-    <FormContainer>
-      <Form onSubmit={handleSubmit}>
+    <FormContainer theme={theme}>
+      <Form onSubmit={handleSubmit} theme={theme}>
         <h1>Type Your Credentials </h1>
         <Field>
           <label htmlFor="userName">User name</label>

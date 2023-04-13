@@ -1,16 +1,16 @@
 import React, { useContext, useEffect, useState } from "react";
 import styled from "styled-components";
 import { useSelector, useDispatch } from "react-redux";
+import { useParams, useNavigate } from "react-router-dom";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faPenToSquare } from "@fortawesome/free-solid-svg-icons";
 import {
   getUserDetails,
   selectUserDetail,
   selectIsLoading,
   deleteUser,
 } from "./usersSlice";
-import { useParams, useNavigate } from "react-router-dom";
 import MainContainer from "../../components/MainContainer";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faPenToSquare } from "@fortawesome/free-solid-svg-icons";
 import Button from "../../components/Button";
 import { formatDate } from "../../utils";
 import Loader from "../../components/Loader";
@@ -40,7 +40,6 @@ const Container = styled(ItemContainer)`
 `;
 const DetailStatus = styled(DetailSmaller)`
   color: ${(props) => props.theme[14]};
-  /* color: #5ad07a; */
 `;
 
 function UserDetail() {
@@ -78,7 +77,7 @@ function UserDetail() {
 
   useEffect(() => {
     dispatch(getUserDetails(id));
-  }, []);
+  }, [dispatch, id]);
 
   return (
     <MainContainer>

@@ -85,8 +85,8 @@ function NewBooking() {
         }
       } else {
         dispatch(createBooking(copyOfData));
+        setNewBooking(initialState);
       }
-      setNewBooking(initialState);
     } else {
       console.log("Something was wrong");
     }
@@ -99,7 +99,7 @@ function NewBooking() {
       copyOfBooking.checkOut = formatDate(bookingData.checkOut)[2];
       setNewBooking(copyOfBooking);
     }
-  }, [bookingData]);
+  }, [bookingData, id]);
 
   useEffect(() => {
     const availableRooms = roomsData
@@ -115,7 +115,7 @@ function NewBooking() {
   useEffect(() => {
     dispatch(getRoomsData());
     if (id) dispatch(getBookingDetails(id));
-  }, []);
+  }, [dispatch, id]);
 
   return (
     <MainContainer>
