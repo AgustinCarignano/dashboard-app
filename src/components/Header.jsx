@@ -5,6 +5,7 @@ import { useSelector } from "react-redux";
 import { loginContext } from "../context/LoginContext";
 import { selectUnreadContacts } from "../pages/contact/contactSlice";
 import { selectBookings } from "../pages/bookings/bookingSlice";
+import { themeContext } from "../context/ThemeContext";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
   faArrowRightArrowLeft,
@@ -13,24 +14,20 @@ import {
   faArrowRightFromBracket,
   faCircleHalfStroke,
 } from "@fortawesome/free-solid-svg-icons";
-import { themeContext } from "../context/ThemeContext";
 
 const StyleHeader = styled.header`
   display: flex;
   justify-content: space-between;
   align-items: center;
   background-color: ${(props) => props.theme[1]};
-  /* background-color: #fff; */
   padding: 40px 50px;
   min-height: 145px;
   box-shadow: 0px 3px 10px ${(props) => props.theme[20]};
-  /* box-shadow: 0px 3px 10px #00000005; */
 `;
 
 const Title = styled.h1`
   font: normal 600 28px "Poppins", sans-serif;
   color: ${(props) => props.theme[21]};
-  /* color: #262626; */
   margin: 0;
 `;
 
@@ -39,7 +36,6 @@ const Breadcrumb = styled.p`
 `;
 const BreadcrumbLink = styled.span`
   color: ${(props) => (props.onClick ? props.theme[15] : props.theme[9])};
-  /* color: ${(props) => (props.onClick ? "#135846" : "#6e6e6e")}; */
   cursor: ${(props) => (props.onClick ? "Pointer" : "auto")};
 `;
 
@@ -56,15 +52,12 @@ const Container = styled.div`
 
 const IconContainer = styled.div`
   color: ${(props) => props.theme[15]};
-  /* color: #135846; */
   position: relative;
   cursor: ${(props) => (props.hasAction ? "Pointer" : "default")};
   span {
     background-color: ${(props) => props.theme[11]};
-    /* background-color: #e23428; */
     border-radius: 8px;
     color: ${(props) => props.theme[25]};
-    /* color: #ffffff; */
     font-size: 14px;
     width: 30px;
     padding: 6px 0;

@@ -2,7 +2,6 @@ import styled from "styled-components";
 
 export const Container = styled.div`
   background-color: ${(props) => props.theme[1]};
-  /* background-color: #fff; */
   grid-column: 1/5;
   text-align: center;
   font-family: "Poppins", sans-serif;
@@ -39,7 +38,6 @@ export const Label = styled.label`
 export const Input = styled.input`
   font-size: 20px;
   color: ${(props) => props.theme[17]};
-  /* color: #393939; */
   background-color: ${(props) => props.theme[1]};
   font-family: "Poppins", sans-serif;
   width: 60%;
@@ -47,13 +45,11 @@ export const Input = styled.input`
   padding: 10px;
   border-radius: 8px;
   border: solid 1px ${(props) => props.theme[7]};
-  /* border: solid 1px #c5c5c5; */
   outline: none;
 `;
 export const Select = styled.select`
   font-size: 20px;
   color: ${(props) => props.theme[17]};
-  /* color: #393939; */
   background-color: ${(props) => props.theme[1]};
   font-family: "Poppins", sans-serif;
   width: 70%;
@@ -61,7 +57,6 @@ export const Select = styled.select`
   padding: 10px;
   border-radius: 8px;
   border: solid 1px ${(props) => props.theme[7]};
-  /* border: solid 1px #c5c5c5; */
   outline: none;
   option {
     font-size: 10px;
@@ -83,14 +78,12 @@ export const ExtraContainer = styled.div`
 export const TextArea = styled.textarea`
   font-size: 20px;
   color: ${(props) => props.theme[17]};
-  /* color: #393939; */
   background-color: ${(props) => props.theme[1]};
   font-family: "Poppins", sans-serif;
   width: 55%;
   padding: 10px;
   border-radius: 8px;
   border: solid 1px ${(props) => props.theme[7]};
-  /* border: solid 1px #c5c5c5; */
   outline: none;
   height: 150px;
   resize: none;

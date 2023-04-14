@@ -6,7 +6,6 @@ const MyMain = styled.main`
   display: grid;
   grid-template-columns: repeat(4, 1fr);
   padding: 50px;
-  /* background-color: #f8f8f8; */
   background-color: ${(props) => props.theme[2]};
   gap: 40px;
   position: relative;

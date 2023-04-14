@@ -2,7 +2,7 @@ import React, { useContext, useEffect, useState } from "react";
 import styled from "styled-components";
 import { useNavigate } from "react-router-dom";
 import { loginContext } from "../../context/LoginContext";
-import { getItemData } from "../../mockService/service";
+import { getItemData } from "../../utils";
 import Button from "../../components/Button";
 import { themeContext } from "../../context/ThemeContext";
 
@@ -62,7 +62,7 @@ const Field = styled.div`
   align-items: center;
 `;
 
-function Login(props) {
+function Login() {
   const { state, dispatch } = useContext(loginContext);
   const [userName, setUserName] = useState("agustinC");
   const [password, setPassword] = useState("12345");

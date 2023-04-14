@@ -12,16 +12,6 @@ const MyButton = styled.button`
   border-radius: 12px;
   cursor: pointer;
 `;
-/* const MyButton = styled.button`
-  color: ${(props) => variantsOption[props.variant].color};
-  background-color: ${(props) => variantsOption[props.variant].background};
-  border: ${(props) => variantsOption[props.variant].border};
-  font: normal 600 14px/21px "Poppins", sans-serif;
-  text-align: center;
-  padding: 13px 35px;
-  border-radius: 12px;
-  cursor: pointer;
-`; */
 
 export default function Button({ variant, children, onClick, value, name }) {
   const { theme } = useContext(themeContext);

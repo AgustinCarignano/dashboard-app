@@ -1,10 +1,11 @@
 import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
 import {
+  generateId,
+  hashData,
   getAllData,
   getItemData,
   delayFunction,
-} from "../../mockService/service.js";
-import { generateId, hashData } from "../../utils";
+} from "../../utils";
 
 const initialState = {
   users: [],

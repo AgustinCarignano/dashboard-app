@@ -14,23 +14,18 @@ const MyCard = styled.div`
   padding: 30px;
   gap: 20px;
   background-color: ${(props) => props.theme[1]};
-  /* background-color: #ffffff; */
   border-radius: 12px;
   cursor: pointer;
   transition: all 0.3s;
   &:hover {
     box-shadow: 0px 16px 30px ${(props) => props.theme[18]};
-    /* box-shadow: 0px 16px 30px #00000014; */
     & .icon {
       background-color: ${(props) => props.theme[11]};
-      /* background-color: #e23428; */
       color: ${(props) => props.theme[25]};
-      /* color: #ffffff; */
     }
   }
   .icon {
     background-color: ${(props) => props.theme[10]};
-    /* background-color: #ffedec; */
     color: ${(props) => props.theme[11]};
     /* color: #e23428; */
     padding: 20px;
@@ -41,13 +36,11 @@ const MyCard = styled.div`
 const CardNumber = styled.p`
   font: normal 600 30px/46px "Poppins", sans-serif;
   color: ${(props) => props.theme[17]};
-  /* color: #393939; */
   margin: 0;
 `;
 const CardLegend = styled.p`
   font: normal 300 14px/21px "Poppins", sans-serif;
   color: ${(props) => props.theme[13]};
-  /* color: #787878; */
   margin: 0;
 `;
 const cardsTypes = {

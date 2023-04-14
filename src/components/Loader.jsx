@@ -1,5 +1,5 @@
-import { DotWave } from "@uiball/loaders";
 import styled from "styled-components";
+import { DotWave } from "@uiball/loaders";
 
 const Container = styled.div`
   position: absolute;

@@ -1,5 +1,4 @@
 import styled from "styled-components";
-import { fonts } from "../theme/theme.js";
 
 const fontsVariable = {
   normal_600_30: "normal 600 30px/46px 'Poppins', sans-serif;",
@@ -10,12 +9,10 @@ const fontsVariable = {
 };
 
 export const ItemContainer = styled.div`
-  //
   display: flex;
   border-radius: 20px;
   grid-column: 1/5;
   background-color: ${(props) => props.theme[1]};
-  /* background-color: #fff; */
   overflow: hidden;
 `;
 
@@ -32,56 +29,42 @@ export const PrimaryContainer = styled.div`
   gap: 50px;
 `;
 export const DetailHeader = styled.div`
-  //
   h1 {
     font: ${fontsVariable.normal_600_30};
     color: ${(props) => props.theme[19]};
-    /* color: ${fonts["style1"].color}; */ //#212121
   }
   p {
     font: ${fontsVariable.normal_400_14};
     color: ${(props) => props.theme[12]};
-    /* color: ${fonts["style4"].color}; */ //#799283
   }
 `;
 export const SecondaryContainer = styled.div`
-  //
   display: flex;
   border-bottom: ${(props) =>
     props.border ? `solid 3px ${props.theme[6]}` : "none"};
-  /* border-bottom: ${(props) =>
-    props.border ? "solid 3px #f5f5f5" : "none"}; */
   padding-bottom: ${(props) => (props.padding ? "20px" : "0")};
   div {
     width: 50%;
   }
 `;
 export const Subtitle = styled.p`
-  //
   font: ${fontsVariable.normal_400_14};
   color: ${(props) => props.theme[9]};
-  /* color: ${fonts["style5"].color}; */ //#6e6e6e
   padding: 5px 0;
 `;
 export const DetailSmaller = styled.p`
-  //
   font: ${fontsVariable.normal_600_16};
   color: ${(props) => props.theme[19]};
-  /* color: ${fonts["style3"].color}; */ //#212121
   padding: 5px 0;
 `;
 export const DetailBigger = styled.p`
-  //
   font: ${fontsVariable.normal_500_24};
   color: ${(props) => props.theme[19]};
-  /* color: ${fonts["style2"].color}; */ //#212121
   padding: 5px 0;
 `;
 export const TextContent = styled.p`
-  //
   font: ${fontsVariable.normal_400_14};
   color: ${(props) => props.theme[24]};
-  /* color: ${fonts["style7"].color}; */ //#363636
 `;
 export const AmenitiesContainer = styled.div`
   display: flex;
@@ -99,14 +82,12 @@ export const EditBtn = styled.div`
 `;
 
 export const RightColumn = styled.div`
-  //
   display: flex;
   flex-direction: column;
   justify-content: ${(props) => props.justify};
   width: 50%;
   position: relative;
   background-color: ${(props) => (props.background ? props.theme[13] : "none")};
-  /* background-color: ${(props) => props.background}; */
   img {
     width: 100%;
   }
@@ -115,13 +96,11 @@ export const RoomInfoContainer = styled.div`
   padding: 30px 40px;
 `;
 export const BookingStatus = styled.span`
-  //
   display: inline-block;
   width: 300px;
   text-align: center;
   padding: 20px;
   color: ${(props) => props.theme[25]};
-  /* color: #fff; */
   font: ${fontsVariable.normal_600_14};
   position: absolute;
   top: 20px;
@@ -133,12 +112,6 @@ export const BookingStatus = styled.span`
       : props.children === "CHECK OUT"
       ? props.theme[11]
       : props.theme[16]};
-  /* background-color: ${(props) =>
-    props.children === "CHECK IN"
-      ? "#5AD07A"
-      : props.children === "CHECK OUT"
-      ? "#E23428"
-      : "#FF9C3A"}; */
 `;
 
 export const DetailImg = styled.div`

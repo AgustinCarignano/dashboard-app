@@ -21,16 +21,13 @@ const Container = styled.div`
   width: 100%;
   min-width: 130px;
   border: 1px solid ${(props) => props.theme[12]};
-  /* border: 1px solid rgb(121, 146, 131); */
   font: 600 14px/20px "Poppins", sans-serif;
   color: ${(props) => props.theme[12]};
-  /* color: rgb(121, 146, 131); */
   flex-direction: column;
   justify-content: space-between;
   gap: 10px;
   position: absolute;
   background-color: ${(props) => props.theme[1]};
-  /* background-color: #fff; */
   padding: 20px;
   border-radius: 10px;
   right: 0px;
@@ -53,7 +50,6 @@ const ArrowIcon = styled.div`
   top: 13px;
   right: 10px;
   color: ${(props) => props.theme[15]};
-  /* color: #135846; */
   transition: transform 0.3s;
   transform: ${(props) => props.turnArrow && "rotate(180deg)"};
 `;

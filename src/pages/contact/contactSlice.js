@@ -1,5 +1,5 @@
 import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
-import { delayFunction, getAllData } from "../../mockService/service";
+import { delayFunction, getAllData } from "../../utils";
 
 const initialState = {
   contacts: [],

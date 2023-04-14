@@ -1,9 +1,9 @@
+import { useContext } from "react";
 import styled from "styled-components";
-import { ModalContainer, ModalWindow } from "./Modal";
-import Button from "./Button";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faXmark } from "@fortawesome/free-solid-svg-icons";
-import { useContext } from "react";
+import { ModalContainer, ModalWindow } from "./Modal";
+import Button from "./Button";
 import { themeContext } from "../context/ThemeContext";
 
 const BtnContainer = styled.div`

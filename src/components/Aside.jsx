@@ -19,7 +19,6 @@ import { themeContext } from "../context/ThemeContext";
 const StyledAside = styled.aside`
   grid-area: aside;
   padding-top: 20px;
-  /* background-color: #fff; */
   background-color: ${(props) => props.theme[1]};
   display: flex;
   flex-direction: column;
@@ -39,9 +38,6 @@ const LinkContainer = styled.div`
   align-items: center;
   font: normal ${(props) => (props.active ? "600" : "400")} 18px/27px "Poppins",
     sans-serif;
-  /* color: ${(props) => (props.active ? "#e23428" : "#799283")};
-  border-left: ${(props) =>
-    props.active ? "solid 5px #e23428" : "solid 5px #fff"}; */
   color: ${(props) => (props.active ? props.theme[11] : props.theme[12])};
   border-left: solid 5px
     ${(props) => (props.active ? props.theme[11] : props.theme[1])};
@@ -59,7 +55,6 @@ const UserCard = styled.div`
   flex-direction: column;
   text-align: center;
   padding: 24px;
-  /* box-shadow: 0px 20px 30px #00000014; */
   box-shadow: 0px 20px 30px ${(props) => props.theme[18]};
   border-radius: 18px;
   margin: 60px 0;
@@ -85,13 +80,11 @@ const Credits = styled.div`
   margin-top: auto;
   h3 {
     font: normal 600 16px/25px Poppins, sans-serif;
-    /* color: #212121; */
     color: ${(props) => props.theme[19]};
     margin: 0;
   }
   p {
     font: normal 300 14px/21px Poppins, sans-serif;
-    /* color: #799283; */
     color: ${(props) => props.theme[12]};
     margin: 0 0 65px;
   }

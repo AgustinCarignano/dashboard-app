@@ -1,10 +1,10 @@
 import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
 import {
+  generateId,
   delayFunction,
   getAllData,
   getItemData,
-} from "../../mockService/service";
-import { generateId } from "../../utils";
+} from "../../utils";
 
 const initialState = {
   bookings: [],

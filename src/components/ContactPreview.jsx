@@ -1,8 +1,10 @@
 import React, { useEffect, useState, useContext } from "react";
 import styled from "styled-components";
+import { useDispatch } from "react-redux";
 import { themeContext } from "../context/ThemeContext";
 import Button from "./Button";
 import Modal from "./Modal";
+import { updateContact } from "../pages/contact/contactSlice";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
   faChevronRight,
@@ -10,18 +12,13 @@ import {
   faCircleXmark,
   faCircleCheck,
 } from "@fortawesome/free-solid-svg-icons";
-import { updateContact } from "../pages/contact/contactSlice";
-import { useDispatch } from "react-redux";
 
 const CardsContainer = styled.div`
   grid-column: 1/5;
   background-color: ${(props) =>
     props.variant === 1 ? props.theme[1] : "none"};
-  /* background-color: ${(props) => props.bg_color}; */
   box-shadow: ${(props) =>
     props.variant === 1 ? `0px 4px 4px ${props.theme[20]}` : "none"};
-  /* box-shadow: ${(props) =>
-    props.shadow ? "0px 4px 4px #00000005" : "none"}; */
   border-radius: 20px;
   padding: 30px;
   padding-bottom: ${(props) => (props.extraPadding ? "70px" : "30px")};
@@ -33,14 +30,12 @@ const CardsContainer = styled.div`
 const Title = styled.h2`
   font: normal 400 20px/30px "Poppins", sans-serif;
   color: ${(props) => props.theme[17]};
-  /* color: #393939; */
   margin: 0 0 20px 0;
   grid-column: 1/4;
 `;
 const MyCard = styled.div`
   position: relative;
   background-color: ${(props) => props.theme[1]};
-  /* background-color: #ffffff; */
   padding: 30px;
   min-height: 223px;
   max-height: 400px;
@@ -48,25 +43,21 @@ const MyCard = styled.div`
   display: flex;
   flex-direction: column;
   border: 1px solid ${(props) => props.theme[22]};
-  /* border: 1px solid #ebebeb; */
   border-radius: 20px;
   transition: all 0.3s;
   :hover {
     box-shadow: 0px 16px 30px ${(props) => props.theme[18]};
-    /* box-shadow: 0px 16px 30px #00000014; */
   }
 `;
 
 const Name = styled.h3`
   font: normal 600 16px/25px "Poppins", sans-serif;
   color: ${(props) => props.theme[21]};
-  /* color: #262626; */
   margin: 0px 0;
 `;
 const Contact = styled.p`
   font: normal 400 12px/20px "Poppins", sans-serif;
   color: ${(props) => props.theme[9]};
-  /* color: #6e6e6e; */
   margin: 0;
 `;
 const Subject = styled(Contact)`
@@ -74,9 +65,7 @@ const Subject = styled(Contact)`
   margin: 5px 0px;
   padding-top: 5px;
   color: ${(props) => props.theme[23]};
-  /* color: #4e4e4e; */
   border-top: solid 1px ${(props) => props.theme[6]};
-  /* border-top: solid 1px #f5f5f5; */
 `;
 
 const ButtonRigth = styled.div`
@@ -116,7 +105,6 @@ function ContactPreview(props) {
     return {
       font: "normal 400 14px/20px 'Poppins', sans-serif",
       color: `${theme[9]}`,
-      // color: "#6e6e6e",
       margin: "0",
       cursor: "pointer",
       fontWeight: `${remark ? "600" : "normal"}`,
