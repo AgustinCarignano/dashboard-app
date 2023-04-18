@@ -63,7 +63,8 @@ const Field = styled.div`
 `;
 
 function Login() {
-  const { state, dispatch } = useContext(loginContext);
+  const { loginState, loginActionTypes, dispatchLogin } =
+    useContext(loginContext);
   const [userName, setUserName] = useState("agustinC");
   const [password, setPassword] = useState("12345");
   const { theme } = useContext(themeContext);
@@ -78,8 +79,8 @@ function Login() {
     e.preventDefault();
     if (userName === "agustinC" && password === "12345") {
       const user = await getUserData();
-      dispatch({
-        type: "login",
+      dispatchLogin({
+        type: loginActionTypes.LOGIN,
         payload: {
           fullName: user.fullName,
           email: user.email,
@@ -90,10 +91,10 @@ function Login() {
   }
 
   useEffect(() => {
-    if (state.auth) {
+    if (loginState.auth) {
       return navigate("/dashboard-app/");
     }
-  }, [state, navigate]);
+  }, [loginState, navigate]);
 
   return (
     <FormContainer theme={theme}>

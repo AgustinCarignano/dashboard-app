@@ -1,48 +1,78 @@
-import React from "react";
-import { useNavigate } from "react-router-dom";
-import { useDispatch } from "react-redux";
+import React, { useContext, useEffect, useState } from "react";
+import Button from "../../components/Button";
+import MainContainer from "../../components/MainContainer";
+import {
+  Container,
+  Title,
+  FormContainer,
+  Column,
+  Field,
+  Label,
+  Input,
+  Select,
+  TextArea,
+  Submit,
+} from "../../components/FormComponents";
+import { themeContext } from "../../context/ThemeContext";
+import Loader from "../../components/Loader";
 
-import { createUser } from "../../store/slices/usersSlice";
-import FormUser from "./FormUser";
+const availableRoles = [
+  "(Select one role)",
+  "Manager",
+  "Receptionist",
+  "Room Services",
+];
 
-function NewUser() {
-  const dispatch = useDispatch();
-  const navigate = useNavigate();
+function FormUser(props) {
+  const { initialState, onSubmitAction, verifyPassword } = props;
+  const [user, setUser] = useState({});
+  const [controlPassword, setControlPassword] = useState("");
+  const { theme } = useContext(themeContext);
 
-  const initialState = {
-    photo: "",
-    fullName: "",
-    id: "",
-    email: "",
-    startDate: "",
-    description: "",
-    contact: "",
-    status: "ACTIVE",
-    role: "",
-    password: "",
-  };
-
-  async function onSubmitAction(data) {
-    await dispatch(createUser(data)).unwrap();
-    navigate("/dashboard-app/users");
+  function handleInputsChange(e) {
+    const copyOfData = { ...user };
+    const key = e.target.name;
+    const value = e.target.value;
+    copyOfData[key] = value;
+    setUser(copyOfData);
   }
 
+  function verifyForm(data) {
+    for (const key in data) {
+      if (key === "id") continue;
+      if (!data[key]) return false;
+    }
+    if (verifyPassword && data.password !== controlPassword) return false;
+    return true;
+  }
+
+  async function handleOnSubmit(e) {
+    e.preventDefault();
+    const copyOfData = { ...user };
+    const correctForm = verifyForm(copyOfData);
+    if (correctForm) {
+      copyOfData.startDate = new Date(copyOfData.startDate).getTime();
+      onSubmitAction(copyOfData);
+    } else {
+      console.log("Something was wrong");
+    }
+  }
+
+  useEffect(() => {
+    setUser(initialState);
+  }, []);
+
+  if (!Object.keys(user).includes("fullName"))
+    return (
+      <MainContainer>
+        <Loader />
+      </MainContainer>
+    );
+
   return (
-    <FormUser
-      initialState={initialState}
-      onSubmitAction={onSubmitAction}
-      verifyPassword={true}
-    />
-  );
-}
-
-export default NewUser;
-
-/* 
-return (
     <MainContainer style={{ minHeight: "calc(100vh - 145px)" }}>
       <Container theme={theme}>
-        <Title theme={theme}>{id ? "Edit User" : "New User"}</Title>
+        <Title theme={theme}>{user.id ? "Edit User" : "New User"}</Title>
         <FormContainer>
           <Column>
             <Field>
@@ -50,7 +80,7 @@ return (
               <Input
                 theme={theme}
                 name="photo"
-                value={newUser.photo}
+                value={user.photo}
                 onChange={handleInputsChange}
               />
             </Field>
@@ -59,7 +89,7 @@ return (
               <Input
                 theme={theme}
                 name="fullName"
-                value={newUser.fullName}
+                value={user.fullName}
                 onChange={handleInputsChange}
               />
             </Field>
@@ -69,7 +99,7 @@ return (
                 theme={theme}
                 type="email"
                 name="email"
-                value={newUser.email}
+                value={user.email}
                 onChange={handleInputsChange}
               />
             </Field>
@@ -78,11 +108,11 @@ return (
               <Input
                 theme={theme}
                 name="contact"
-                value={newUser.contact}
+                value={user.contact}
                 onChange={handleInputsChange}
               />
             </Field>
-            {!id && (
+            {!user.id && (
               <>
                 <Field>
                   <Label theme={theme}>Password</Label>
@@ -90,7 +120,7 @@ return (
                     theme={theme}
                     type="password"
                     name="password"
-                    value={newUser.password}
+                    value={user.password}
                     onChange={handleInputsChange}
                   />
                 </Field>
@@ -99,8 +129,8 @@ return (
                   <Input
                     theme={theme}
                     type="password"
-                    value={verifyPass}
-                    onChange={(e) => setVerifyPass(e.target.value)}
+                    value={controlPassword}
+                    onChange={(e) => setControlPassword(e.target.value)}
                   />
                 </Field>
               </>
@@ -112,7 +142,7 @@ return (
               <Select
                 theme={theme}
                 name="role"
-                value={newUser.role}
+                value={user.role}
                 onChange={handleInputsChange}
               >
                 {availableRoles.map((item, index) => {
@@ -131,7 +161,7 @@ return (
             <Field>
               <Label theme={theme}>Status</Label>
               <Button
-                variant={newUser.status === "ACTIVE" ? 1 : 4}
+                variant={user.status === "ACTIVE" ? 1 : 4}
                 name="status"
                 value="ACTIVE"
                 onClick={handleInputsChange}
@@ -139,7 +169,7 @@ return (
                 ACTIVE
               </Button>
               <Button
-                variant={newUser.status === "INACTIVE" ? 1 : 4}
+                variant={user.status === "INACTIVE" ? 1 : 4}
                 name="status"
                 value="INACTIVE"
                 onClick={handleInputsChange}
@@ -153,7 +183,7 @@ return (
                 theme={theme}
                 name="startDate"
                 type="date"
-                value={newUser.startDate}
+                value={user.startDate}
                 onChange={handleInputsChange}
               />
             </Field>
@@ -162,18 +192,20 @@ return (
               <TextArea
                 theme={theme}
                 name="description"
-                value={newUser.description}
+                value={user.description}
                 onChange={handleInputsChange}
               />
             </Field>
           </Column>
           <Submit>
             <Button variant={1} onClick={handleOnSubmit}>
-              {id ? "SAVE" : "CREATE"}
+              {user.id ? "SAVE" : "CREATE"}
             </Button>
           </Submit>
         </FormContainer>
       </Container>
     </MainContainer>
   );
-*/
+}
+
+export default FormUser;

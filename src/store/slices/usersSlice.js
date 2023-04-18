@@ -1,4 +1,4 @@
-import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
+import { createSlice, createAsyncThunk, isAnyOf } from "@reduxjs/toolkit";
 import {
   generateId,
   hashData,
@@ -52,53 +52,67 @@ export const usersSlice = createSlice({
   initialState,
   extraReducers: (builder) => {
     builder
-      .addCase(getUsersData.pending, (state) => {
-        state.isLoading = true;
-        state.hasError = false;
-      })
-      .addCase(getUsersData.rejected, (state) => {
-        state.isLoading = false;
-        state.hasError = true;
-      })
       .addCase(getUsersData.fulfilled, (state, action) => {
-        state.isLoading = false;
-        state.hasError = false;
         state.users = action.payload.data;
       })
-      .addCase(getUserDetails.pending, (state) => {
-        state.isLoading = true;
-        state.hasError = false;
-      })
-      .addCase(getUserDetails.rejected, (state) => {
-        state.isLoading = false;
-        state.hasError = true;
-      })
       .addCase(getUserDetails.fulfilled, (state, action) => {
-        state.isLoading = false;
-        state.hasError = false;
         state.user = action.payload.data;
       })
       .addCase(createUser.fulfilled, (state, action) => {
-        state.isLoading = false;
-        state.hasError = false;
         state.users.push(action.payload.data);
       })
       .addCase(updateUser.fulfilled, (state, action) => {
-        state.isLoading = false;
-        state.hasError = false;
-        const index = state.users.findIndex(
-          (user) => user.id === action.payload.data.id
+        state.users = state.users.map((item) =>
+          item.id === action.payload.data.id ? action.payload.data : item
         );
-        state.users.splice(index, 1, action.payload.data);
+        if (state.user.id === action.payload.data.id) {
+          state.user = action.payload.data;
+        }
       })
       .addCase(deleteUser.fulfilled, (state, action) => {
-        state.isLoading = false;
-        state.hasError = false;
-        const index = state.users.findIndex(
-          (user) => user.id === action.payload.id
+        state.users = state.users.filter(
+          (item) => item.id !== action.payload.id
         );
-        if (index !== -1) state.users.splice(index, 1);
-      });
+      })
+      .addMatcher(
+        isAnyOf(
+          getUsersData.fulfilled,
+          getUserDetails.fulfilled,
+          createUser.fulfilled,
+          updateUser.fulfilled,
+          deleteUser.fulfilled
+        ),
+        (state) => {
+          state.isLoading = false;
+          state.hasError = false;
+        }
+      )
+      .addMatcher(
+        isAnyOf(
+          getUsersData.pending,
+          getUserDetails.pending,
+          createUser.pending,
+          updateUser.pending,
+          deleteUser.pending
+        ),
+        (state) => {
+          state.isLoading = true;
+          state.hasError = false;
+        }
+      )
+      .addMatcher(
+        isAnyOf(
+          getUsersData.rejected,
+          getUserDetails.rejected,
+          createUser.rejected,
+          updateUser.rejected,
+          deleteUser.rejected
+        ),
+        (state) => {
+          state.isLoading = false;
+          state.hasError = true;
+        }
+      );
   },
 });
 

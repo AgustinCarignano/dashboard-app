@@ -1,4 +1,4 @@
-import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
+import { createSlice, createAsyncThunk, isAnyOf } from "@reduxjs/toolkit";
 import {
   generateId,
   delayFunction,
@@ -59,49 +59,67 @@ export const bookingsSlice = createSlice({
   initialState,
   extraReducers: (builder) => {
     builder
-      .addCase(getBookingsData.pending, (state) => {
-        state.isLoading = true;
-        state.hasError = false;
-      })
-      .addCase(getBookingsData.rejected, (state) => {
-        state.isLoading = false;
-        state.hasError = true;
-      })
       .addCase(getBookingsData.fulfilled, (state, action) => {
-        state.isLoading = false;
-        state.hasError = false;
         state.bookings = action.payload.data;
       })
-      .addCase(getBookingDetails.pending, (state) => {
-        state.isLoading = true;
-        state.hasError = false;
-      })
       .addCase(getBookingDetails.fulfilled, (state, action) => {
-        state.isLoading = false;
-        state.hasError = false;
         state.booking = action.payload.data;
       })
       .addCase(createBooking.fulfilled, (state, action) => {
-        state.isLoading = false;
-        state.hasError = false;
         state.bookings.push(action.payload.data);
       })
       .addCase(updateBooking.fulfilled, (state, action) => {
-        state.isLoading = false;
-        state.hasError = false;
-        const index = state.bookings.findIndex(
-          (book) => book.id === action.payload.data.id
+        state.bookings = state.bookings.map((item) =>
+          item.id === action.payload.data.id ? action.payload.data : item
         );
-        state.bookings.splice(index, 1, action.payload.data);
+        if (state.booking.id === action.payload.data.id) {
+          state.booking = action.payload.data;
+        }
       })
       .addCase(deleteBooking.fulfilled, (state, action) => {
-        state.isLoading = false;
-        state.hasError = false;
-        const index = state.bookings.findIndex(
-          (book) => book.id === action.payload.id
+        state.bookings = state.bookings.filter(
+          (item) => item.id !== action.payload.id
         );
-        if (index !== -1) state.bookings.splice(index, 1);
-      });
+      })
+      .addMatcher(
+        isAnyOf(
+          getBookingsData.fulfilled,
+          getBookingDetails.fulfilled,
+          updateBooking.fulfilled,
+          createBooking.fulfilled,
+          deleteBooking.fulfilled
+        ),
+        (state) => {
+          state.isLoading = false;
+          state.hasError = false;
+        }
+      )
+      .addMatcher(
+        isAnyOf(
+          getBookingsData.pending,
+          getBookingDetails.pending,
+          updateBooking.pending,
+          createBooking.pending,
+          deleteBooking.pending
+        ),
+        (state) => {
+          state.isLoading = true;
+          state.hasError = false;
+        }
+      )
+      .addMatcher(
+        isAnyOf(
+          getBookingsData.rejected,
+          getBookingDetails.rejected,
+          updateBooking.rejected,
+          createBooking.rejected,
+          deleteBooking.rejected
+        ),
+        (state) => {
+          state.isLoading = false;
+          state.hasError = true;
+        }
+      );
   },
 });
 

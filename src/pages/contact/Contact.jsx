@@ -5,7 +5,7 @@ import {
   updateContact,
   selectContacts,
   selectIsLoading,
-} from "./contactSlice.js";
+} from "../../store/slices/contactSlice.js";
 import Button from "../../components/Button";
 import ContactPreview from "../../components/ContactPreview";
 import MainContainer from "../../components/MainContainer";

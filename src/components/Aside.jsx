@@ -99,10 +99,11 @@ const Logo = styled.div`
 
 function Aside(props) {
   const { sidebarVisibility } = props;
-  const { state, dispatch } = useContext(loginContext);
+  const { loginState, loginActionTypes, dispatchLogin } =
+    useContext(loginContext);
   const [updating, setUpdating] = useState(false);
-  const [userFullName, setUserFullName] = useState(state.fullName);
-  const [userEmail, setUserEmail] = useState(state.email);
+  const [userFullName, setUserFullName] = useState(loginState.fullName);
+  const [userEmail, setUserEmail] = useState(loginState.email);
   const { pathname } = useLocation();
   const pathArray = pathname.split("/");
   const { theme } = useContext(themeContext);
@@ -112,9 +113,12 @@ function Aside(props) {
   }
 
   function handleEdit() {
-    if (userFullName !== state.fullName || userEmail !== state.email) {
-      dispatch({
-        type: "updateUser",
+    if (
+      userFullName !== loginState.fullName ||
+      userEmail !== loginState.email
+    ) {
+      dispatchLogin({
+        type: loginActionTypes.UPDATE,
         payload: { fullName: userFullName, email: userEmail },
       });
     }
@@ -130,7 +134,7 @@ function Aside(props) {
           <img src="https://i.imgur.com/fj3gwNn.png" alt="logo" />
         )}
       </Logo>
-      {!state.auth ? (
+      {!loginState.auth ? (
         <LinkContainer
           active={true}
           theme={theme}
@@ -174,27 +178,32 @@ function Aside(props) {
             </Link>
           </LinkContainer>
           <UserCard theme={theme}>
-            <img src={state.photo} alt="" />
+            <img src={loginState.photo} alt="" />
             {updating ? (
               <>
                 <Input
+                  theme={theme}
                   style={{ width: "100%", fontSize: "14px" }}
                   value={userFullName}
                   onChange={(e) => setUserFullName(e.target.value)}
                 />
                 <Input
+                  theme={theme}
                   style={{ width: "100%", fontSize: "14px" }}
                   value={userEmail}
                   onChange={(e) => setUserEmail(e.target.value)}
                 />
                 <Button variant={2} onClick={handleEdit}>
-                  Acept
+                  {userFullName !== loginState.fullName ||
+                  userEmail !== loginState.email
+                    ? "Acept"
+                    : "Cancel"}
                 </Button>
               </>
             ) : (
               <>
-                <h3>{state.fullName}</h3>
-                <p>{state.email}</p>
+                <h3>{loginState.fullName}</h3>
+                <p>{loginState.email}</p>
                 <Button variant={2} onClick={handleUpdating}>
                   Edit
                 </Button>

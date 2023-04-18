@@ -18,6 +18,9 @@ import RequiredAuth from "./components/RequiredAuth";
 import NewBooking from "./pages/bookings/NewBooking";
 import LoginContextProvider from "./context/LoginContext";
 import ThemeContextProvider from "./context/ThemeContext";
+import UpdateBooking from "./pages/bookings/UpdateBooking";
+import UpdateRoom from "./pages/rooms/UpdateRoom";
+import UpdateUser from "./pages/users/UpdateUser";
 
 function App() {
   const [showSidebar, setShowSidebar] = useState(true);
@@ -73,7 +76,7 @@ function App() {
                   path="/dashboard-app/bookings/update/:id"
                   element={
                     <RequiredAuth>
-                      <NewBooking />
+                      <UpdateBooking />
                     </RequiredAuth>
                   }
                 ></Route>
@@ -105,7 +108,7 @@ function App() {
                   path="/dashboard-app/rooms/update/:id"
                   element={
                     <RequiredAuth>
-                      <NewRoom />
+                      <UpdateRoom />
                     </RequiredAuth>
                   }
                 ></Route>
@@ -137,7 +140,7 @@ function App() {
                   path="/dashboard-app/users/update/:id"
                   element={
                     <RequiredAuth>
-                      <NewUser />
+                      <UpdateUser />
                     </RequiredAuth>
                   }
                 />

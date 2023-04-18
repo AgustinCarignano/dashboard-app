@@ -131,12 +131,20 @@ const Paginate = styled.div`
 
 const PaginateNumbers = styled(Paginate)`
   gap: 0;
+  & :first-child {
+    border-top-left-radius: 12px;
+    border-bottom-left-radius: 12px;
+  }
+  & :last-child {
+    border-top-right-radius: 12px;
+    border-bottom-right-radius: 12px;
+  }
 `;
 const PaginateItem = styled.span`
   width: 50px;
   padding: 13px 0;
   text-align: center;
-  border-radius: 12px;
+  //border-radius: 12px;
   background-color: ${(props) =>
     props.active ? props.theme[15] : props.theme[6]};
   color: ${(props) => (props.active ? props.theme[25] : props.theme[9])};

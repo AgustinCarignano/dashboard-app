@@ -4,7 +4,7 @@ import { useDispatch } from "react-redux";
 import { themeContext } from "../context/ThemeContext";
 import Button from "./Button";
 import Modal from "./Modal";
-import { updateContact } from "../pages/contact/contactSlice";
+import { updateContact } from "../store/slices/contactSlice";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
   faChevronRight,

@@ -8,7 +8,7 @@ import {
   selectIsLoading,
   getRoomsData,
   deleteRoom,
-} from "./roomSlice";
+} from "../../store/slices/roomSlice";
 import Button from "../../components/Button";
 import MainContainer from "../../components/MainContainer";
 import Table, {
@@ -134,60 +134,6 @@ function Rooms() {
       ],
     };
   };
-  /*  const rowsToRender = (item) => {
-    return (
-      <>
-        <td>
-          <RowContainer
-            justify="normal"
-            onClick={() => handleRedirect(item.id)}
-          >
-            <ImgRowContainer>
-              <img src={item.photos[0]} alt="thumbnail" />
-            </ImgRowContainer>
-            <div>
-              <p>{item.roomNumber}</p>
-              <RowDataSmaller theme={theme}>#{item.id}</RowDataSmaller>
-            </div>
-          </RowContainer>
-        </td>
-        <td>{item.roomType}</td>
-        <td style={{ maxWidth: "375px" }}>
-          {item.amenities.map((el, i, arr) =>
-            i < arr.length - 1 ? `${el}, ` : `${el}.`
-          )}
-        </td>
-        <td>${item.price}</td>
-        <td>
-          $
-          {item.offer
-            ? item.price * (1 - parseInt(item.discount) / 100)
-            : item.price}
-        </td>
-        <td>
-          <RowContainer justify="space-between">
-            <Button
-              variant={availableStates[item.status]}
-              style={{ width: "100%" }}
-            >
-              {item.status}
-            </Button>
-            <Popup
-              options={optionsMenu}
-              itemId={item.id}
-              preview={
-                <FontAwesomeIcon
-                  color="#6E6E6E"
-                  icon={faEllipsisVertical}
-                  size="xl"
-                />
-              }
-            />
-          </RowContainer>
-        </td>
-      </>
-    );
-  }; */
 
   useEffect(() => {
     const newData = structuredClone(data);

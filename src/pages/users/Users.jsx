@@ -8,7 +8,7 @@ import {
   selectUsers,
   selectIsLoading,
   deleteUser,
-} from "./usersSlice.js";
+} from "../../store/slices/usersSlice.js";
 import Button from "../../components/Button";
 import MainContainer from "../../components/MainContainer";
 import Table, {

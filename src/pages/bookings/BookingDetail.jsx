@@ -12,13 +12,13 @@ import {
   selectIsLoading as loadingBookingData,
   getBookingDetails,
   deleteBooking,
-} from "./bookingSlice.js";
+} from "../../store/slices/bookingSlice.js";
 import Loader from "../../components/Loader.jsx";
 import {
   getRoomDetails,
   selectRoomDetails,
   selectIsLoading as loadingRoomData,
-} from "../rooms/roomSlice.js";
+} from "../../store/slices/roomSlice.js";
 import {
   ItemContainer,
   LeftColumn,
@@ -87,7 +87,7 @@ function BookingDetail() {
   }
 
   useEffect(() => {
-    dispatch(getBookingDetails(id));
+    if (item.id !== id) dispatch(getBookingDetails(id));
   }, [dispatch, id]);
 
   useEffect(() => {

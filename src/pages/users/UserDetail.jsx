@@ -9,7 +9,7 @@ import {
   selectUserDetail,
   selectIsLoading,
   deleteUser,
-} from "./usersSlice";
+} from "../../store/slices/usersSlice";
 import MainContainer from "../../components/MainContainer";
 import Button from "../../components/Button";
 import { formatDate } from "../../utils";
@@ -76,8 +76,8 @@ function UserDetail() {
   }
 
   useEffect(() => {
-    dispatch(getUserDetails(id));
-  }, [dispatch, id]);
+    if (user.id !== id) dispatch(getUserDetails(id));
+  }, [dispatch, user, id]);
 
   return (
     <MainContainer>

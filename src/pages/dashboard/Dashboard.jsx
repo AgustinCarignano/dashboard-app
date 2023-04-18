@@ -4,12 +4,12 @@ import {
   getAllContacts,
   selectContacts,
   selectIsLoading as selectLoadingBookings,
-} from "../contact/contactSlice.js";
+} from "../../store/slices/contactSlice.js";
 import {
   getBookingsData,
   selectBookings,
   selectIsLoading as selectLoadingContacts,
-} from "../bookings/bookingSlice.js";
+} from "../../store/slices/bookingSlice.js";
 import SmallCard from "../../components/SmallCard";
 import MainContainer from "../../components/MainContainer";
 import ContactPreview from "../../components/ContactPreview";

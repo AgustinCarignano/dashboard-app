@@ -3,8 +3,8 @@ import styled from "styled-components";
 import { useLocation, useNavigate } from "react-router-dom";
 import { useSelector } from "react-redux";
 import { loginContext } from "../context/LoginContext";
-import { selectUnreadContacts } from "../pages/contact/contactSlice";
-import { selectBookings } from "../pages/bookings/bookingSlice";
+import { selectUnreadContacts } from "../store/slices/contactSlice";
+import { selectBookings } from "../store/slices/bookingSlice";
 import { themeContext } from "../context/ThemeContext";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
@@ -79,7 +79,8 @@ const TitleList = {
 
 function Header(props) {
   const { handleSidebarVisibility } = props;
-  const { state, dispatch } = useContext(loginContext);
+  const { loginState, loginActionTypes, dispatchLogin } =
+    useContext(loginContext);
   const [breadcrumb, setBreadcrumb] = useState("");
   const [pathArray, setPathArray] = useState([]);
   const { theme, handleThemeChange } = useContext(themeContext);
@@ -114,8 +115,8 @@ function Header(props) {
   }, [pathname]);
 
   useEffect(() => {
-    if (!state.auth) return;
-  }, [state.auth]);
+    if (!loginState.auth) return;
+  }, [loginState.auth]);
 
   return (
     <StyleHeader theme={theme}>
@@ -140,7 +141,7 @@ function Header(props) {
           )}
         </TitleContainer>
       </Container>
-      {!state.auth ? (
+      {!loginState.auth ? (
         <IconContainer theme={theme}>
           <FontAwesomeIcon
             icon={faCircleHalfStroke}
@@ -171,7 +172,7 @@ function Header(props) {
             <FontAwesomeIcon
               icon={faArrowRightFromBracket}
               size="lg"
-              onClick={() => dispatch({ type: "logout" })}
+              onClick={() => dispatchLogin({ type: loginActionTypes.LOGOUT })}
             />
           </IconContainer>
         </Container>

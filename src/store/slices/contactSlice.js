@@ -1,4 +1,4 @@
-import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
+import { createSlice, createAsyncThunk, isAnyOf } from "@reduxjs/toolkit";
 import { delayFunction, getAllData } from "../../utils";
 
 const initialState = {
@@ -29,34 +29,41 @@ export const contactSlice = createSlice({
   initialState,
   extraReducers: (builder) => {
     builder
-      .addCase(getAllContacts.pending, (state) => {
-        state.isLoading = true;
-        state.hasError = false;
-      })
-      .addCase(getAllContacts.rejected, (state) => {
-        state.isLoading = false;
-        state.hasError = true;
-      })
       .addCase(getAllContacts.fulfilled, (state, action) => {
-        state.isLoading = false;
-        state.hasError = false;
         state.contacts = action.payload.data;
         state.unreadContacts = action.payload.data.filter(
           (cont) => !cont.read
         ).length;
       })
       .addCase(updateContact.fulfilled, (state, action) => {
-        state.isLoading = false;
-        state.hasError = false;
-        const index = state.contacts.findIndex(
-          (item) => item.id === action.payload.data.id
+        state.contacts = state.contacts.map((item) =>
+          item.id === action.payload.data.id ? action.payload.data : item
         );
-        const newContact = { ...state.contacts[index], ...action.payload.data };
-        state.contacts.splice(index, 1, newContact);
         state.unreadContacts = state.contacts.filter(
           (cont) => !cont.read
         ).length;
-      });
+      })
+      .addMatcher(
+        isAnyOf(getAllContacts.fulfilled, updateContact.fulfilled),
+        (state) => {
+          state.isLoading = false;
+          state.hasError = false;
+        }
+      )
+      .addMatcher(
+        isAnyOf(getAllContacts.pending, updateContact.pending),
+        (state) => {
+          state.isLoading = true;
+          state.hasError = false;
+        }
+      )
+      .addMatcher(
+        isAnyOf(getAllContacts.rejected, updateContact.rejected),
+        (state) => {
+          state.isLoading = false;
+          state.hasError = true;
+        }
+      );
   },
 });
 

@@ -4,15 +4,21 @@ export const loginContext = createContext();
 
 const reducer = (state, action) => {
   switch (action.type) {
-    case "login":
+    case loginActionTypes.LOGIN:
       return { auth: true, ...action.payload };
-    case "logout":
+    case loginActionTypes.LOGOUT:
       return { ...initialState };
-    case "updateUser":
+    case loginActionTypes.UPDATE:
       return { ...state, ...action.payload };
     default:
       return { ...state };
   }
+};
+
+const loginActionTypes = {
+  LOGIN: "LOGIN",
+  LOGOUT: "LOGOUT",
+  UPDATE: "UPDATE",
 };
 
 const initialState = {
@@ -31,17 +37,19 @@ const getLocalStorage = () => {
 };
 
 export default function LoginContextProvider({ children }) {
-  const [state, dispatch] = useReducer(
+  const [loginState, dispatchLogin] = useReducer(
     reducer,
     getLocalStorage() || initialState
   );
 
   useEffect(() => {
-    setLocalStorage(state);
-  }, [state]);
+    setLocalStorage(loginState);
+  }, [loginState]);
 
   return (
-    <loginContext.Provider value={{ state, dispatch }}>
+    <loginContext.Provider
+      value={{ loginState, dispatchLogin, loginActionTypes }}
+    >
       {children}
     </loginContext.Provider>
   );

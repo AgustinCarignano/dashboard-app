@@ -11,7 +11,7 @@
     "id": "490302669-8",
     "offer": false,
     "price": 450,
-    "discount": null,
+    "discount": "",
     "cancellation": "Integer tincidunt ante vel ipsum. Praesent blandit lacinia erat. Vestibulum sed magna at nunc commodo placerat.\n\nPraesent blandit. Nam nulla. Integer pede justo, lacinia eget, tincidunt eget, tempus vel, pede.",
     "status": "Available",
     "amenities": [
@@ -188,7 +188,7 @@
     "id": "370739113-2",
     "offer": false,
     "price": 1350,
-    "discount": null,
+    "discount": "",
     "cancellation": "In sagittis dui vel nisl. Duis ac nibh. Fusce lacus purus, aliquet at, feugiat non, pretium quis, lectus.\n\nSuspendisse potenti. In eleifend quam a odio. In hac habitasse platea dictumst.\n\nMaecenas ut massa quis augue luctus tincidunt. Nulla mollis molestie lorem. Quisque ut erat.\n\nCurabitur gravida nisi at nibh. In hac habitasse platea dictumst. Aliquam augue quam, sollicitudin vitae, consectetuer eget, rutrum at, lorem.",
     "status": "Available",
     "amenities": [
@@ -215,7 +215,7 @@
     "id": "415823004-7",
     "offer": false,
     "price": 780,
-    "discount": null,
+    "discount": "",
     "cancellation": "Vestibulum ac est lacinia nisi venenatis tristique. Fusce congue, diam id ornare imperdiet, sapien urna pretium nisl, ut volutpat sapien arcu sed augue. Aliquam erat volutpat.\n\nIn congue. Etiam justo. Etiam pretium iaculis justo.\n\nIn hac habitasse platea dictumst. Etiam faucibus cursus urna. Ut tellus.",
     "status": "Available",
     "amenities": [
@@ -344,7 +344,7 @@
     "id": "309647892-9",
     "offer": false,
     "price": 450,
-    "discount": null,
+    "discount": "",
     "cancellation": "Sed sagittis. Nam congue, risus semper porta volutpat, quam pede lobortis ligula, sit amet eleifend pede libero quis orci. Nullam molestie nibh in lectus.\n\nPellentesque at nulla. Suspendisse potenti. Cras in purus eu magna vulputate luctus.\n\nCum sociis natoque penatibus et magnis dis parturient montes, nascetur ridiculus mus. Vivamus vestibulum sagittis sapien. Cum sociis natoque penatibus et magnis dis parturient montes, nascetur ridiculus mus.",
     "status": "Available",
     "amenities": [
@@ -368,7 +368,7 @@
     "id": "440557592-4",
     "offer": false,
     "price": 450,
-    "discount": null,
+    "discount": "",
     "cancellation": "Praesent id massa id nisl venenatis lacinia. Aenean sit amet justo. Morbi ut odio.\n\nCras mi pede, malesuada in, imperdiet et, commodo vulputate, justo. In blandit ultrices enim. Lorem ipsum dolor sit amet, consectetuer adipiscing elit.",
     "status": "Available",
     "amenities": [
@@ -442,7 +442,7 @@
     "id": "066925827-X",
     "offer": false,
     "price": 280,
-    "discount": null,
+    "discount": "",
     "cancellation": "Integer tincidunt ante vel ipsum. Praesent blandit lacinia erat. Vestibulum sed magna at nunc commodo placerat.\n\nPraesent blandit. Nam nulla. Integer pede justo, lacinia eget, tincidunt eget, tempus vel, pede.\n\nMorbi porttitor lorem id ligula. Suspendisse ornare consequat lectus. In est risus, auctor sed, tristique in, tempus sit amet, sem.",
     "status": "Available",
     "amenities": [
@@ -518,7 +518,7 @@
     "id": "993621280-0",
     "offer": false,
     "price": 1350,
-    "discount": null,
+    "discount": "",
     "cancellation": "Praesent blandit. Nam nulla. Integer pede justo, lacinia eget, tincidunt eget, tempus vel, pede.\n\nMorbi porttitor lorem id ligula. Suspendisse ornare consequat lectus. In est risus, auctor sed, tristique in, tempus sit amet, sem.\n\nFusce consequat. Nulla nisl. Nunc nisl.\n\nDuis bibendum, felis sed interdum venenatis, turpis enim blandit mi, in porttitor pede justo eu massa. Donec dapibus. Duis at velit eu est congue elementum.",
     "status": "Booked",
     "amenities": [
@@ -545,7 +545,7 @@
     "id": "413248824-1",
     "offer": false,
     "price": 1350,
-    "discount": null,
+    "discount": "",
     "cancellation": "Duis bibendum. Morbi non quam nec dui luctus rutrum. Nulla tellus.\n\nIn sagittis dui vel nisl. Duis ac nibh. Fusce lacus purus, aliquet at, feugiat non, pretium quis, lectus.\n\nSuspendisse potenti. In eleifend quam a odio. In hac habitasse platea dictumst.",
     "status": "Available",
     "amenities": [
@@ -572,7 +572,7 @@
     "id": "749425047-6",
     "offer": false,
     "price": 280,
-    "discount": null,
+    "discount": "",
     "cancellation": "Fusce consequat. Nulla nisl. Nunc nisl.\n\nDuis bibendum, felis sed interdum venenatis, turpis enim blandit mi, in porttitor pede justo eu massa. Donec dapibus. Duis at velit eu est congue elementum.\n\nIn hac habitasse platea dictumst. Morbi vestibulum, velit id pretium iaculis, diam erat fermentum justo, nec condimentum neque sapien placerat ante. Nulla justo.\n\nAliquam quis turpis eget elit sodales scelerisque. Mauris sit amet eros. Suspendisse accumsan tortor quis turpis.",
     "status": "Booked",
     "amenities": [
@@ -597,7 +597,7 @@
     "id": "667152759-8",
     "offer": false,
     "price": 780,
-    "discount": null,
+    "discount": "",
     "cancellation": "In quis justo. Maecenas rhoncus aliquam lacus. Morbi quis tortor id nulla ultrices aliquet.",
     "status": "Available",
     "amenities": [
@@ -724,7 +724,7 @@
     "id": "297990795-2",
     "offer": false,
     "price": 450,
-    "discount": null,
+    "discount": "",
     "cancellation": "Proin interdum mauris non ligula pellentesque ultrices. Phasellus id sapien in sapien iaculis congue. Vivamus metus arcu, adipiscing molestie, hendrerit at, vulputate vitae, nisl.\n\nAenean lectus. Pellentesque eget nunc. Donec quis orci eget orci vehicula condimentum.",
     "status": "Booked",
     "amenities": [
@@ -748,7 +748,7 @@
     "id": "245394699-4",
     "offer": false,
     "price": 450,
-    "discount": null,
+    "discount": "",
     "cancellation": "Integer ac leo. Pellentesque ultrices mattis odio. Donec vitae nisi.\n\nNam ultrices, libero non mattis pulvinar, nulla pede ullamcorper augue, a suscipit nulla elit ac nulla. Sed vel enim sit amet nunc viverra dapibus. Nulla suscipit ligula in lacus.\n\nCurabitur at ipsum ac tellus semper interdum. Mauris ullamcorper purus sit amet nulla. Quisque arcu libero, rutrum ac, lobortis vel, dapibus at, diam.",
     "status": "Available",
     "amenities": [

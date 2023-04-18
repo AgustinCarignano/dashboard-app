@@ -1,4 +1,5 @@
 import styled from "styled-components";
+import calendar from "../images/calendarIcon.svg";
 
 export const Container = styled.div`
   background-color: ${(props) => props.theme[1]};
@@ -67,6 +68,13 @@ export const PhotoInput = styled(Input)`
   width: 100%;
   max-width: unset;
   margin-left: 5px;
+`;
+export const DateInput = styled(Input)`
+  &::-webkit-calendar-picker-indicator {
+    background-image: url(${calendar});
+    transform: scale(1.3);
+    cursor: pointer;
+  }
 `;
 export const ExtraContainer = styled.div`
   display: flex;

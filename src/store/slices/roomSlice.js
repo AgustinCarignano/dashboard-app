@@ -1,4 +1,4 @@
-import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
+import { createSlice, createAsyncThunk, isAnyOf } from "@reduxjs/toolkit";
 import {
   generateId,
   getAllData,
@@ -50,53 +50,67 @@ export const roomsSlice = createSlice({
   initialState,
   extraReducers: (builder) => {
     builder
-      .addCase(getRoomsData.pending, (state) => {
-        state.isLoading = true;
-        state.hasError = false;
-      })
-      .addCase(getRoomsData.rejected, (state) => {
-        state.isLoading = false;
-        state.hasError = true;
-      })
       .addCase(getRoomsData.fulfilled, (state, action) => {
-        state.isLoading = false;
-        state.hasError = false;
         state.rooms = action.payload.data;
       })
-      .addCase(getRoomDetails.pending, (state) => {
-        state.isLoading = true;
-        state.hasError = false;
-      })
-      .addCase(getRoomDetails.rejected, (state) => {
-        state.isLoading = false;
-        state.hasError = true;
-      })
       .addCase(getRoomDetails.fulfilled, (state, action) => {
-        state.isLoading = false;
-        state.hasError = false;
         state.room = action.payload.data;
       })
       .addCase(createRoom.fulfilled, (state, action) => {
-        state.isLoading = false;
-        state.hasError = false;
         state.rooms.push(action.payload.data);
       })
       .addCase(updateRoom.fulfilled, (state, action) => {
-        state.isLoading = false;
-        state.hasError = false;
-        const index = state.rooms.findIndex(
-          (room) => room.id === action.payload.data.id
+        state.rooms = state.rooms.map((item) =>
+          item.id === action.payload.data.id ? action.payload.data : item
         );
-        state.rooms.splice(index, 1, action.payload.data);
+        if (state.room.id === action.payload.data.id) {
+          state.room = action.payload.data;
+        }
       })
       .addCase(deleteRoom.fulfilled, (state, action) => {
-        state.isLoading = false;
-        state.hasError = false;
-        const index = state.rooms.findIndex(
-          (room) => room.id === action.payload.id
+        state.rooms = state.room.filter(
+          (user) => user.id !== action.payload.id
         );
-        if (index !== -1) state.rooms.splice(index, 1);
-      });
+      })
+      .addMatcher(
+        isAnyOf(
+          getRoomsData.fulfilled,
+          getRoomDetails.fulfilled,
+          createRoom.fulfilled,
+          updateRoom.fulfilled,
+          deleteRoom.fulfilled
+        ),
+        (state) => {
+          state.isLoading = false;
+          state.hasError = false;
+        }
+      )
+      .addMatcher(
+        isAnyOf(
+          getRoomsData.pending,
+          getRoomDetails.pending,
+          createRoom.pending,
+          updateRoom.pending,
+          deleteRoom.pending
+        ),
+        (state) => {
+          state.isLoading = true;
+          state.hasError = false;
+        }
+      )
+      .addMatcher(
+        isAnyOf(
+          getRoomsData.rejected,
+          getRoomDetails.rejected,
+          createRoom.rejected,
+          updateRoom.rejected,
+          deleteRoom.rejected
+        ),
+        (state) => {
+          state.isLoading = false;
+          state.hasError = true;
+        }
+      );
   },
 });
 

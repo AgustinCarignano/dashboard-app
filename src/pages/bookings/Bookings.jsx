@@ -18,7 +18,7 @@ import {
   selectIsLoading,
   getBookingsData,
   deleteBooking,
-} from "./bookingSlice";
+} from "../../store/slices/bookingSlice";
 import Loader from "../../components/Loader";
 import DeleteItem from "../../components/DeleteItem";
 import { themeContext } from "../../context/ThemeContext";

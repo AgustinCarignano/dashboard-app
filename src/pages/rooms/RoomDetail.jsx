@@ -6,7 +6,7 @@ import {
   selectRoomDetails,
   selectIsLoading,
   deleteRoom,
-} from "./roomSlice.js";
+} from "../../store/slices/roomSlice.js";
 import MainContainer from "../../components/MainContainer.jsx";
 import Button from "../../components/Button.jsx";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
@@ -65,8 +65,8 @@ function RoomDetail() {
   }
 
   useEffect(() => {
-    dispatch(getRoomDetails(id));
-  }, [dispatch, id]);
+    if (item.id !== id) dispatch(getRoomDetails(id));
+  }, [dispatch, item, id]);
 
   return (
     <MainContainer>
