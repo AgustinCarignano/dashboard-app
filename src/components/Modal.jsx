@@ -69,9 +69,6 @@ function Modal(props) {
           onClick={(e) => {
             e.target.id.includes("closeWindow") && setOpenModal(false);
           }}
-          /* onClick={(e) => {
-            !e.target.id.includes("modalWindow") && setOpenModal(false);
-          }} */
         >
           <ModalWindow id="modalWindow" theme={theme}>
             <FontAwesomeIcon

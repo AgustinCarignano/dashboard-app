@@ -2,7 +2,7 @@ import styled from "styled-components";
 import { useContext } from "react";
 import { themeContext } from "../context/ThemeContext";
 
-const MyButton = styled.button`
+export const MyButton = styled.button`
   color: ${(props) => props.color};
   background-color: ${(props) => props.background};
   border: ${(props) => props.border};
@@ -10,7 +10,8 @@ const MyButton = styled.button`
   text-align: center;
   padding: 13px 35px;
   border-radius: 12px;
-  cursor: pointer;
+  cursor: ${(props) => (props.onClick ? "Pointer" : "normal")};
+  /* cursor: pointer; */
 `;
 
 export default function Button({ variant, children, onClick, value, name }) {

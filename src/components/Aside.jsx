@@ -149,7 +149,7 @@ function Aside(props) {
         <>
           <LinkContainer active={pathArray[2] === ""} theme={theme}>
             <FontAwesomeIcon icon={faTableColumns} />
-            <Link to="dashboard-app/">
+            <Link to="dashboard-app/dashboard">
               <p>Dashboard</p>
             </Link>
           </LinkContainer>

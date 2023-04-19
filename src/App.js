@@ -1,5 +1,11 @@
 import React, { useState } from "react";
-import { BrowserRouter, Routes, Route } from "react-router-dom";
+import {
+  BrowserRouter,
+  Routes,
+  Route,
+  redirect,
+  Navigate,
+} from "react-router-dom";
 import Bookings from "./pages/bookings/Bookings";
 import BookingDetail from "./pages/bookings/BookingDetail";
 import Contact from "./pages/contact/Contact";
@@ -42,6 +48,10 @@ function App() {
                 <Route path="/dashboard-app/login" element={<Login />} />
                 <Route
                   path="/dashboard-app/"
+                  element={<Navigate to="/dashboard-app/dashboard" />}
+                />
+                <Route
+                  path="/dashboard-app/dashboard"
                   element={
                     <RequiredAuth>
                       <Dashboard />
