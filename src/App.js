@@ -27,6 +27,7 @@ import ThemeContextProvider from "./context/ThemeContext";
 import UpdateBooking from "./pages/bookings/UpdateBooking";
 import UpdateRoom from "./pages/rooms/UpdateRoom";
 import UpdateUser from "./pages/users/UpdateUser";
+import InvalidPage from "./pages/invalidPage/InvalidPage";
 
 function App() {
   const [showSidebar, setShowSidebar] = useState(true);
@@ -162,6 +163,7 @@ function App() {
                     </RequiredAuth>
                   }
                 />
+                <Route path="*" element={<InvalidPage />} />
               </Routes>
             </Layout>
           </div>

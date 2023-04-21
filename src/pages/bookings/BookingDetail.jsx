@@ -100,7 +100,7 @@ function BookingDetail() {
       {isLoadingBookingData ? (
         <Loader />
       ) : (
-        <ItemContainer theme={theme}>
+        <ItemContainer theme={theme} data-cy="bookingDetail">
           <LeftColumn>
             <PrimaryContainer>
               <DetailHeader theme={theme}>

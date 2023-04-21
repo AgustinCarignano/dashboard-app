@@ -17,6 +17,7 @@ import {
 } from "../../components/FormComponents";
 import { themeContext } from "../../context/ThemeContext";
 import Loader from "../../components/Loader";
+import ErrorAlert from "../../components/ErrorAlert";
 
 const availableAmenities = [
   "Air Conditioner",
@@ -41,32 +42,53 @@ const availableTypeRoom = [
 function FormRoom(props) {
   const { initialState, onSubmitAction } = props;
   const [room, setRoom] = useState({});
+  const [submitError, setSubmitError] = useState({
+    hasError: false,
+    photos: [false, false, false],
+    roomType: false,
+    description: false,
+    roomNumber: false,
+    offer: false,
+    price: false,
+    discount: false,
+    cancellation: false,
+    amenities: false,
+  });
   const { theme } = useContext(themeContext);
 
   function handleInputsChange(e) {
     const copyOfData = structuredClone(room);
+    const copyOfSubmitError = { ...submitError };
     const key = e.target.name;
     const value = e.target.value;
     if (key === "offer") {
+      copyOfSubmitError.discount = false;
       copyOfData[key] = value === "true";
       if (value === "false") copyOfData.discount = "";
     } else if (key.includes("photo")) {
       const index = key.split("_")[1];
       copyOfData["photos"][index] = value;
+      copyOfSubmitError["photos"][index] = false;
     } else {
       copyOfData[key] = value;
+      copyOfSubmitError[key] = false;
     }
     setRoom(copyOfData);
+    setSubmitError(copyOfSubmitError);
   }
 
   function handlePhotosQuantity(action) {
     const copyOfData = structuredClone(room);
+    const copyOfSubmitError = { ...submitError };
     if (action === "add" && copyOfData.photos.length < 5) {
       copyOfData.photos.push("");
+      copyOfSubmitError.photos.push(false);
     } else if (action === "remove" && copyOfData.photos.length > 3) {
       copyOfData.photos.pop();
+      copyOfSubmitError.photos.pop();
     }
     setRoom(copyOfData);
+    setSubmitError(copyOfSubmitError);
   }
 
   function toggleAmenity(amenity) {
@@ -77,24 +99,46 @@ function FormRoom(props) {
     } else {
       copyOfData.amenities.splice(index, 1);
     }
+    setSubmitError({ ...submitError, amenities: false });
     setRoom(copyOfData);
   }
 
   function verifyForm(data) {
+    let isValid = true;
+    const errorObj = { ...submitError };
     for (const key in data) {
       if (key === "discount" || key === "id") continue;
-      if (key === "offer") {
-        if (data[key] && !data["discount"]) return false;
+      else if (key === "offer") {
+        if (data[key] && !data["discount"]) {
+          errorObj.discount = true;
+          isValid = false;
+        }
+        continue;
+      } else if (key === "photos") {
+        data.photos.forEach((item, index) => {
+          if (item === "") {
+            errorObj[key][index] = true;
+            isValid = false;
+          }
+        });
+        continue;
+      } else if (key === "amenities") {
+        if (data[key].length === 0) {
+          errorObj[key] = true;
+          isValid = false;
+        }
+        continue;
+      } else {
+        if (data[key] === "") {
+          errorObj[key] = true;
+          isValid = false;
+        }
+        continue;
       }
-      if (key === "photos") {
-        if (data[key].includes("")) return false;
-      }
-      if (key === "amenities") {
-        if (data[key].length === 0) return false;
-      }
-      if (data[key] === "") return false;
     }
-    return true;
+    if (!isValid) errorObj.hasError = true;
+    setSubmitError(errorObj);
+    return isValid;
   }
 
   async function handleOnSubmit(e) {
@@ -133,6 +177,7 @@ function FormRoom(props) {
                 theme={theme}
                 name="roomType"
                 value={room.roomType}
+                hasError={submitError.roomType}
                 onChange={handleInputsChange}
               >
                 {availableTypeRoom.map((item, index) => {
@@ -155,6 +200,7 @@ function FormRoom(props) {
                 autoComplete="off"
                 name="roomNumber"
                 value={room.roomNumber}
+                hasError={submitError.roomNumber}
                 onChange={handleInputsChange}
               />
             </Field>
@@ -183,6 +229,7 @@ function FormRoom(props) {
                 theme={theme}
                 name="price"
                 value={room.price}
+                hasError={submitError.price}
                 onChange={handleInputsChange}
                 type="number"
               />
@@ -194,11 +241,14 @@ function FormRoom(props) {
                 name="discount"
                 onChange={handleInputsChange}
                 disabled={!room.offer}
+                hasError={submitError.discount}
                 value={!room.offer ? "" : room.discount}
               />
             </Field>
             <Field>
-              <Label theme={theme}>Amenities</Label>
+              <Label theme={theme} hasError={submitError.amenities}>
+                Amenities
+              </Label>
               <ExtraContainer direction="row">
                 {availableAmenities.map((item, index) => {
                   let variant = room.amenities.includes(item) ? 1 : 4;
@@ -225,6 +275,7 @@ function FormRoom(props) {
                     key={index}
                     name={`photo_${index}`}
                     value={room.photos[index]}
+                    hasError={submitError.photos[index]}
                     onChange={handleInputsChange}
                   />
                 ))}
@@ -256,6 +307,7 @@ function FormRoom(props) {
                 name="description"
                 style={{ width: "70%" }}
                 value={room.description}
+                hasError={submitError.description}
                 onChange={handleInputsChange}
               />
             </Field>
@@ -266,6 +318,7 @@ function FormRoom(props) {
                 name="cancellation"
                 style={{ width: "70%" }}
                 value={room.cancellation}
+                hasError={submitError.cancellation}
                 onChange={handleInputsChange}
               />
             </Field>
@@ -275,6 +328,16 @@ function FormRoom(props) {
               {initialState.id ? "SAVE" : "CREATE"}
             </Button>
           </Submit>
+          {submitError.hasError && (
+            <ErrorAlert
+              toggleVisibity={() =>
+                setSubmitError({ ...submitError, hasError: false })
+              }
+              message="Error: check the remark inputs"
+              dataCy="rooms_form"
+              textBtn="OK"
+            />
+          )}
         </FormContainer>
       </Container>
     </MainContainer>

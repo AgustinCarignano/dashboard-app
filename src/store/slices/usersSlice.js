@@ -23,7 +23,7 @@ export const getUserDetails = createAsyncThunk(
   "users/getUserDetails",
   async (id) => {
     const data = await getItemData("users_data.json", id);
-    return { data };
+    return { data, id };
   }
 );
 
@@ -53,10 +53,21 @@ export const usersSlice = createSlice({
   extraReducers: (builder) => {
     builder
       .addCase(getUsersData.fulfilled, (state, action) => {
-        state.users = action.payload.data;
+        //state.users = action.payload.data;
+        if (state.users.length === 0) {
+          state.users = action.payload.data;
+        }
       })
       .addCase(getUserDetails.fulfilled, (state, action) => {
-        state.user = action.payload.data;
+        //state.user = action.payload.data;
+        if (action.payload.data) {
+          state.user = action.payload.data;
+        } else {
+          const user = state.users.find(
+            (item) => item.id === action.payload.id
+          );
+          state.user = user;
+        }
       })
       .addCase(createUser.fulfilled, (state, action) => {
         state.users.push(action.payload.data);

@@ -6,6 +6,7 @@ import { getItemData } from "../../utils";
 import Button from "../../components/Button";
 import { themeContext } from "../../context/ThemeContext";
 import { ModalContainer, ModalWindow } from "../../components/Modal";
+import ErrorAlert from "../../components/ErrorAlert";
 
 const FormContainer = styled.div`
   width: 100%;
@@ -69,8 +70,6 @@ const Field = styled.div`
 function Login() {
   const { loginState, loginActionTypes, dispatchLogin } =
     useContext(loginContext);
-  /* const [userName, setUserName] = useState("agustinC");
-  const [password, setPassword] = useState("12345"); */
   const [credentials, setCredentials] = useState({
     userName: "agustinC",
     password: "12345",
@@ -155,7 +154,6 @@ function Login() {
             id="userName"
             autoComplete="off"
             onChange={handleInputChange}
-            // onChange={(e) => setUserName(e.target.value)}
             value={credentials.userName}
           />
         </Field>
@@ -167,7 +165,6 @@ function Login() {
             name="password"
             id="password"
             onChange={handleInputChange}
-            // onChange={(e) => setPassword(e.target.value)}
             value={credentials.password}
           />
         </Field>
@@ -176,7 +173,21 @@ function Login() {
         </Button>
       </Form>
       {showAlert.modal && (
-        <ModalContainer
+        <ErrorAlert
+          toggleVisibity={() => setShowAlert({ ...showAlert, modal: false })}
+          message={showAlert.message}
+          dataCy="loginErrorMessage"
+          textBtn="Try again"
+        />
+      )}
+    </FormContainer>
+  );
+}
+
+export default Login;
+
+{
+  /* <ModalContainer
           id="closeWindow"
           theme={theme}
           onClick={(e) => {
@@ -193,10 +204,5 @@ function Login() {
               Try again
             </Button>
           </ModalWindow>
-        </ModalContainer>
-      )}
-    </FormContainer>
-  );
+        </ModalContainer> */
 }
-
-export default Login;

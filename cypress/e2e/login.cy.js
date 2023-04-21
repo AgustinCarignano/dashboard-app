@@ -1,6 +1,6 @@
 describe("Private routes with login", () => {
   beforeEach(() => {
-    cy.visit("http://localhost:3000/dashboard-app/");
+    cy.visit("/");
   });
 
   it("Successfuly loaded and redirected to login", () => {
@@ -8,7 +8,7 @@ describe("Private routes with login", () => {
   });
 
   it("Redirected to login if a private url is enter", () => {
-    cy.visit("http://localhost:3000/dashboard-app/bookings");
+    cy.visit("/bookings");
     cy.url().should("include", "/login");
   });
 

@@ -22,7 +22,7 @@ export const getRoomDetails = createAsyncThunk(
   "rooms/getRoomDetails",
   async (id) => {
     const data = await getItemData("rooms_data.json", id);
-    return { data };
+    return { data, id };
   }
 );
 
@@ -51,10 +51,21 @@ export const roomsSlice = createSlice({
   extraReducers: (builder) => {
     builder
       .addCase(getRoomsData.fulfilled, (state, action) => {
-        state.rooms = action.payload.data;
+        //state.rooms = action.payload.data;
+        if (state.rooms.length === 0) {
+          state.rooms = action.payload.data;
+        }
       })
       .addCase(getRoomDetails.fulfilled, (state, action) => {
-        state.room = action.payload.data;
+        //state.room = action.payload.data;
+        if (action.payload.data) {
+          state.room = action.payload.data;
+        } else {
+          const room = state.rooms.find(
+            (item) => item.id === action.payload.id
+          );
+          state.room = room;
+        }
       })
       .addCase(createRoom.fulfilled, (state, action) => {
         state.rooms.push(action.payload.data);
@@ -68,7 +79,7 @@ export const roomsSlice = createSlice({
         }
       })
       .addCase(deleteRoom.fulfilled, (state, action) => {
-        state.rooms = state.room.filter(
+        state.rooms = state.rooms.filter(
           (user) => user.id !== action.payload.id
         );
       })

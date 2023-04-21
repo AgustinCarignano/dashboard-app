@@ -66,7 +66,7 @@ const ExtraWindow = styled.div`
 function Popup(props) {
   const [show, setShow] = useState(false);
   const { theme } = useContext(themeContext);
-  const { preview, options, itemId, withArrow } = props;
+  const { preview, options, itemId, withArrow, dataCy } = props;
 
   function handleVisibility() {
     setShow((prev) => !prev);
@@ -79,7 +79,7 @@ function Popup(props) {
 
   return (
     <Wrapp>
-      <Preview onClick={handleVisibility}>
+      <Preview onClick={handleVisibility} data-cy={dataCy || ""}>
         {preview}
         {withArrow && (
           <ArrowIcon turnArrow={show} theme={theme}>
@@ -93,7 +93,11 @@ function Popup(props) {
         position={withArrow ? "50px" : "30px"}
       >
         {options.map((item, index) => (
-          <Option key={index} onClick={() => handleAction(item.action)}>
+          <Option
+            key={index}
+            onClick={() => handleAction(item.action)}
+            data-cy={item.dataCy ? item.dataCy + itemId : ""}
+          >
             {item.label}
           </Option>
         ))}

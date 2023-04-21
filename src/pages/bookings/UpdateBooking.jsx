@@ -26,7 +26,28 @@ function UpdateBooking() {
     navigate(`/dashboard-app/bookings/${data.id}`);
   }
 
-  async function configInitialState() {
+  function configInitialState() {
+    const clone = { ...bookingData };
+    clone.checkIn = formatDate(bookingData.checkIn)[2];
+    clone.checkOut = formatDate(bookingData.checkOut)[2];
+    const { roomId, roomType, roomNumber } = clone;
+    setCurrentRoom({ roomId, roomType, roomNumber });
+    setInitialState(clone);
+  }
+
+  useEffect(() => {
+    if (bookingData.id !== id) {
+      dispatch(getBookingDetails(id));
+    } else {
+      configInitialState();
+    }
+  }, [dispatch, id]);
+
+  useEffect(() => {
+    configInitialState();
+  }, [bookingData]);
+
+  /* async function configInitialState() {
     const payload = await dispatch(getBookingDetails(id)).unwrap();
     const clone = { ...payload.data };
     clone.checkIn = formatDate(bookingData.checkIn)[2];
@@ -38,7 +59,7 @@ function UpdateBooking() {
 
   useEffect(() => {
     configInitialState();
-  }, [dispatch]);
+  }, [dispatch]); */
 
   if (!Object.keys(initialState).includes("guest") || isLoading)
     return (

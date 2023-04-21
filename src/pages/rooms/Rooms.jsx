@@ -91,7 +91,7 @@ function Rooms() {
       id: item.id,
       rowData: [
         <RowContainer justify="normal" onClick={() => handleRedirect(item.id)}>
-          <ImgRowContainer>
+          <ImgRowContainer aspectRatio="3/2">
             <img src={item.photos[0]} alt="thumbnail" />
           </ImgRowContainer>
           <div>
@@ -146,7 +146,7 @@ function Rooms() {
     }
     manipulatedData.sort((a, b) => {
       let inv = 1;
-      if (ascPrice) inv = -1;
+      if (ascPrice && orderBy === "price") inv = -1;
       if (a[orderBy] > b[orderBy]) return inv * 1;
       else if (a[orderBy] < b[orderBy]) return inv * -1;
       else return 0;

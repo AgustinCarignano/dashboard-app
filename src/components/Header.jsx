@@ -1,5 +1,5 @@
 import React, { useContext, useEffect, useState } from "react";
-import styled from "styled-components";
+import styled, { keyframes } from "styled-components";
 import { useLocation, useNavigate } from "react-router-dom";
 import { useSelector } from "react-redux";
 import { loginContext } from "../context/LoginContext";
@@ -50,6 +50,18 @@ const Container = styled.div`
   gap: 50px;
 `;
 
+const shakeNotif = keyframes`
+  0%{
+    transform:translateX(0px) translateY(0px);
+  }
+  50%{
+    transform:translateX(3px) translateY(-3px);
+  }
+  100%{
+    transform:translateX(0px) translateY(0px);
+  }
+`;
+
 const IconContainer = styled.div`
   color: ${(props) => props.theme[15]};
   position: relative;
@@ -65,6 +77,9 @@ const IconContainer = styled.div`
     position: absolute;
     top: -70%;
     right: -100%;
+  }
+  &:hover span {
+    animation: ${shakeNotif} 0.2s linear 0s 2;
   }
 `;
 
@@ -172,6 +187,7 @@ function Header(props) {
             <FontAwesomeIcon
               icon={faArrowRightFromBracket}
               size="lg"
+              data-cy="logoutBtn"
               onClick={() => dispatchLogin({ type: loginActionTypes.LOGOUT })}
             />
           </IconContainer>

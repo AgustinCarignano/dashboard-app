@@ -110,6 +110,7 @@ export const ImgRowContainer = styled.div`
   img {
     width: 100%;
     border-radius: 8px;
+    aspect-ratio: ${(props) => props.aspectRatio};
   }
 `;
 
@@ -262,6 +263,7 @@ function Table(props) {
             <SearchContainer theme={theme}>
               <FontAwesomeIcon icon={faMagnifyingGlass} />
               <Search
+                data-cy="searchBar"
                 theme={theme}
                 placeholder="Search by name..."
                 onChange={(e) => setSearchTerms(e.target.value)}
@@ -283,7 +285,7 @@ function Table(props) {
         </TabList>
       )}
       <DndProvider backend={HTML5Backend}>
-        <MyTable theme={theme}>
+        <MyTable theme={theme} data-cy="dataTable">
           <thead>
             <tr>
               {tableHeader.map((item, index) => (

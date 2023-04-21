@@ -23,8 +23,8 @@ function NewUser() {
   };
 
   async function onSubmitAction(data) {
-    await dispatch(createUser(data)).unwrap();
-    navigate("/dashboard-app/users");
+    const payload = await dispatch(createUser(data)).unwrap();
+    navigate(`/dashboard-app/users/${payload.data.id}`);
   }
 
   return (

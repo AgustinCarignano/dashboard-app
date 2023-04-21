@@ -15,6 +15,7 @@ import {
 } from "../../components/FormComponents";
 import { themeContext } from "../../context/ThemeContext";
 import Loader from "../../components/Loader";
+import ErrorAlert from "../../components/ErrorAlert";
 
 const availableRoles = [
   "(Select one role)",
@@ -27,23 +28,48 @@ function FormUser(props) {
   const { initialState, onSubmitAction, verifyPassword } = props;
   const [user, setUser] = useState({});
   const [controlPassword, setControlPassword] = useState("");
+  const [submitError, setSubmitError] = useState({
+    hasError: false,
+    photo: false,
+    fullName: false,
+    email: false,
+    startDate: false,
+    description: false,
+    contact: false,
+    role: false,
+    password: false,
+  });
   const { theme } = useContext(themeContext);
 
   function handleInputsChange(e) {
     const copyOfData = { ...user };
+    const copyOfSubmitError = { ...submitError };
     const key = e.target.name;
     const value = e.target.value;
     copyOfData[key] = value;
+    copyOfSubmitError[key] = false;
     setUser(copyOfData);
+    setSubmitError(copyOfSubmitError);
   }
 
   function verifyForm(data) {
+    const errorObj = { ...submitError };
+    let isValid = true;
     for (const key in data) {
       if (key === "id") continue;
-      if (!data[key]) return false;
+      if (!data[key]) {
+        errorObj[key] = true;
+        isValid = false;
+        continue;
+      }
     }
-    if (verifyPassword && data.password !== controlPassword) return false;
-    return true;
+    if (verifyPassword && data.password !== controlPassword) {
+      errorObj["password"] = true;
+      isValid = false;
+    }
+    if (!isValid) errorObj.hasError = true;
+    setSubmitError(errorObj);
+    return isValid;
   }
 
   async function handleOnSubmit(e) {
@@ -81,6 +107,7 @@ function FormUser(props) {
                 theme={theme}
                 name="photo"
                 value={user.photo}
+                hasError={submitError.photo}
                 onChange={handleInputsChange}
               />
             </Field>
@@ -90,6 +117,7 @@ function FormUser(props) {
                 theme={theme}
                 name="fullName"
                 value={user.fullName}
+                hasError={submitError.fullName}
                 onChange={handleInputsChange}
               />
             </Field>
@@ -100,6 +128,7 @@ function FormUser(props) {
                 type="email"
                 name="email"
                 value={user.email}
+                hasError={submitError.email}
                 onChange={handleInputsChange}
               />
             </Field>
@@ -109,6 +138,7 @@ function FormUser(props) {
                 theme={theme}
                 name="contact"
                 value={user.contact}
+                hasError={submitError.contact}
                 onChange={handleInputsChange}
               />
             </Field>
@@ -121,6 +151,7 @@ function FormUser(props) {
                     type="password"
                     name="password"
                     value={user.password}
+                    hasError={submitError.password}
                     onChange={handleInputsChange}
                   />
                 </Field>
@@ -130,6 +161,7 @@ function FormUser(props) {
                     theme={theme}
                     type="password"
                     value={controlPassword}
+                    hasError={submitError.password}
                     onChange={(e) => setControlPassword(e.target.value)}
                   />
                 </Field>
@@ -143,6 +175,7 @@ function FormUser(props) {
                 theme={theme}
                 name="role"
                 value={user.role}
+                hasError={submitError.role}
                 onChange={handleInputsChange}
               >
                 {availableRoles.map((item, index) => {
@@ -184,6 +217,7 @@ function FormUser(props) {
                 name="startDate"
                 type="date"
                 value={user.startDate}
+                hasError={submitError.startDate}
                 onChange={handleInputsChange}
               />
             </Field>
@@ -193,6 +227,7 @@ function FormUser(props) {
                 theme={theme}
                 name="description"
                 value={user.description}
+                hasError={submitError.description}
                 onChange={handleInputsChange}
               />
             </Field>
@@ -202,6 +237,16 @@ function FormUser(props) {
               {user.id ? "SAVE" : "CREATE"}
             </Button>
           </Submit>
+          {submitError.hasError && (
+            <ErrorAlert
+              toggleVisibity={() =>
+                setSubmitError({ ...submitError, hasError: false })
+              }
+              message="Error: check the remark inputs"
+              dataCy="users_form"
+              textBtn="OK"
+            />
+          )}
         </FormContainer>
       </Container>
     </MainContainer>

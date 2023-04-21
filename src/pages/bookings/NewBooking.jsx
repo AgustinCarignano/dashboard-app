@@ -22,8 +22,8 @@ function NewBooking() {
   };
 
   async function onSubmitAction(data) {
-    await dispatch(createBooking(data)).unwrap();
-    navigate("/dashboard-app/bookings");
+    const payload = await dispatch(createBooking(data)).unwrap();
+    navigate(`/dashboard-app/bookings/${payload.data.id}`);
   }
 
   return (

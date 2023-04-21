@@ -34,7 +34,7 @@ export const Label = styled.label`
   text-align: right;
   width: 40%;
   padding: 10px;
-  color: ${(props) => props.theme[21]};
+  color: ${(props) => (props.hasError ? props.theme[11] : props.theme[21])};
 `;
 export const Input = styled.input`
   font-size: 20px;
@@ -45,7 +45,8 @@ export const Input = styled.input`
   max-width: 300px;
   padding: 10px;
   border-radius: 8px;
-  border: solid 1px ${(props) => props.theme[7]};
+  border: solid 1px
+    ${(props) => (props.hasError ? props.theme[11] : props.theme[7])};
   outline: none;
 `;
 export const Select = styled.select`
@@ -57,7 +58,8 @@ export const Select = styled.select`
   max-width: 300px;
   padding: 10px;
   border-radius: 8px;
-  border: solid 1px ${(props) => props.theme[7]};
+  border: solid 1px
+    ${(props) => (props.hasError ? props.theme[11] : props.theme[7])};
   outline: none;
   option {
     font-size: 10px;
@@ -91,7 +93,8 @@ export const TextArea = styled.textarea`
   width: 55%;
   padding: 10px;
   border-radius: 8px;
-  border: solid 1px ${(props) => props.theme[7]};
+  border: solid 1px
+    ${(props) => (props.hasError ? props.theme[11] : props.theme[7])};
   outline: none;
   height: 150px;
   resize: none;

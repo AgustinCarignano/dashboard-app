@@ -25,7 +25,7 @@ export const getBookingDetails = createAsyncThunk(
   "bookings/getBookingDetails",
   async (id) => {
     const data = await getItemData("bookings_data.json", id);
-    return { data };
+    return { data, id };
   }
 );
 
@@ -60,10 +60,20 @@ export const bookingsSlice = createSlice({
   extraReducers: (builder) => {
     builder
       .addCase(getBookingsData.fulfilled, (state, action) => {
-        state.bookings = action.payload.data;
+        //state.bookings = action.payload.data;
+        if (state.bookings.length === 0) {
+          state.bookings = action.payload.data;
+        }
       })
       .addCase(getBookingDetails.fulfilled, (state, action) => {
-        state.booking = action.payload.data;
+        if (action.payload.data) {
+          state.booking = action.payload.data;
+        } else {
+          const booking = state.bookings.find(
+            (item) => item.id === action.payload.id
+          );
+          state.booking = booking;
+        }
       })
       .addCase(createBooking.fulfilled, (state, action) => {
         state.bookings.push(action.payload.data);

@@ -42,7 +42,7 @@ const MyCard = styled.div`
   overflow: hidden;
   display: flex;
   flex-direction: column;
-  border: 1px solid ${(props) => props.theme[22]};
+  border: 1px solid ${(props) => props.theme[5]};
   border-radius: 20px;
   transition: all 0.3s;
   :hover {

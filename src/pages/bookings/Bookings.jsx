@@ -53,6 +53,7 @@ function Bookings() {
     },
     {
       label: "Delete",
+      dataCy: "delete_one_",
       action: (itemId) => {
         setItemToDelete(itemId);
         setShowConfirm(true);
@@ -97,7 +98,12 @@ function Bookings() {
           title={item.guest}
           content={item.specialRequest}
           preview={
-            <Button variant={item.specialRequest ? 3 : 4}>View Notes</Button>
+            <Button
+              variant={item.specialRequest ? 3 : 4}
+              onClick={item.specialRequest ? () => {} : null}
+            >
+              View Notes
+            </Button>
           }
         />,
         item.roomType,
@@ -111,6 +117,7 @@ function Bookings() {
           <Popup
             options={optionsMenu}
             itemId={item.id}
+            dataCy={"booking_action_options_" + item.id}
             preview={
               <FontAwesomeIcon
                 color="#6E6E6E"

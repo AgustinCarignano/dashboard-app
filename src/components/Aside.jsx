@@ -149,31 +149,31 @@ function Aside(props) {
         <>
           <LinkContainer active={pathArray[2] === ""} theme={theme}>
             <FontAwesomeIcon icon={faTableColumns} />
-            <Link to="dashboard-app/dashboard">
+            <Link to="dashboard-app/dashboard" data-cy="goDashboard">
               <p>Dashboard</p>
             </Link>
           </LinkContainer>
           <LinkContainer active={pathArray[2] === "bookings"} theme={theme}>
             <FontAwesomeIcon icon={faCalendarCheck} />
-            <Link to="dashboard-app/bookings">
+            <Link to="dashboard-app/bookings" data-cy="goBookings">
               <p>Bookings</p>
             </Link>
           </LinkContainer>
           <LinkContainer active={pathArray[2] === "rooms"} theme={theme}>
             <FontAwesomeIcon icon={faKey} />
-            <Link to="dashboard-app/rooms">
+            <Link to="dashboard-app/rooms" data-cy="goRooms">
               <p>Rooms</p>
             </Link>
           </LinkContainer>
           <LinkContainer active={pathArray[2] === "contact"} theme={theme}>
             <FontAwesomeIcon icon={faMessage} />
-            <Link to="dashboard-app/contact">
+            <Link to="dashboard-app/contact" data-cy="goContacs">
               <p>Contact</p>
             </Link>
           </LinkContainer>
           <LinkContainer active={pathArray[2] === "users"} theme={theme}>
             <FontAwesomeIcon icon={faUser} />
-            <Link to="dashboard-app/users">
+            <Link to="dashboard-app/users" data-cy="goUsers">
               <p>Users</p>
             </Link>
           </LinkContainer>

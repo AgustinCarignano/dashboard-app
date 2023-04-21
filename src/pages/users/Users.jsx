@@ -79,7 +79,7 @@ function Users() {
       id: item.id,
       rowData: [
         <RowContainer justify="normal" onClick={() => handleRedirect(item.id)}>
-          <ImgRowContainer>
+          <ImgRowContainer aspectRatio="1/1">
             <img src={item.photo} alt="employee profile" />
           </ImgRowContainer>
           <div>
