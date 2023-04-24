@@ -15,8 +15,10 @@ import {
 import Button from "./Button";
 import { Input } from "./FormComponents";
 import { themeContext } from "../context/ThemeContext";
+import { Theme } from "../@types/theme";
 
-const StyledAside = styled.aside`
+
+const StyledAside = styled.aside<{show:boolean, theme:Theme}>`
   grid-area: aside;
   padding-top: 20px;
   background-color: ${(props) => props.theme[1]};
@@ -30,7 +32,7 @@ const StyledAside = styled.aside`
   transform: translateX(${(props) => (props.show ? "0px" : "-400px")});
 `;
 
-const LinkContainer = styled.div`
+const LinkContainer = styled.div<{active:boolean, theme:Theme}>`
   display: flex;
   gap: 25px;
   padding: 10px 56px;
@@ -49,7 +51,7 @@ const LinkContainer = styled.div`
   }
 `;
 
-const UserCard = styled.div`
+const UserCard = styled.div<{theme:Theme}>`
   display: flex;
   gap: 15px;
   flex-direction: column;
@@ -76,7 +78,7 @@ const UserCard = styled.div`
   }
 `;
 
-const Credits = styled.div`
+const Credits = styled.div<{theme:Theme}>`
   margin-top: auto;
   h3 {
     font: normal 600 16px/25px Poppins, sans-serif;
@@ -97,7 +99,7 @@ const Logo = styled.div`
   }
 `;
 
-function Aside(props) {
+function Aside(props:{sidebarVisibility:boolean}) {
   const { sidebarVisibility } = props;
   const { loginState, loginActionTypes, dispatchLogin } =
     useContext(loginContext);

@@ -1,8 +1,7 @@
-import { createContext, useEffect, useReducer } from "react";
+import React, { createContext, useEffect, useReducer } from "react";
+import { LoginActions, LoginContextType, LoginState } from "../@types/login";
 
-export const loginContext = createContext();
-
-const reducer = (state, action) => {
+const reducer = (state:LoginState, action:LoginActions):LoginState => {
   switch (action.type) {
     case loginActionTypes.LOGIN:
       return { auth: true, ...action.payload };
@@ -28,13 +27,16 @@ const initialState = {
   photo: "",
 };
 
-const setLocalStorage = (state) => {
+const setLocalStorage = (state:LoginState) => {
   localStorage.setItem("login", JSON.stringify(state));
 };
 
-const getLocalStorage = () => {
-  return JSON.parse(localStorage.getItem("login"));
+const getLocalStorage = ():LoginState => {
+  return JSON.parse(localStorage.getItem("login")||"");
 };
+
+export const loginContext = createContext<LoginContextType|null>(null);
+
 
 export default function LoginContextProvider({ children }) {
   const [loginState, dispatchLogin] = useReducer(

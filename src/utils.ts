@@ -1,19 +1,28 @@
 import bcryprt from "bcryptjs";
+import { BookingType } from "./@types/bookings";
+import { RoomType } from "./@types/rooms";
+import { UserType } from "./@types/users";
+import { ContactType } from "./@types/contacts";
 
-export async function getAllData(fileName) {
+type FetchAlllData = BookingType[] | RoomType[] | UserType[] | ContactType[];
+type FetchItemlData = BookingType | RoomType | UserType | ContactType;
+
+export async function getAllData(fileName: string) {
   const resp = await fetch(`${process.env.PUBLIC_URL}/mockData/${fileName}`);
-  const data = await resp.json();
+  const data: FetchAlllData = await resp.json();
   const delayData = await delayFunction(data);
   return delayData;
 }
 
-export async function getItemData(fileName, id) {
+export async function getItemData(fileName: string, id: string) {
   const allData = await getAllData(fileName);
-  const itemData = allData.find((item) => item.id === id);
-  return itemData;
+  const index = allData.findIndex((item: FetchItemlData) => item.id === id);
+  return allData[index];
 }
 
-export async function delayFunction(info) {
+export async function delayFunction(
+  info: FetchAlllData
+): Promise<FetchAlllData> {
   return new Promise((resolve) => {
     setTimeout(() => {
       resolve(info);
@@ -41,8 +50,13 @@ const days = {
   3: "rd",
 };
 
-export function formatDate(date) {
-  const newDate = new Date(parseInt(date));
+export function formatDate(date: number | string) {
+  let newDate: Date;
+  if (typeof date === "string") {
+    newDate = new Date(parseInt(date));
+  } else {
+    newDate = new Date(date);
+  }
   const year = newDate.getFullYear();
   const month = newDate.getMonth();
   const day = newDate.getDate();
@@ -69,7 +83,7 @@ export function generateId() {
   return id;
 }
 
-export function hashData(data) {
+export function hashData(data: string): string {
   const salt = bcryprt.genSaltSync(10);
   return bcryprt.hashSync(data, salt);
 }

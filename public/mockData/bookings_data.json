@@ -15,7 +15,7 @@
   {
     "id": "622431863-8",
     "guest": "Adrianne Achurch",
-    "specialRequest": null,
+    "specialRequest": "",
     "orderDate": 1678856612000,
     "roomType": "Suite",
     "status": "Check Out",
@@ -41,7 +41,7 @@
   {
     "id": "789944756-9",
     "guest": "Kalvin Durand",
-    "specialRequest": null,
+    "specialRequest": "",
     "orderDate": 1656635256000,
     "roomType": "Double Superior",
     "status": "In Progress",
@@ -158,7 +158,7 @@
   {
     "id": "141017572-3",
     "guest": "Ephrem Sheeran",
-    "specialRequest": null,
+    "specialRequest": "",
     "orderDate": 1665767069000,
     "roomType": "Double Bed",
     "status": "In Progress",
@@ -171,7 +171,7 @@
   {
     "id": "632432063-4",
     "guest": "Shelia Highway",
-    "specialRequest": null,
+    "specialRequest": "",
     "orderDate": 1654343916000,
     "roomType": "Double Bed",
     "status": "In Progress",
@@ -314,7 +314,7 @@
   {
     "id": "585500159-8",
     "guest": "Chrissie Dargue",
-    "specialRequest": null,
+    "specialRequest": "",
     "orderDate": 1679076955000,
     "roomType": "Single Bed",
     "status": "In Progress",
@@ -340,7 +340,7 @@
   {
     "id": "589549113-8",
     "guest": "Barry Payfoot",
-    "specialRequest": null,
+    "specialRequest": "",
     "orderDate": 1647826175000,
     "roomType": "Single Bed",
     "status": "In Progress",

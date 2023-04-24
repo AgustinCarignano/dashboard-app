@@ -5,10 +5,31 @@ import {
   getAllData,
   getItemData,
 } from "../../utils";
+import bookings_data from "../../../public/mockData/bookings_data.json";
+import {
+  BookingType,
+  BookingUpdateObj,
+  IBookingState,
+} from "../../@types/bookings";
+import { IGlobalStore } from "../../@types/store";
 
-const initialState = {
+const emptyBooking: BookingType = {
+  id: "",
+  guest: "",
+  specialRequest: "",
+  orderDate: null,
+  roomType: "",
+  status: "",
+  checkIn: null,
+  checkOut: null,
+  roomId: "",
+  roomNumber: "",
+  roomImg: "",
+};
+
+const initialState: IBookingState = {
   bookings: [],
-  booking: {},
+  booking: { ...emptyBooking },
   isLoading: false,
   hasError: false,
 };
@@ -16,32 +37,56 @@ const initialState = {
 export const getBookingsData = createAsyncThunk(
   "bookings/getAllBookings",
   async () => {
-    const data = await getAllData("bookings_data.json");
+    //const data = await getAllData("bookings_data.json");
+    const data = await new Promise<BookingType[]>((resolve) => {
+      setTimeout(() => {
+        resolve(bookings_data);
+      }, 300);
+    });
     return { data };
   }
 );
 
 export const getBookingDetails = createAsyncThunk(
   "bookings/getBookingDetails",
-  async (id) => {
-    const data = await getItemData("bookings_data.json", id);
+  async (id: "") => {
+    //const data = await getItemData("bookings_data.json", id);
+    const data = await new Promise<BookingType>((resolve) => {
+      const allData = bookings_data;
+      const itemData = allData.find((item) => item.id === id);
+      if (itemData) {
+        setTimeout(() => {
+          resolve(itemData);
+        }, 300);
+      }
+    });
     return { data, id };
   }
 );
 
 export const createBooking = createAsyncThunk(
   "bookings/create",
-  async (body) => {
+  async (body: BookingType) => {
     const id = generateId();
-    const data = await delayFunction({ ...body, id });
+    //const data = await delayFunction({ ...body, id });
+    const data = await new Promise<BookingType>((resolve) => {
+      setTimeout(() => {
+        resolve({ ...body, id });
+      }, 300);
+    });
     return { data };
   }
 );
 
 export const updateBooking = createAsyncThunk(
   "bookings/update",
-  async ({ body, id }) => {
-    const data = await delayFunction({ ...body, id });
+  async ({ body, id }: BookingUpdateObj) => {
+    //const data = await delayFunction({ ...body, id });
+    const data = await new Promise<BookingType>((resolve) => {
+      setTimeout(() => {
+        resolve({ ...body, id });
+      }, 300);
+    });
     return { data };
   }
 );
@@ -49,7 +94,12 @@ export const updateBooking = createAsyncThunk(
 export const deleteBooking = createAsyncThunk(
   "bookings/delete",
   async (bookingId) => {
-    const id = await delayFunction(bookingId);
+    //const id = await delayFunction(bookingId);
+    const id = await new Promise((resolve) => {
+      setTimeout(() => {
+        resolve(bookingId);
+      }, 300);
+    });
     return { id };
   }
 );
@@ -57,6 +107,7 @@ export const deleteBooking = createAsyncThunk(
 export const bookingsSlice = createSlice({
   name: "bookings",
   initialState,
+  reducers: {},
   extraReducers: (builder) => {
     builder
       .addCase(getBookingsData.fulfilled, (state, action) => {
@@ -72,7 +123,7 @@ export const bookingsSlice = createSlice({
           const booking = state.bookings.find(
             (item) => item.id === action.payload.id
           );
-          state.booking = booking;
+          if (booking) state.booking = booking;
         }
       })
       .addCase(createBooking.fulfilled, (state, action) => {
@@ -133,9 +184,11 @@ export const bookingsSlice = createSlice({
   },
 });
 
-export const selectBookings = (state) => state.bookings.bookings;
-export const selectBookingDetail = (state) => state.bookings.booking;
-export const selectIsLoading = (state) => state.bookings.isLoading;
-export const selectHasError = (state) => state.bookings.hasError;
+export const selectBookings = (state: IGlobalStore) => state.bookings.bookings;
+export const selectBookingDetail = (state: IGlobalStore) =>
+  state.bookings.booking;
+export const selectIsLoading = (state: IGlobalStore) =>
+  state.bookings.isLoading;
+export const selectHasError = (state: IGlobalStore) => state.bookings.hasError;
 
 export default bookingsSlice.reducer;

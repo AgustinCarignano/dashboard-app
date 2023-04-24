@@ -1,8 +1,15 @@
+import React from "react";
 import styled from "styled-components";
 import { useContext } from "react";
+//import { themeContext } from "../context/ThemeContext";
 import { themeContext } from "../context/ThemeContext";
 
-export const MyButton = styled.button`
+type propsType = {
+  background:string;
+  border:string
+}
+
+export const MyButton = styled.button<propsType>`
   color: ${(props) => props.color};
   background-color: ${(props) => props.background};
   border: ${(props) => props.border};
@@ -11,10 +18,17 @@ export const MyButton = styled.button`
   padding: 13px 35px;
   border-radius: 12px;
   cursor: ${(props) => (props.onClick ? "Pointer" : "normal")};
-  /* cursor: pointer; */
 `;
 
-export default function Button({ variant, children, onClick, value, name }) {
+interface ButtonProps {
+  variant:number,
+  children:string,
+  onClick?:()=>void,
+  value?:any,
+  name?:any
+}
+
+export default function Button({ variant, children, onClick, value, name }:ButtonProps) {
   const { theme } = useContext(themeContext);
 
   const variantsOption = {

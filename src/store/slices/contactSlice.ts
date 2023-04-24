@@ -1,7 +1,14 @@
 import { createSlice, createAsyncThunk, isAnyOf } from "@reduxjs/toolkit";
-import { delayFunction, getAllData } from "../../utils";
+//import { delayFunction, getAllData } from "../../utils";
+import {
+  ContactType,
+  ContactUpdateObj,
+  IContactState,
+} from "../../@types/contacts";
+import { IGlobalStore } from "../../@types/store";
+import contact_data from "../../../public/mockData/contact_data.json";
 
-const initialState = {
+const initialState: IContactState = {
   contacts: [],
   unreadContacts: null,
   isLoading: true,
@@ -11,15 +18,25 @@ const initialState = {
 export const getAllContacts = createAsyncThunk(
   "contacts/getContacts",
   async () => {
-    const data = await getAllData("contact_data.json");
+    //const data = await getAllData("contact_data.json");
+    const data = await new Promise<ContactType[]>((resolve) => {
+      setTimeout(() => {
+        resolve(contact_data);
+      }, 300);
+    });
     return { data };
   }
 );
 
 export const updateContact = createAsyncThunk(
   "contatcs/update",
-  async ({ body, id }) => {
-    const data = await delayFunction({ ...body, id });
+  async ({ body, id }: ContactUpdateObj) => {
+    // const data = await delayFunction({ ...body, id });
+    const data = await new Promise<ContactType>((resolve) => {
+      setTimeout(() => {
+        resolve({ ...body, id });
+      }, 300);
+    });
     return { data };
   }
 );
@@ -27,12 +44,13 @@ export const updateContact = createAsyncThunk(
 export const contactSlice = createSlice({
   name: "contatcs",
   initialState,
+  reducers: {},
   extraReducers: (builder) => {
     builder
       .addCase(getAllContacts.fulfilled, (state, action) => {
         state.contacts = action.payload.data;
         state.unreadContacts = action.payload.data.filter(
-          (cont) => !cont.read
+          (cont: ContactType) => !cont.read
         ).length;
       })
       .addCase(updateContact.fulfilled, (state, action) => {
@@ -40,7 +58,7 @@ export const contactSlice = createSlice({
           item.id === action.payload.data.id ? action.payload.data : item
         );
         state.unreadContacts = state.contacts.filter(
-          (cont) => !cont.read
+          (cont: ContactType) => !cont.read
         ).length;
       })
       .addMatcher(
@@ -67,9 +85,11 @@ export const contactSlice = createSlice({
   },
 });
 
-export const selectContacts = (state) => state.contacts.contacts;
-export const selectUnreadContacts = (state) => state.contacts.unreadContacts;
-export const selectIsLoading = (state) => state.contacts.isLoading;
-export const selectHasError = (state) => state.contacts.hasError;
+export const selectContacts = (state: IGlobalStore) => state.contacts.contacts;
+export const selectUnreadContacts = (state: IGlobalStore) =>
+  state.contacts.unreadContacts;
+export const selectIsLoading = (state: IGlobalStore) =>
+  state.contacts.isLoading;
+export const selectHasError = (state: IGlobalStore) => state.contacts.hasError;
 
 export default contactSlice.reducer;

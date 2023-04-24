@@ -1,6 +1,5 @@
-import { createContext, useState } from "react";
-
-export const themeContext = createContext();
+import React, { createContext, useState } from "react";
+import { ThemeContextType } from "../@types/theme";
 
 const Themes = {
   light: {
@@ -67,8 +66,10 @@ const Themes = {
   },
 };
 
-export default function ThemeContextProvider({ children }) {
-  const [currentTheme, setCurrentTheme] = useState("light");
+export const themeContext = createContext<ThemeContextType>(Themes[1]);
+
+export default function ThemeContextProvider( props:{children:React.ReactNode}) {
+  const [currentTheme, setCurrentTheme] = useState<'light'|'dark'>("light");
 
   function handleThemeChange() {
     setCurrentTheme((prev) => (prev === "light" ? "dark" : "light"));
@@ -77,7 +78,7 @@ export default function ThemeContextProvider({ children }) {
     <themeContext.Provider
       value={{ theme: Themes[currentTheme], handleThemeChange }}
     >
-      {children}
+      {props.children}
     </themeContext.Provider>
   );
 }
