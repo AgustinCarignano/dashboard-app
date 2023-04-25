@@ -27,7 +27,6 @@ const MyCard = styled.div`
   .icon {
     background-color: ${(props) => props.theme[10]};
     color: ${(props) => props.theme[11]};
-    /* color: #e23428; */
     padding: 20px;
     border-radius: 8px;
     transition: all 0.3s;
@@ -62,17 +61,23 @@ const cardsTypes = {
   },
 };
 
-function SmallCard(props) {
-  const { type, number, active } = props;
+type PropsType = {
+  type: string;
+  number: number | string;
+};
+
+function SmallCard(props: PropsType) {
+  const { type, number } = props;
   const { theme } = useContext(themeContext);
 
   return (
-    <MyCard active={active} theme={theme}>
+    <MyCard theme={theme}>
       <FontAwesomeIcon
         icon={cardsTypes[type].icon}
         size="lg"
         className="icon"
-        rotation={type === "checkOut" ? 180 : 0}
+        rotate={type === "checkOut" ? 180 : 0}
+        //rotation={type === "checkOut" ? 180 : 0}
       />
       <div>
         <CardNumber theme={theme}>{number}</CardNumber>

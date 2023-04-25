@@ -16,7 +16,7 @@ const SliderContainer = styled.div`
   }
 `;
 
-const ControlContainer = styled.div`
+const ControlContainer = styled.div<{type:string}>`
   background-color: ${(props) => props.theme[3]};
   width: 50px;
   height: 50px;
@@ -33,7 +33,7 @@ const ControlContainer = styled.div`
   cursor: pointer;
 `;
 
-function Slider({ photos }) {
+function Slider({photos}:{photos:string[]}) {
   const [index, setIndex] = useState(0);
   const { theme } = useContext(themeContext);
 

@@ -1,6 +1,6 @@
 import React from "react";
 
-function StaticRow({ rowData }) {
+function StaticRow({ rowData }:{rowData:React.ReactElement[]}) {
   return (
     <tr>
       {rowData.map((data, i) => (

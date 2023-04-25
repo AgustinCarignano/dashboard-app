@@ -102,10 +102,10 @@ const Logo = styled.div`
 function Aside(props:{sidebarVisibility:boolean}) {
   const { sidebarVisibility } = props;
   const { loginState, loginActionTypes, dispatchLogin } =
-    useContext(loginContext);
+    useContext(loginContext)||{};
   const [updating, setUpdating] = useState(false);
-  const [userFullName, setUserFullName] = useState(loginState.fullName);
-  const [userEmail, setUserEmail] = useState(loginState.email);
+  const [userFullName, setUserFullName] = useState(loginState?.fullName || '');
+  const [userEmail, setUserEmail] = useState(loginState?.email || '');
   const { pathname } = useLocation();
   const pathArray = pathname.split("/");
   const { theme } = useContext(themeContext);
@@ -115,16 +115,18 @@ function Aside(props:{sidebarVisibility:boolean}) {
   }
 
   function handleEdit() {
-    if (
-      userFullName !== loginState.fullName ||
-      userEmail !== loginState.email
+    if(dispatchLogin && loginActionTypes){
+      if (
+      userFullName !== loginState?.fullName ||
+      userEmail !== loginState?.email
     ) {
       dispatchLogin({
         type: loginActionTypes.UPDATE,
-        payload: { fullName: userFullName, email: userEmail },
+        payload: { fullName: userFullName, email: userEmail, photo:loginState?.photo||"" },
       });
     }
     setUpdating((prev) => !prev);
+    }
   }
 
   return (
@@ -136,7 +138,7 @@ function Aside(props:{sidebarVisibility:boolean}) {
           <img src="https://i.imgur.com/fj3gwNn.png" alt="logo" />
         )}
       </Logo>
-      {!loginState.auth ? (
+      {!loginState?.auth ? (
         <LinkContainer
           active={true}
           theme={theme}

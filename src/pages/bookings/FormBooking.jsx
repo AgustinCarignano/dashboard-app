@@ -198,7 +198,7 @@ function FormBooking(props) {
           </Submit>
           {submitError.hasError && (
             <ErrorAlert
-              toggleVisibity={() =>
+              toggleVisibility={() =>
                 setSubmitError({ ...submitError, hasError: false })
               }
               message="Error: check the remark inputs"

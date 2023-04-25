@@ -38,7 +38,7 @@ export const DetailHeader = styled.div`
     color: ${(props) => props.theme[12]};
   }
 `;
-export const SecondaryContainer = styled.div`
+export const SecondaryContainer = styled.div<{border:boolean, padding:boolean}>`
   display: flex;
   border-bottom: ${(props) =>
     props.border ? `solid 3px ${props.theme[6]}` : "none"};
@@ -81,7 +81,7 @@ export const EditBtn = styled.div`
   right: 40px;
 `;
 
-export const RightColumn = styled.div`
+export const RightColumn = styled.div<{justify:string,background:boolean}>`
   display: flex;
   flex-direction: column;
   justify-content: ${(props) => props.justify};

@@ -4,7 +4,8 @@ import { LoginActions, LoginContextType, LoginState } from "../@types/login";
 const reducer = (state:LoginState, action:LoginActions):LoginState => {
   switch (action.type) {
     case loginActionTypes.LOGIN:
-      return { auth: true, ...action.payload };
+      if (action.payload) return { auth: true, ...action.payload };
+      else return {...state}
     case loginActionTypes.LOGOUT:
       return { ...initialState };
     case loginActionTypes.UPDATE:

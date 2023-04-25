@@ -14,7 +14,12 @@ export type RoomType = {
 
 export interface IRoomState {
   rooms: RoomType[];
-  room: RoomType;
+  room: RoomType | null;
   isLoading: boolean;
   hasError: boolean;
 }
+
+export type RoomUpdateObj = {
+  body: RoomType;
+  id: string;
+};

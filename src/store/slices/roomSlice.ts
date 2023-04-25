@@ -5,49 +5,85 @@ import {
   getItemData,
   delayFunction,
 } from "../../utils";
+import room_data from "../../../public/mockData/rooms_data.json";
+import { IRoomState, RoomType, RoomUpdateObj } from "../../@types/rooms";
+import { IGlobalStore } from "../../@types/store";
 
-const initialState = {
+const initialState: IRoomState = {
   rooms: [],
-  room: {},
+  room: null,
   isLoading: true,
   hasError: false,
 };
 
 export const getRoomsData = createAsyncThunk("rooms/getAllRooms", async () => {
-  const data = await getAllData("rooms_data.json");
+  // const data = await getAllData("rooms_data.json");
+  const data = await new Promise<RoomType[]>((resolve) => {
+    setTimeout(() => {
+      resolve(room_data);
+    }, 300);
+  });
   return { data };
 });
 
 export const getRoomDetails = createAsyncThunk(
   "rooms/getRoomDetails",
-  async (id) => {
-    const data = await getItemData("rooms_data.json", id);
+  async (id: string) => {
+    //const data = await getItemData("rooms_data.json", id);
+    const allData = await new Promise<RoomType[]>((resolve) => {
+      setTimeout(() => {
+        resolve(room_data);
+      }, 300);
+    });
+    const data = allData.find((item) => item.id === id);
     return { data, id };
   }
 );
 
-export const createRoom = createAsyncThunk("rooms/create", async (body) => {
-  const id = generateId();
-  const data = await delayFunction({ ...body, id });
-  return { data };
-});
-
-export const updateRoom = createAsyncThunk(
-  "rooms/update",
-  async ({ body, id }) => {
-    const data = await delayFunction({ ...body, id });
+export const createRoom = createAsyncThunk(
+  "rooms/create",
+  async (body: RoomType) => {
+    const id = generateId();
+    //const data = await delayFunction({ ...body, id });
+    const data = await new Promise<RoomType>((resolve) => {
+      setTimeout(() => {
+        resolve({ ...body, id });
+      }, 300);
+    });
     return { data };
   }
 );
 
-export const deleteRoom = createAsyncThunk("rooms/delete", async (roomId) => {
-  const id = await delayFunction(roomId);
-  return { id };
-});
+export const updateRoom = createAsyncThunk(
+  "rooms/update",
+  async ({ body, id }: RoomUpdateObj) => {
+    // const data = await delayFunction({ ...body, id });
+    const data = await new Promise<RoomType>((resolve) => {
+      setTimeout(() => {
+        resolve({ ...body, id });
+      }, 300);
+    });
+    return { data };
+  }
+);
+
+export const deleteRoom = createAsyncThunk(
+  "rooms/delete",
+  async (roomId: string) => {
+    //const id = await delayFunction(roomId);
+    const id = await new Promise<string>((resolve) => {
+      setTimeout(() => {
+        resolve(roomId);
+      }, 300);
+    });
+    return { id };
+  }
+);
 
 export const roomsSlice = createSlice({
   name: "rooms",
   initialState,
+  reducers: {},
   extraReducers: (builder) => {
     builder
       .addCase(getRoomsData.fulfilled, (state, action) => {
@@ -64,7 +100,7 @@ export const roomsSlice = createSlice({
           const room = state.rooms.find(
             (item) => item.id === action.payload.id
           );
-          state.room = room;
+          if (room) state.room = room;
         }
       })
       .addCase(createRoom.fulfilled, (state, action) => {
@@ -74,7 +110,7 @@ export const roomsSlice = createSlice({
         state.rooms = state.rooms.map((item) =>
           item.id === action.payload.data.id ? action.payload.data : item
         );
-        if (state.room.id === action.payload.data.id) {
+        if (state.room?.id === action.payload.data.id) {
           state.room = action.payload.data;
         }
       })
@@ -125,9 +161,9 @@ export const roomsSlice = createSlice({
   },
 });
 
-export const selectRooms = (state) => state.rooms.rooms;
-export const selectRoomDetails = (state) => state.rooms.room;
-export const selectIsLoading = (state) => state.rooms.isLoading;
-export const selectHasError = (state) => state.rooms.hasError;
+export const selectRooms = (state: IGlobalStore) => state.rooms.rooms;
+export const selectRoomDetails = (state: IGlobalStore) => state.rooms.room;
+export const selectIsLoading = (state: IGlobalStore) => state.rooms.isLoading;
+export const selectHasError = (state: IGlobalStore) => state.rooms.hasError;
 
 export default roomsSlice.reducer;

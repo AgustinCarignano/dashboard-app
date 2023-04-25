@@ -14,6 +14,7 @@ import {
   faArrowRightFromBracket,
   faCircleHalfStroke,
 } from "@fortawesome/free-solid-svg-icons";
+import { Theme } from "../@types/theme";
 
 const StyleHeader = styled.header`
   display: flex;
@@ -62,7 +63,7 @@ const shakeNotif = keyframes`
   }
 `;
 
-const IconContainer = styled.div`
+const IconContainer = styled.div<{hasAction?:boolean}>`
   color: ${(props) => props.theme[15]};
   position: relative;
   cursor: ${(props) => (props.hasAction ? "Pointer" : "default")};
@@ -92,12 +93,12 @@ const TitleList = {
   login: "Login",
 };
 
-function Header(props) {
+function Header(props:{handleSidebarVisibility:()=>void}) {
   const { handleSidebarVisibility } = props;
   const { loginState, loginActionTypes, dispatchLogin } =
-    useContext(loginContext);
+    useContext(loginContext)||{};
   const [breadcrumb, setBreadcrumb] = useState("");
-  const [pathArray, setPathArray] = useState([]);
+  const [pathArray, setPathArray] = useState<string[]>([]);
   const { theme, handleThemeChange } = useContext(themeContext);
   const messages = useSelector(selectUnreadContacts);
   const bookings = useSelector(selectBookings);
@@ -110,7 +111,11 @@ function Header(props) {
   }
 
   const notifications = bookings.filter(
-    (book) => new Date(book.orderDate).getMonth() === new Date().getMonth()
+    (book) => {
+      if(book.orderDate) {
+         return new Date(book.orderDate).getMonth() === new Date().getMonth()
+      }
+    }
   ).length;
 
   useEffect(() => {
@@ -130,8 +135,8 @@ function Header(props) {
   }, [pathname]);
 
   useEffect(() => {
-    if (!loginState.auth) return;
-  }, [loginState.auth]);
+    if (!loginState?.auth) return;
+  }, [loginState?.auth]);
 
   return (
     <StyleHeader theme={theme}>
@@ -156,7 +161,7 @@ function Header(props) {
           )}
         </TitleContainer>
       </Container>
-      {!loginState.auth ? (
+      {!loginState?.auth ? (
         <IconContainer theme={theme}>
           <FontAwesomeIcon
             icon={faCircleHalfStroke}
@@ -188,7 +193,7 @@ function Header(props) {
               icon={faArrowRightFromBracket}
               size="lg"
               data-cy="logoutBtn"
-              onClick={() => dispatchLogin({ type: loginActionTypes.LOGOUT })}
+              onClick={(dispatchLogin && loginActionTypes) ? () => dispatchLogin({ type: loginActionTypes.LOGOUT }) : undefined}
             />
           </IconContainer>
         </Container>

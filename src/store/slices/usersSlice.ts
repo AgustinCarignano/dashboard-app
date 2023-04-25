@@ -6,50 +6,86 @@ import {
   getItemData,
   delayFunction,
 } from "../../utils";
+import { IUserState, UserType, UserUpdateObj } from "../../@types/users";
+import user_data from "../../../public/mockData/users_data.json";
+import { IGlobalStore } from "../../@types/store";
 
-const initialState = {
+const initialState: IUserState = {
   users: [],
-  user: {},
+  user: null,
   isLoading: true,
   hasError: false,
 };
 
 export const getUsersData = createAsyncThunk("users/getAllUsers", async () => {
-  const data = await getAllData("users_data.json");
+  //const data = await getAllData("users_data.json");
+  const data = await new Promise<UserType[]>((resolve) => {
+    setTimeout(() => {
+      resolve(user_data);
+    }, 300);
+  });
   return { data };
 });
 
 export const getUserDetails = createAsyncThunk(
   "users/getUserDetails",
-  async (id) => {
-    const data = await getItemData("users_data.json", id);
+  async (id: string) => {
+    //const data = await getItemData("users_data.json", id);
+    const allData = await new Promise<UserType[]>((resolve) => {
+      setTimeout(() => {
+        resolve(user_data);
+      }, 300);
+    });
+    const data = allData.find((item) => item.id === id);
     return { data, id };
   }
 );
 
-export const createUser = createAsyncThunk("users/create", async (body) => {
-  const id = generateId();
-  const hashedPassword = hashData(body.password);
-  const data = await delayFunction({ ...body, id, password: hashedPassword });
-  return { data };
-});
-
-export const updateUser = createAsyncThunk(
-  "users/update",
-  async ({ body, id }) => {
-    const data = await delayFunction({ ...body, id });
+export const createUser = createAsyncThunk(
+  "users/create",
+  async (body: UserType) => {
+    const id = generateId();
+    const hashedPassword = hashData(body.password);
+    //const data = await delayFunction({ ...body, id, password: hashedPassword });
+    const data = await new Promise<UserType>((resolve) => {
+      setTimeout(() => {
+        resolve({ ...body, id, password: hashedPassword });
+      }, 300);
+    });
     return { data };
   }
 );
 
-export const deleteUser = createAsyncThunk("users/delete", async (userId) => {
-  const id = await delayFunction(userId);
-  return { id };
-});
+export const updateUser = createAsyncThunk(
+  "users/update",
+  async ({ body, id }: UserUpdateObj) => {
+    //const data = await delayFunction({ ...body, id });
+    const data = await new Promise<UserType>((resolve) => {
+      setTimeout(() => {
+        resolve({ ...body, id });
+      }, 300);
+    });
+    return { data };
+  }
+);
+
+export const deleteUser = createAsyncThunk(
+  "users/delete",
+  async (userId: string) => {
+    //const id = await delayFunction(userId);
+    const id = await new Promise<string>((resolve) => {
+      setTimeout(() => {
+        resolve(userId);
+      }, 300);
+    });
+    return { id };
+  }
+);
 
 export const usersSlice = createSlice({
   name: "users",
   initialState,
+  reducers: {},
   extraReducers: (builder) => {
     builder
       .addCase(getUsersData.fulfilled, (state, action) => {
@@ -66,7 +102,7 @@ export const usersSlice = createSlice({
           const user = state.users.find(
             (item) => item.id === action.payload.id
           );
-          state.user = user;
+          if (user) state.user = user;
         }
       })
       .addCase(createUser.fulfilled, (state, action) => {
@@ -76,7 +112,7 @@ export const usersSlice = createSlice({
         state.users = state.users.map((item) =>
           item.id === action.payload.data.id ? action.payload.data : item
         );
-        if (state.user.id === action.payload.data.id) {
+        if (state.user?.id === action.payload.data.id) {
           state.user = action.payload.data;
         }
       })
@@ -127,9 +163,9 @@ export const usersSlice = createSlice({
   },
 });
 
-export const selectUsers = (state) => state.users.users;
-export const selectUserDetail = (state) => state.users.user;
-export const selectIsLoading = (state) => state.users.isLoading;
-export const selectHasError = (state) => state.users.hasError;
+export const selectUsers = (state: IGlobalStore) => state.users.users;
+export const selectUserDetail = (state: IGlobalStore) => state.users.user;
+export const selectIsLoading = (state: IGlobalStore) => state.users.isLoading;
+export const selectHasError = (state: IGlobalStore) => state.users.hasError;
 
 export default usersSlice.reducer;

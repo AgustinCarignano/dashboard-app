@@ -1,3 +1,4 @@
+import React from "react";
 import { useContext } from "react";
 import styled from "styled-components";
 import { themeContext } from "../context/ThemeContext";
@@ -11,7 +12,7 @@ const MyMain = styled.main`
   position: relative;
 `;
 
-export default function MainContainer({ children }) {
-  const theme = useContext(themeContext);
-  return <MyMain {...theme}>{children}</MyMain>;
+export default function MainContainer(props: { children: React.ReactElement }) {
+  const { theme } = useContext(themeContext);
+  return <MyMain {...theme}>{props.children}</MyMain>;
 }

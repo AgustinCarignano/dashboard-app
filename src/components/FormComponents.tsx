@@ -29,14 +29,14 @@ export const Field = styled.div`
   display: flex;
   gap: 20px;
 `;
-export const Label = styled.label`
+export const Label = styled.label<{hasError:boolean}>`
   font-size: 24px;
   text-align: right;
   width: 40%;
   padding: 10px;
   color: ${(props) => (props.hasError ? props.theme[11] : props.theme[21])};
 `;
-export const Input = styled.input`
+export const Input = styled.input<{hasError:boolean}>`
   font-size: 20px;
   color: ${(props) => props.theme[17]};
   background-color: ${(props) => props.theme[1]};
@@ -49,7 +49,7 @@ export const Input = styled.input`
     ${(props) => (props.hasError ? props.theme[11] : props.theme[7])};
   outline: none;
 `;
-export const Select = styled.select`
+export const Select = styled.select<{hasError:boolean}>`
   font-size: 20px;
   color: ${(props) => props.theme[17]};
   background-color: ${(props) => props.theme[1]};
@@ -78,14 +78,14 @@ export const DateInput = styled(Input)`
     cursor: pointer;
   }
 `;
-export const ExtraContainer = styled.div`
+export const ExtraContainer = styled.div<{direction:string}>`
   display: flex;
   flex-direction: ${(props) => props.direction};
   flex-wrap: wrap;
   gap: 10px;
   width: 70%;
 `;
-export const TextArea = styled.textarea`
+export const TextArea = styled.textarea<{hasError:boolean}>`
   font-size: 20px;
   color: ${(props) => props.theme[17]};
   background-color: ${(props) => props.theme[1]};

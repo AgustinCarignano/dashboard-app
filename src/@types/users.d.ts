@@ -6,14 +6,19 @@ export type UserType = {
   startDate: number;
   description: string;
   contact: string;
-  status: "ACTIVE" | "INACTIVE";
+  status: string;
   role: string;
   password: string;
 };
 
 export interface IUserState {
   users: UserType[];
-  user: UserType;
+  user: UserType | null;
   isLoading: boolean;
   hasError: boolean;
 }
+
+export type UserUpdateObj = {
+  body: UserType;
+  id: string;
+};

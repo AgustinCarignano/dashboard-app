@@ -2,6 +2,7 @@ import React, { useState, useEffect, useContext, useCallback } from "react";
 import { useNavigate } from "react-router-dom";
 import styled from "styled-components";
 import update from "immutability-helper";
+import type { FC } from "react";
 import { DndProvider } from "react-dnd";
 import { HTML5Backend } from "react-dnd-html5-backend";
 import Button from "./Button";
@@ -22,13 +23,13 @@ const TabList = styled.div`
   justify-content: space-between;
 `;
 
-const TabLinks = styled.div`
+const TabLinks = styled.div<{ columns: number }>`
   display: grid;
   grid-template-columns: ${(props) => `repeat(${props.columns},1fr)`};
   font: normal 400 16px/25px Poppins, sans-serif;
   color: ${(props) => props.theme[9]};
 `;
-const Link = styled.p`
+const Link = styled.p<{ active: boolean }>`
   color: ${(props) => (props.active ? props.theme[15] : props.theme[9])};
   border-bottom: ${(props) =>
     props.active
@@ -90,7 +91,7 @@ const TableHeader = styled.th`
   cursor: ${(props) => (props.onClick ? "Pointer" : "normal")};
 `;
 
-export const RowContainer = styled.div`
+export const RowContainer = styled.div<{ justify: string }>`
   display: flex;
   gap: 10px;
   min-width: 170px;
@@ -105,7 +106,7 @@ export const RowDataSmaller = styled.p`
   font-size: 14px;
   font-weight: 300;
 `;
-export const ImgRowContainer = styled.div`
+export const ImgRowContainer = styled.div<{ aspectRatio: string }>`
   width: 100px;
   img {
     width: 100%;
@@ -141,7 +142,7 @@ const PaginateNumbers = styled(Paginate)`
     border-bottom-right-radius: 12px;
   }
 `;
-const PaginateItem = styled.span`
+const PaginateItem = styled.span<{ active: boolean }>`
   width: 50px;
   padding: 13px 0;
   text-align: center;
@@ -152,7 +153,27 @@ const PaginateItem = styled.span`
   cursor: pointer;
 `;
 
-function Table(props) {
+export interface IRowItem {
+  id: string;
+  rowData: React.ReactElement[];
+}
+
+export type PropsType = {
+  data: any[];
+  option: string;
+  tableHeader: { label: string; action?: () => void }[];
+  tabs?: string[];
+  activeTab?: string;
+  setActiveTab?: (item: string) => void;
+  setSearchTerms?: (terms: string) => void;
+  rowsGenerator: (item: object) => IRowItem;
+  newBtn?: string;
+  newestAction?: () => void;
+  paginate: boolean;
+  draggableRow: boolean;
+};
+
+function Table(props: PropsType) {
   const {
     data,
     option,
@@ -167,11 +188,13 @@ function Table(props) {
     paginate,
     draggableRow,
   } = props;
-  const [rows, setRows] = useState([]);
-  const [dataToRender, setDataToRender] = useState([]);
+  const [rows, setRows] = useState<
+    { id: string; rowData: React.ReactElement[] }[]
+  >([]);
+  const [dataToRender, setDataToRender] = useState<any[]>([]);
   const [totalPages, setTotalPages] = useState(1);
   const [currentPage, setCurrentPage] = useState(1);
-  const [paginateBar, setPaginateBar] = useState([]);
+  const [paginateBar, setPaginateBar] = useState<number[]>([]);
   const [itemsPerPage, setItemsPerPage] = useState(0);
   const { theme } = useContext(themeContext);
   const navigate = useNavigate();
@@ -201,7 +224,7 @@ function Table(props) {
       setItemsPerPage(data.length);
     }
     const total = Math.ceil(data.length / 10);
-    const pages = [];
+    const pages: number[] = [];
     for (let index = 1; index <= total; index++) {
       pages.push(index);
     }
@@ -214,7 +237,7 @@ function Table(props) {
     setRows(rows);
   }, [dataToRender, rowsGenerator]);
 
-  const moveRow = useCallback((dragIndex, hoverIndex) => {
+  const moveRow = useCallback((dragIndex: number, hoverIndex: number) => {
     setRows((prevRows) =>
       update(prevRows, {
         $splice: [
@@ -225,7 +248,7 @@ function Table(props) {
     );
   }, []);
 
-  const renderRow = useCallback((row, index) => {
+  const renderRow = useCallback((row: IRowItem, index: number) => {
     if (draggableRow) {
       return (
         <DraggableRow
@@ -252,7 +275,7 @@ function Table(props) {
                   key={index}
                   active={activeTab === item}
                   theme={theme}
-                  onClick={() => setActiveTab(item)}
+                  onClick={setActiveTab ? () => setActiveTab(item) : undefined}
                 >
                   {item}
                 </Link>
@@ -273,7 +296,7 @@ function Table(props) {
           <BtnsContainer>
             {newBtn && (
               <Button variant={1} onClick={handleNewItem}>
-                + {newBtn}
+                {"+  " + newBtn}
               </Button>
             )}
             {newestAction && (
@@ -291,7 +314,7 @@ function Table(props) {
               {tableHeader.map((item, index) => (
                 <TableHeader
                   key={index}
-                  onClick={item.action ? item.action : null}
+                  onClick={item.action ? item.action : undefined}
                 >
                   {item.label}
                 </TableHeader>

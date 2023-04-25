@@ -5,9 +5,9 @@ import { useContext } from "react";
 import { themeContext } from "../context/ThemeContext";
 
 type propsType = {
-  background:string;
-  border:string
-}
+  background: string;
+  border: string;
+};
 
 export const MyButton = styled.button<propsType>`
   color: ${(props) => props.color};
@@ -21,14 +21,22 @@ export const MyButton = styled.button<propsType>`
 `;
 
 interface ButtonProps {
-  variant:number,
-  children:string,
-  onClick?:()=>void,
-  value?:any,
-  name?:any
+  variant: number;
+  children: string | React.ReactElement;
+  available?: boolean;
+  onClick?: (e: React.BaseSyntheticEvent) => void | Promise<void>;
+  value?: any;
+  name?: any;
 }
 
-export default function Button({ variant, children, onClick, value, name }:ButtonProps) {
+export default function Button({
+  variant,
+  children,
+  available,
+  onClick,
+  value,
+  name,
+}: ButtonProps) {
   const { theme } = useContext(themeContext);
 
   const variantsOption = {
@@ -87,6 +95,7 @@ export default function Button({ variant, children, onClick, value, name }:Butto
   return (
     <MyButton
       onClick={onClick}
+      available={available}
       name={name}
       value={value}
       {...variantsOption[variant]}

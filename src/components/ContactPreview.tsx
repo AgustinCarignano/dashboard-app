@@ -1,6 +1,5 @@
 import React, { useEffect, useState, useContext } from "react";
 import styled from "styled-components";
-import { useDispatch } from "react-redux";
 import { themeContext } from "../context/ThemeContext";
 import Button from "./Button";
 import Modal from "./Modal";
@@ -12,8 +11,10 @@ import {
   faCircleXmark,
   faCircleCheck,
 } from "@fortawesome/free-solid-svg-icons";
+import { ContactType } from "../@types/contacts";
+import { useAppDispatch } from "../hooks/hooks";
 
-const CardsContainer = styled.div`
+const CardsContainer = styled.div<{variant:number,extraPadding:boolean}>`
   grid-column: 1/5;
   background-color: ${(props) =>
     props.variant === 1 ? props.theme[1] : "none"};
@@ -93,15 +94,21 @@ const StatusContainer = styled.div`
   top: 10px;
 `;
 
-function ContactPreview(props) {
+type PropsType = {
+  title: string,
+  data: ContactType[],
+  variant: number
+}
+
+function ContactPreview(props:PropsType) {
   const { title, data, variant } = props;
-  const [dataToRender, setDataToRender] = useState([]);
+  const [dataToRender, setDataToRender] = useState<ContactType[]>([]);
   const [totalPages, setTotalPages] = useState(1);
   const [currentPage, setCurrentPage] = useState(1);
   const { theme } = useContext(themeContext);
-  const dispatch = useDispatch();
+  const dispatch = useAppDispatch();
 
-  const messageStyle = (remark) => {
+  const messageStyle = (remark:boolean) => {
     return {
       font: "normal 400 14px/20px 'Poppins', sans-serif",
       color: `${theme[9]}`,
@@ -111,7 +118,7 @@ function ContactPreview(props) {
     };
   };
 
-  function handlePaginate(direction) {
+  function handlePaginate(direction:string) {
     switch (direction) {
       case "next":
         if (currentPage < totalPages) setCurrentPage(currentPage + 1);
@@ -158,14 +165,14 @@ function ContactPreview(props) {
               }
               previewStyle={messageStyle(!item.read)}
               changeToOpen={
-                !item.read &&
+                !item.read ?
                 (() =>
                   dispatch(
                     updateContact({
-                      body: { read: !item.read },
+                      body: { ...item,read: !item.read },
                       id: item.id,
                     })
-                  ))
+                  )) : undefined
               }
             />
             <StatusContainer>

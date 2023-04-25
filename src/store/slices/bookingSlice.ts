@@ -93,9 +93,9 @@ export const updateBooking = createAsyncThunk(
 
 export const deleteBooking = createAsyncThunk(
   "bookings/delete",
-  async (bookingId) => {
+  async (bookingId: string) => {
     //const id = await delayFunction(bookingId);
-    const id = await new Promise((resolve) => {
+    const id = await new Promise<string>((resolve) => {
       setTimeout(() => {
         resolve(bookingId);
       }, 300);

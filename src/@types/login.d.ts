@@ -6,7 +6,7 @@ export type LoginTypesActions = {
 
 export type LoginActions = {
   type: string;
-  payload: {
+  payload?: {
     fullName: string;
     email: string;
     photo: string;

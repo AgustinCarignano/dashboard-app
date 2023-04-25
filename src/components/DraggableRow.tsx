@@ -1,9 +1,28 @@
-import { useRef } from "react";
+import React, { useRef } from "react";
 import { useDrag, useDrop } from "react-dnd";
+//import type { FC } from "react";
+import type { Identifier, XYCoord } from 'dnd-core'
 
-function DraggableRow({ id, rowData, index, moveRow }) {
-  const ref = useRef(null);
-  const [{ handlerId }, drop] = useDrop({
+export interface RowProps {
+  id:string,
+  rowData: React.ReactElement[],
+  index:number,
+  moveRow:(dragIndex: any, hoverIndex: any) => void
+}
+
+interface DragItem {
+  index: number
+  id: string
+  type: string
+}
+
+function DraggableRow({ id, rowData, index, moveRow }:RowProps) {
+  const ref = useRef<HTMLTableRowElement>(null);
+  const [{ handlerId }, drop] = useDrop<
+    DragItem,
+    void,
+    { handlerId: Identifier | null }
+  >({
     accept: "row",
     collect(monitor) {
       return {
@@ -23,7 +42,7 @@ function DraggableRow({ id, rowData, index, moveRow }) {
       const hoverMiddleY =
         (hoverBoundingRect.bottom - hoverBoundingRect.top) / 2;
       const clientOffset = monitor.getClientOffset();
-      const hoverClientY = clientOffset.y - hoverBoundingRect.top;
+      const hoverClientY = (clientOffset as XYCoord).y - hoverBoundingRect.top;
       if (dragIndex < hoverIndex && hoverClientY < hoverMiddleY) {
         return;
       }
