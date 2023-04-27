@@ -18,6 +18,7 @@ import {
 import { themeContext } from "../../context/ThemeContext";
 import Loader from "../../components/Loader";
 import ErrorAlert from "../../components/ErrorAlert";
+import { RoomType } from "../../@types/rooms";
 
 const availableAmenities = [
   "Air Conditioner",
@@ -39,12 +40,18 @@ const availableTypeRoom = [
   "Suite",
 ];
 
-function FormRoom(props) {
+type PropsType = {
+  initialState: RoomType;
+  onSubmitAction: (data: RoomType) => Promise<void>;
+};
+
+function FormRoom(props: PropsType) {
   const { initialState, onSubmitAction } = props;
-  const [room, setRoom] = useState({});
+  const [room, setRoom] = useState({} as RoomType);
   const [submitError, setSubmitError] = useState({
     hasError: false,
-    photos: [false, false, false],
+    photos: false,
+    // photos: [false, false, false],
     roomType: false,
     description: false,
     roomNumber: false,
@@ -56,42 +63,77 @@ function FormRoom(props) {
   });
   const { theme } = useContext(themeContext);
 
-  function handleInputsChange(e) {
+  function handleInputsChange(e: React.BaseSyntheticEvent) {
     const copyOfData = structuredClone(room);
     const copyOfSubmitError = { ...submitError };
     const key = e.target.name;
-    const value = e.target.value;
+    const value: string = e.target.value;
     if (key === "offer") {
       copyOfSubmitError.discount = false;
-      copyOfData[key] = value === "true";
+      copyOfData["offer"] = value === "true";
       if (value === "false") copyOfData.discount = "";
     } else if (key.includes("photo")) {
-      const index = key.split("_")[1];
+      const index = parseInt(key.split("_")[1]);
       copyOfData["photos"][index] = value;
-      copyOfSubmitError["photos"][index] = false;
+      copyOfSubmitError["photos"] = false;
+      // copyOfSubmitError["photos"][index] = false;
     } else {
-      copyOfData[key] = value;
-      copyOfSubmitError[key] = false;
+      if (key === "roomType") {
+        copyOfData["roomType"] = value;
+        copyOfSubmitError["roomType"] = false;
+      }
+      if (key === "description") {
+        copyOfData["description"] = value;
+        copyOfSubmitError["description"] = false;
+      }
+      if (key === "roomNumber") {
+        copyOfData["roomNumber"] = parseInt(value);
+        copyOfSubmitError["roomNumber"] = false;
+      }
+      if (key === "price") {
+        copyOfData["price"] = parseInt(value);
+        copyOfSubmitError["price"] = false;
+      }
+      if (key === "discount") {
+        copyOfData["discount"] = value;
+        copyOfSubmitError["discount"] = false;
+      }
+      if (key === "cancellation") {
+        copyOfData["cancellation"] = value;
+        copyOfSubmitError["cancellation"] = false;
+      }
+      if (key === "status") {
+        copyOfData["status"] = value;
+      }
     }
     setRoom(copyOfData);
     setSubmitError(copyOfSubmitError);
   }
+  /* 
+  roomType: string;
+  description: string;
+  roomNumber: number;
+price: number;
+  discount: string;
+  cancellation: string;
+  status: string;
+  */
 
-  function handlePhotosQuantity(action) {
+  function handlePhotosQuantity(action: string) {
     const copyOfData = structuredClone(room);
     const copyOfSubmitError = { ...submitError };
     if (action === "add" && copyOfData.photos.length < 5) {
       copyOfData.photos.push("");
-      copyOfSubmitError.photos.push(false);
+      //copyOfSubmitError.photos.push(false);
     } else if (action === "remove" && copyOfData.photos.length > 3) {
       copyOfData.photos.pop();
-      copyOfSubmitError.photos.pop();
+      //copyOfSubmitError.photos.pop();
     }
     setRoom(copyOfData);
     setSubmitError(copyOfSubmitError);
   }
 
-  function toggleAmenity(amenity) {
+  function toggleAmenity(amenity: string) {
     const copyOfData = structuredClone(room);
     const index = copyOfData.amenities.findIndex((item) => item === amenity);
     if (index === -1) {
@@ -103,7 +145,7 @@ function FormRoom(props) {
     setRoom(copyOfData);
   }
 
-  function verifyForm(data) {
+  function verifyForm(data: RoomType) {
     let isValid = true;
     const errorObj = { ...submitError };
     for (const key in data) {
@@ -114,23 +156,24 @@ function FormRoom(props) {
           isValid = false;
         }
         continue;
-      } else if (key === "photos") {
-        data.photos.forEach((item, index) => {
+      } /* else if (key === "photos") {
+        data.photos.forEach((item, _index) => {
           if (item === "") {
-            errorObj[key][index] = true;
+            // errorObj[key][index] = true;
+            errorObj[key as keyof typeof submitError] = true;
             isValid = false;
           }
         });
         continue;
-      } else if (key === "amenities") {
+      } */ else if (key === "amenities") {
         if (data[key].length === 0) {
           errorObj[key] = true;
           isValid = false;
         }
         continue;
       } else {
-        if (data[key] === "") {
-          errorObj[key] = true;
+        if (!data[key as keyof RoomType]) {
+          errorObj[key as keyof typeof submitError] = true;
           isValid = false;
         }
         continue;
@@ -141,7 +184,7 @@ function FormRoom(props) {
     return isValid;
   }
 
-  async function handleOnSubmit(e) {
+  async function handleOnSubmit(e: React.BaseSyntheticEvent) {
     e.preventDefault();
     const copyOfData = structuredClone(room);
     const correctForm = verifyForm(copyOfData);
@@ -164,7 +207,7 @@ function FormRoom(props) {
     );
 
   return (
-    <MainContainer style={{ minHeight: "calc(100vh - 145px)" }}>
+    <MainContainer>
       <Container theme={theme}>
         <Title theme={theme}>
           {initialState.id ? "Edit Room" : "New Room"}
@@ -199,7 +242,7 @@ function FormRoom(props) {
                 theme={theme}
                 autoComplete="off"
                 name="roomNumber"
-                value={room.roomNumber}
+                value={room.roomNumber || ""}
                 hasError={submitError.roomNumber}
                 onChange={handleInputsChange}
               />
@@ -209,7 +252,7 @@ function FormRoom(props) {
               <Button
                 variant={room.offer ? 1 : 4}
                 name="offer"
-                value={true}
+                value="true"
                 onClick={handleInputsChange}
               >
                 YES
@@ -217,7 +260,7 @@ function FormRoom(props) {
               <Button
                 variant={room.offer ? 4 : 1}
                 name="offer"
-                value={false}
+                value="false"
                 onClick={handleInputsChange}
               >
                 NO
@@ -228,7 +271,7 @@ function FormRoom(props) {
               <Input
                 theme={theme}
                 name="price"
-                value={room.price}
+                value={room.price || ""}
                 hasError={submitError.price}
                 onChange={handleInputsChange}
                 type="number"
@@ -275,7 +318,8 @@ function FormRoom(props) {
                     key={index}
                     name={`photo_${index}`}
                     value={room.photos[index]}
-                    hasError={submitError.photos[index]}
+                    // hasError={submitError.photos[index]}
+                    hasError={submitError.photos}
                     onChange={handleInputsChange}
                   />
                 ))}

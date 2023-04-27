@@ -1,18 +1,12 @@
 import { createSlice, createAsyncThunk, isAnyOf } from "@reduxjs/toolkit";
-import {
-  generateId,
-  hashData,
-  getAllData,
-  getItemData,
-  delayFunction,
-} from "../../utils";
+import { generateId, hashData } from "../../utils";
 import { IUserState, UserType, UserUpdateObj } from "../../@types/users";
-import user_data from "../../../public/mockData/users_data.json";
+import user_data from "../../mockData/users_data.json";
 import { IGlobalStore } from "../../@types/store";
 
 const initialState: IUserState = {
   users: [],
-  user: null,
+  user: {} as UserType,
   isLoading: true,
   hasError: false,
 };

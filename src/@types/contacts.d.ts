@@ -12,7 +12,7 @@ export type ContactType = {
 
 interface IContactState {
   contacts: ContactType[];
-  unreadContacts: number | null;
+  unreadContacts: number;
   isLoading: boolean;
   hasError: boolean;
 }

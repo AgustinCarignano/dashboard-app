@@ -17,8 +17,7 @@ import { Input } from "./FormComponents";
 import { themeContext } from "../context/ThemeContext";
 import { Theme } from "../@types/theme";
 
-
-const StyledAside = styled.aside<{show:boolean, theme:Theme}>`
+const StyledAside = styled.aside<{ show: boolean; theme: Theme }>`
   grid-area: aside;
   padding-top: 20px;
   background-color: ${(props) => props.theme[1]};
@@ -32,7 +31,7 @@ const StyledAside = styled.aside<{show:boolean, theme:Theme}>`
   transform: translateX(${(props) => (props.show ? "0px" : "-400px")});
 `;
 
-const LinkContainer = styled.div<{active:boolean, theme:Theme}>`
+const LinkContainer = styled.div<{ active: boolean; theme: Theme }>`
   display: flex;
   gap: 25px;
   padding: 10px 56px;
@@ -51,7 +50,7 @@ const LinkContainer = styled.div<{active:boolean, theme:Theme}>`
   }
 `;
 
-const UserCard = styled.div<{theme:Theme}>`
+const UserCard = styled.div<{ theme: Theme }>`
   display: flex;
   gap: 15px;
   flex-direction: column;
@@ -78,7 +77,7 @@ const UserCard = styled.div<{theme:Theme}>`
   }
 `;
 
-const Credits = styled.div<{theme:Theme}>`
+const Credits = styled.div<{ theme: Theme }>`
   margin-top: auto;
   h3 {
     font: normal 600 16px/25px Poppins, sans-serif;
@@ -99,13 +98,13 @@ const Logo = styled.div`
   }
 `;
 
-function Aside(props:{sidebarVisibility:boolean}) {
+function Aside(props: { sidebarVisibility: boolean }) {
   const { sidebarVisibility } = props;
   const { loginState, loginActionTypes, dispatchLogin } =
-    useContext(loginContext)||{};
+    useContext(loginContext) || {};
   const [updating, setUpdating] = useState(false);
-  const [userFullName, setUserFullName] = useState(loginState?.fullName || '');
-  const [userEmail, setUserEmail] = useState(loginState?.email || '');
+  const [userFullName, setUserFullName] = useState(loginState?.fullName || "");
+  const [userEmail, setUserEmail] = useState(loginState?.email || "");
   const { pathname } = useLocation();
   const pathArray = pathname.split("/");
   const { theme } = useContext(themeContext);
@@ -115,17 +114,21 @@ function Aside(props:{sidebarVisibility:boolean}) {
   }
 
   function handleEdit() {
-    if(dispatchLogin && loginActionTypes){
+    if (dispatchLogin && loginActionTypes) {
       if (
-      userFullName !== loginState?.fullName ||
-      userEmail !== loginState?.email
-    ) {
-      dispatchLogin({
-        type: loginActionTypes.UPDATE,
-        payload: { fullName: userFullName, email: userEmail, photo:loginState?.photo||"" },
-      });
-    }
-    setUpdating((prev) => !prev);
+        userFullName !== loginState?.fullName ||
+        userEmail !== loginState?.email
+      ) {
+        dispatchLogin({
+          type: loginActionTypes.UPDATE,
+          payload: {
+            fullName: userFullName,
+            email: userEmail,
+            photo: loginState?.photo || "",
+          },
+        });
+      }
+      setUpdating((prev) => !prev);
     }
   }
 
@@ -187,12 +190,14 @@ function Aside(props:{sidebarVisibility:boolean}) {
               <>
                 <Input
                   theme={theme}
+                  hasError={false}
                   style={{ width: "100%", fontSize: "14px" }}
                   value={userFullName}
                   onChange={(e) => setUserFullName(e.target.value)}
                 />
                 <Input
                   theme={theme}
+                  hasError={false}
                   style={{ width: "100%", fontSize: "14px" }}
                   value={userEmail}
                   onChange={(e) => setUserEmail(e.target.value)}

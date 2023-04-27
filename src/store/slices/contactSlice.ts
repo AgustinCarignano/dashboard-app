@@ -6,11 +6,11 @@ import {
   IContactState,
 } from "../../@types/contacts";
 import { IGlobalStore } from "../../@types/store";
-import contact_data from "../../../public/mockData/contact_data.json";
+import contact_data from "../../mockData/contact_data.json";
 
 const initialState: IContactState = {
   contacts: [],
-  unreadContacts: null,
+  unreadContacts: 0,
   isLoading: true,
   hasError: false,
 };

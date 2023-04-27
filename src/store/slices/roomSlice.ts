@@ -1,17 +1,12 @@
 import { createSlice, createAsyncThunk, isAnyOf } from "@reduxjs/toolkit";
-import {
-  generateId,
-  getAllData,
-  getItemData,
-  delayFunction,
-} from "../../utils";
-import room_data from "../../../public/mockData/rooms_data.json";
+import { generateId } from "../../utils";
+import room_data from "../../mockData/rooms_data.json";
 import { IRoomState, RoomType, RoomUpdateObj } from "../../@types/rooms";
 import { IGlobalStore } from "../../@types/store";
 
 const initialState: IRoomState = {
   rooms: [],
-  room: null,
+  room: {} as RoomType,
   isLoading: true,
   hasError: false,
 };

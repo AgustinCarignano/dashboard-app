@@ -14,7 +14,7 @@ import {
 import { ContactType } from "../@types/contacts";
 import { useAppDispatch } from "../hooks/hooks";
 
-const CardsContainer = styled.div<{variant:number,extraPadding:boolean}>`
+const CardsContainer = styled.div<{ variant: number; extraPadding: boolean }>`
   grid-column: 1/5;
   background-color: ${(props) =>
     props.variant === 1 ? props.theme[1] : "none"};
@@ -69,15 +69,16 @@ const Subject = styled(Contact)`
   border-top: solid 1px ${(props) => props.theme[6]};
 `;
 
-const ButtonRigth = styled.div`
+const ButtonRigth = styled.div<{ available: boolean }>`
   position: absolute;
   top: calc(50% - 24.3px);
   right: 0;
   Button {
     padding: 13px 20px;
     transition: transform 0.3s;
+    opacity: ${(props) => (props.available ? 1 : 0.5)};
     &:hover {
-      transform: scale(1.1);
+      transform: ${(props) => (props.available ? "scale(1.1)" : "scale(1)")};
     }
   }
 `;
@@ -95,12 +96,12 @@ const StatusContainer = styled.div`
 `;
 
 type PropsType = {
-  title: string,
-  data: ContactType[],
-  variant: number
-}
+  title?: string;
+  data: ContactType[];
+  variant: number;
+};
 
-function ContactPreview(props:PropsType) {
+function ContactPreview(props: PropsType) {
   const { title, data, variant } = props;
   const [dataToRender, setDataToRender] = useState<ContactType[]>([]);
   const [totalPages, setTotalPages] = useState(1);
@@ -108,7 +109,7 @@ function ContactPreview(props:PropsType) {
   const { theme } = useContext(themeContext);
   const dispatch = useAppDispatch();
 
-  const messageStyle = (remark:boolean) => {
+  const messageStyle = (remark: boolean) => {
     return {
       font: "normal 400 14px/20px 'Poppins', sans-serif",
       color: `${theme[9]}`,
@@ -118,7 +119,7 @@ function ContactPreview(props:PropsType) {
     };
   };
 
-  function handlePaginate(direction:string) {
+  function handlePaginate(direction: string) {
     switch (direction) {
       case "next":
         if (currentPage < totalPages) setCurrentPage(currentPage + 1);
@@ -165,14 +166,15 @@ function ContactPreview(props:PropsType) {
               }
               previewStyle={messageStyle(!item.read)}
               changeToOpen={
-                !item.read ?
-                (() =>
-                  dispatch(
-                    updateContact({
-                      body: { ...item,read: !item.read },
-                      id: item.id,
-                    })
-                  )) : undefined
+                !item.read
+                  ? () =>
+                      dispatch(
+                        updateContact({
+                          body: { ...item, read: !item.read },
+                          id: item.id,
+                        })
+                      )
+                  : undefined
               }
             />
             <StatusContainer>
@@ -200,21 +202,13 @@ function ContactPreview(props:PropsType) {
           </MyCard>
         );
       })}
-      <ButtonLeft>
-        <Button
-          variant={1}
-          available={currentPage > 1}
-          onClick={() => handlePaginate("prev")}
-        >
+      <ButtonLeft available={currentPage > 1}>
+        <Button variant={1} onClick={() => handlePaginate("prev")}>
           <FontAwesomeIcon icon={faChevronLeft} size="lg" />
         </Button>
       </ButtonLeft>
-      <ButtonRigth>
-        <Button
-          variant={1}
-          available={currentPage < totalPages}
-          onClick={() => handlePaginate("next")}
-        >
+      <ButtonRigth available={currentPage < totalPages}>
+        <Button variant={1} onClick={() => handlePaginate("next")}>
           <FontAwesomeIcon icon={faChevronRight} size="lg" />
         </Button>
       </ButtonRigth>

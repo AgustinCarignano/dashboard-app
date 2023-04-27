@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useContext } from "react";
 import { useNavigate } from "react-router-dom";
-import { useSelector, useDispatch } from "react-redux";
+import { useAppDispatch, useAppSelector } from "../../hooks/hooks";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faEllipsisVertical } from "@fortawesome/free-solid-svg-icons";
 import {
@@ -8,10 +8,11 @@ import {
   selectUsers,
   selectIsLoading,
   deleteUser,
-} from "../../store/slices/usersSlice.js";
+} from "../../store/slices/usersSlice";
 import Button from "../../components/Button";
 import MainContainer from "../../components/MainContainer";
 import Table, {
+  IRowItem,
   ImgRowContainer,
   RowContainer,
   RowDataSmaller,
@@ -19,17 +20,18 @@ import Table, {
 import Modal from "../../components/Modal";
 import { formatDate } from "../../utils";
 import Loader from "../../components/Loader";
-import Popup from "../../components/Popup.jsx";
-import DeleteItem from "../../components/DeleteItem.jsx";
-import { themeContext } from "../../context/ThemeContext.jsx";
+import Popup from "../../components/Popup";
+import DeleteItem from "../../components/DeleteItem";
+import { themeContext } from "../../context/ThemeContext";
+import { UserType } from "../../@types/users";
 
 function Users() {
-  const data = useSelector(selectUsers);
-  const isLoadingData = useSelector(selectIsLoading);
-  const dispatch = useDispatch();
+  const data = useAppSelector(selectUsers);
+  const isLoadingData = useAppSelector(selectIsLoading);
+  const dispatch = useAppDispatch();
   const [showConfirm, setShowConfirm] = useState(false);
   const [itemToDelete, setItemToDelete] = useState("");
-  const [modifydData, setModifydData] = useState([]);
+  const [modifydData, setModifydData] = useState<UserType[]>([]);
   const [activeTab, setActiveTab] = useState("All Employee");
   const [orderBy, setOrderBy] = useState("startDate");
   const [searchTerms, setSearchTerms] = useState("");
@@ -40,15 +42,16 @@ function Users() {
   const optionsMenu = [
     {
       label: "Details",
-      action: (itemId) => navigate(`/dashboard-app/users/${itemId}`),
+      action: (itemId: string) => navigate(`/dashboard-app/users/${itemId}`),
     },
     {
       label: "Edit",
-      action: (itemId) => navigate(`/dashboard-app/users/update/${itemId}`),
+      action: (itemId: string) =>
+        navigate(`/dashboard-app/users/update/${itemId}`),
     },
     {
       label: "Delete",
-      action: (itemId) => {
+      action: (itemId: string) => {
         setItemToDelete(itemId);
         setShowConfirm(true);
       },
@@ -63,7 +66,7 @@ function Users() {
     { label: "Status" },
   ];
 
-  function handleRedirect(id) {
+  function handleRedirect(id: string) {
     const path = `/dashboard-app/users/${id}`;
     navigate(path);
   }
@@ -73,7 +76,7 @@ function Users() {
     setShowConfirm(false);
   }
 
-  const rowsToRender = (item) => {
+  const rowsToRender = (item: UserType): IRowItem => {
     const [userDate] = formatDate(item.startDate);
     return {
       id: item.id,
@@ -88,17 +91,18 @@ function Users() {
             <RowDataSmaller theme={theme}>{item.email}</RowDataSmaller>
           </div>
         </RowContainer>,
-        userDate,
+        <>{userDate}</>,
         <Modal
           title="Description"
           content={item.description}
+          previewStyle={{ cursor: "pointer" }}
           preview={
             item.description.length > 100
               ? item.description.slice(0, 100) + "..."
               : item.description
           }
         />,
-        item.contact,
+        <>{item.contact}</>,
         <RowContainer justify="space-between">
           <Button variant={item.status === "ACTIVE" ? 9 : 10}>
             {item.status}
@@ -106,6 +110,7 @@ function Users() {
           <Popup
             options={optionsMenu}
             itemId={item.id}
+            withArrow={false}
             preview={
               <FontAwesomeIcon
                 color="#6E6E6E"
@@ -121,15 +126,16 @@ function Users() {
 
   useEffect(() => {
     const newData = structuredClone(data);
-    let filterData = [];
+    let filterData: UserType[] = [];
     if (activeTab === "Active Employee")
       filterData = newData.filter((item) => item.status === "ACTIVE");
     else if (activeTab === "Inactive Employee")
       filterData = newData.filter((item) => item.status === "INACTIVE");
     else filterData = newData;
     filterData.sort((a, b) => {
-      if (a[orderBy] > b[orderBy]) return 1;
-      else if (a[orderBy] < b[orderBy]) return -1;
+      if (a[orderBy as keyof UserType] > b[orderBy as keyof UserType]) return 1;
+      else if (a[orderBy as keyof UserType] < b[orderBy as keyof UserType])
+        return -1;
       return 0;
     });
     const searchData = filterData.filter((item) =>
@@ -143,30 +149,32 @@ function Users() {
   }, [dispatch]);
   return (
     <MainContainer>
-      {isLoadingData ? (
-        <Loader />
-      ) : (
-        <Table
-          data={modifydData}
-          option="users"
-          tableHeader={tableHeader}
-          tabs={tabs}
-          activeTab={activeTab}
-          setActiveTab={setActiveTab}
-          setSearchTerms={setSearchTerms}
-          rowsGenerator={rowsToRender}
-          newBtn="New User"
-          //newestAction={() => setOrderBy("startDate")}
-          paginate={true}
-          draggableRow={false}
-        />
-      )}
-      {showConfirm && (
-        <DeleteItem
-          handleClose={() => setShowConfirm((prev) => !prev)}
-          handleDelete={handleDeleteItem}
-        />
-      )}
+      <>
+        {isLoadingData ? (
+          <Loader />
+        ) : (
+          <Table
+            data={modifydData}
+            option="users"
+            tableHeader={tableHeader}
+            tabs={tabs}
+            activeTab={activeTab}
+            setActiveTab={setActiveTab}
+            setSearchTerms={setSearchTerms}
+            rowsGenerator={rowsToRender}
+            newBtn="New User"
+            //newestAction={() => setOrderBy("startDate")}
+            paginate={true}
+            draggableRow={false}
+          />
+        )}
+        {showConfirm && (
+          <DeleteItem
+            handleClose={() => setShowConfirm((prev) => !prev)}
+            handleDelete={handleDeleteItem}
+          />
+        )}
+      </>
     </MainContainer>
   );
 }

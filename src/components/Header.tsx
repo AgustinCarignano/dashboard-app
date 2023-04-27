@@ -1,7 +1,7 @@
-import React, { useContext, useEffect, useState } from "react";
+import { useContext, useEffect, useState } from "react";
 import styled, { keyframes } from "styled-components";
 import { useLocation, useNavigate } from "react-router-dom";
-import { useSelector } from "react-redux";
+import { useAppSelector } from "../hooks/hooks";
 import { loginContext } from "../context/LoginContext";
 import { selectUnreadContacts } from "../store/slices/contactSlice";
 import { selectBookings } from "../store/slices/bookingSlice";
@@ -14,7 +14,6 @@ import {
   faArrowRightFromBracket,
   faCircleHalfStroke,
 } from "@fortawesome/free-solid-svg-icons";
-import { Theme } from "../@types/theme";
 
 const StyleHeader = styled.header`
   display: flex;
@@ -63,7 +62,7 @@ const shakeNotif = keyframes`
   }
 `;
 
-const IconContainer = styled.div<{hasAction?:boolean}>`
+const IconContainer = styled.div<{ hasAction?: boolean }>`
   color: ${(props) => props.theme[15]};
   position: relative;
   cursor: ${(props) => (props.hasAction ? "Pointer" : "default")};
@@ -93,15 +92,15 @@ const TitleList = {
   login: "Login",
 };
 
-function Header(props:{handleSidebarVisibility:()=>void}) {
+function Header(props: { handleSidebarVisibility: () => void }) {
   const { handleSidebarVisibility } = props;
   const { loginState, loginActionTypes, dispatchLogin } =
-    useContext(loginContext)||{};
+    useContext(loginContext) || {};
   const [breadcrumb, setBreadcrumb] = useState("");
   const [pathArray, setPathArray] = useState<string[]>([]);
   const { theme, handleThemeChange } = useContext(themeContext);
-  const messages = useSelector(selectUnreadContacts);
-  const bookings = useSelector(selectBookings);
+  const messages = useAppSelector(selectUnreadContacts);
+  const bookings = useAppSelector(selectBookings);
   const { pathname } = useLocation();
   const navigate = useNavigate();
 
@@ -110,21 +109,28 @@ function Header(props:{handleSidebarVisibility:()=>void}) {
     navigate(path);
   }
 
-  const notifications = bookings.filter(
-    (book) => {
-      if(book.orderDate) {
-         return new Date(book.orderDate).getMonth() === new Date().getMonth()
-      }
+  /* const notifications = bookings.filter((book) => {
+    if (book.orderDate) {
+      return new Date(book.orderDate).getMonth() === new Date().getMonth();
     }
+  }).length; */
+  const notifications = bookings.filter(
+    (book) =>
+      book.orderDate &&
+      new Date(book.orderDate).getMonth() === new Date().getMonth()
   ).length;
 
   useEffect(() => {
     const array = pathname.split("/");
     if (array[3]) {
       if (array[3] === "create") {
-        setBreadcrumb(`New ${TitleList[array[2]]}`);
+        setBreadcrumb(`New ${TitleList[array[2] as keyof typeof TitleList]}`);
       } else if (array[3] === "update") {
-        setBreadcrumb(`Update ${TitleList[array[2]]} / ${array[4]}`);
+        setBreadcrumb(
+          `Update ${TitleList[array[2] as keyof typeof TitleList]} / ${
+            array[4]
+          }`
+        );
       } else {
         setBreadcrumb(array[3]);
       }
@@ -150,11 +156,13 @@ function Header(props:{handleSidebarVisibility:()=>void}) {
           />
         </IconContainer>
         <TitleContainer>
-          <Title theme={theme}>{TitleList[pathArray[2]] || "Dashboard"}</Title>
+          <Title theme={theme}>
+            {TitleList[pathArray[2] as keyof typeof TitleList] || "Dashboard"}
+          </Title>
           {breadcrumb && (
             <Breadcrumb>
               <BreadcrumbLink onClick={handleNavigate} theme={theme}>
-                {TitleList[pathArray[2]]} /
+                {TitleList[pathArray[2] as keyof typeof TitleList]} /
               </BreadcrumbLink>
               <BreadcrumbLink theme={theme}> {breadcrumb}</BreadcrumbLink>
             </Breadcrumb>
@@ -193,7 +201,11 @@ function Header(props:{handleSidebarVisibility:()=>void}) {
               icon={faArrowRightFromBracket}
               size="lg"
               data-cy="logoutBtn"
-              onClick={(dispatchLogin && loginActionTypes) ? () => dispatchLogin({ type: loginActionTypes.LOGOUT }) : undefined}
+              onClick={
+                dispatchLogin && loginActionTypes
+                  ? () => dispatchLogin({ type: loginActionTypes.LOGOUT })
+                  : undefined
+              }
             />
           </IconContainer>
         </Container>

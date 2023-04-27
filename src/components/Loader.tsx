@@ -1,6 +1,7 @@
 import React from "react";
 import styled from "styled-components";
-import { DotWave } from "@uiball/loaders";
+//import { DotWave } from "@uiball/loaders";
+const { DotWave } = require("@uiball/loaders");
 
 const Container = styled.div`
   position: absolute;

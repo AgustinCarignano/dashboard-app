@@ -47,15 +47,15 @@ export const ModalWindow = styled.div`
   }
 `;
 
-type PropsType ={
-  preview: string | React.ReactElement,
-  title: string,
-  content: string,
-  previewStyle: React.CSSProperties,
-  changeToOpen: undefined | (()=>void),
-}
+type PropsType = {
+  preview: string | React.ReactElement;
+  title: string;
+  content: string;
+  previewStyle?: React.CSSProperties;
+  changeToOpen?: undefined | (() => void);
+};
 
-function Modal(props:PropsType) {
+function Modal(props: PropsType) {
   const [openModal, setOpenModal] = useState(false);
   const { theme } = useContext(themeContext);
   const { preview, title, content, previewStyle, changeToOpen } = props;
@@ -75,7 +75,9 @@ function Modal(props:PropsType) {
           id="closeWindow"
           theme={theme}
           onClick={(e) => {
-            e.target instanceof Element && e.target.id.includes("closeWindow") && setOpenModal(false);
+            e.target instanceof Element &&
+              e.target.id.includes("closeWindow") &&
+              setOpenModal(false);
           }}
         >
           <ModalWindow id="modalWindow" theme={theme}>

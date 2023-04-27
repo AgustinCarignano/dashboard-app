@@ -1,11 +1,6 @@
 import { createSlice, createAsyncThunk, isAnyOf } from "@reduxjs/toolkit";
-import {
-  generateId,
-  delayFunction,
-  getAllData,
-  getItemData,
-} from "../../utils";
-import bookings_data from "../../../public/mockData/bookings_data.json";
+import { generateId } from "../../utils";
+import bookings_data from "../../mockData/bookings_data.json";
 import {
   BookingType,
   BookingUpdateObj,
@@ -13,23 +8,9 @@ import {
 } from "../../@types/bookings";
 import { IGlobalStore } from "../../@types/store";
 
-const emptyBooking: BookingType = {
-  id: "",
-  guest: "",
-  specialRequest: "",
-  orderDate: null,
-  roomType: "",
-  status: "",
-  checkIn: null,
-  checkOut: null,
-  roomId: "",
-  roomNumber: "",
-  roomImg: "",
-};
-
 const initialState: IBookingState = {
   bookings: [],
-  booking: { ...emptyBooking },
+  booking: {} as BookingType,
   isLoading: false,
   hasError: false,
 };
@@ -49,7 +30,7 @@ export const getBookingsData = createAsyncThunk(
 
 export const getBookingDetails = createAsyncThunk(
   "bookings/getBookingDetails",
-  async (id: "") => {
+  async (id: string) => {
     //const data = await getItemData("bookings_data.json", id);
     const data = await new Promise<BookingType>((resolve) => {
       const allData = bookings_data;

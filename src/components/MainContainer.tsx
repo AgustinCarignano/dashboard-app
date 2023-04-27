@@ -10,6 +10,7 @@ const MyMain = styled.main`
   background-color: ${(props) => props.theme[2]};
   gap: 40px;
   position: relative;
+  min-height: calc(100vh - 145px);
 `;
 
 export default function MainContainer(props: { children: React.ReactElement }) {

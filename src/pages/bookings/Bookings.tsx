@@ -1,10 +1,11 @@
 import React, { useContext, useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { useSelector, useDispatch } from "react-redux";
+import { useAppDispatch, useAppSelector } from "../../hooks/hooks";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faEllipsisVertical } from "@fortawesome/free-solid-svg-icons";
 import MainContainer from "../../components/MainContainer";
 import Table, {
+  IRowItem,
   RowContainer,
   RowDataBigger,
   RowDataSmaller,
@@ -22,6 +23,7 @@ import {
 import Loader from "../../components/Loader";
 import DeleteItem from "../../components/DeleteItem";
 import { themeContext } from "../../context/ThemeContext";
+import { BookingType } from "../../@types/bookings";
 
 const availableStates = {
   "Check In": 6,
@@ -30,12 +32,12 @@ const availableStates = {
 };
 
 function Bookings() {
-  const data = useSelector(selectBookings);
-  const isLoadingData = useSelector(selectIsLoading);
-  const dispatch = useDispatch();
+  const data = useAppSelector(selectBookings);
+  const isLoadingData = useAppSelector(selectIsLoading);
+  const dispatch = useAppDispatch();
   const [showConfirm, setShowConfirm] = useState(false);
   const [itemToDelete, setItemToDelete] = useState("");
-  const [orderedData, setOrderedData] = useState([]);
+  const [orderedData, setOrderedData] = useState<BookingType[]>([]);
   const [activeTab, setActiveTab] = useState("All Bookings");
   const [searchTerms, setSearchTerms] = useState("");
   const { theme } = useContext(themeContext);
@@ -45,16 +47,17 @@ function Bookings() {
   const optionsMenu = [
     {
       label: "Details",
-      action: (itemId) => navigate(`/dashboard-app/bookings/${itemId}`),
+      action: (itemId: string) => navigate(`/dashboard-app/bookings/${itemId}`),
     },
     {
       label: "Edit",
-      action: (itemId) => navigate(`/dashboard-app/bookings/update/${itemId}`),
+      action: (itemId: string) =>
+        navigate(`/dashboard-app/bookings/update/${itemId}`),
     },
     {
       label: "Delete",
       dataCy: "delete_one_",
-      action: (itemId) => {
+      action: (itemId: string) => {
         setItemToDelete(itemId);
         setShowConfirm(true);
       },
@@ -71,7 +74,7 @@ function Bookings() {
     { label: "Status" },
   ];
 
-  const rowsToRender = (item) => {
+  const rowsToRender = (item: BookingType): IRowItem => {
     const [orderDate, orderTime] = formatDate(item.orderDate);
     const [checkInDate, checkInTime] = formatDate(item.checkIn);
     const [checkOutDate, checkOutTime] = formatDate(item.checkOut);
@@ -100,22 +103,25 @@ function Bookings() {
           preview={
             <Button
               variant={item.specialRequest ? 3 : 4}
-              onClick={item.specialRequest ? () => {} : null}
+              onClick={item.specialRequest ? () => {} : undefined}
             >
               View Notes
             </Button>
           }
         />,
-        item.roomType,
+        <>{item.roomType}</>,
         <RowContainer justify="space-between">
           <Button
-            variant={availableStates[item.status]}
+            variant={
+              availableStates[item.status as keyof typeof availableStates]
+            }
             style={{ width: "100%" }}
           >
             {item.status}
           </Button>
           <Popup
             options={optionsMenu}
+            withArrow={false}
             itemId={item.id}
             dataCy={"booking_action_options_" + item.id}
             preview={
@@ -131,11 +137,15 @@ function Bookings() {
     };
   };
 
-  function filterData(dataArr, tab) {
-    const orderList = (arr, criteria) => {
+  function filterData(dataArr: BookingType[], tab: string) {
+    const orderList = (arr: BookingType[], criteria: keyof BookingType) => {
       arr.sort((a, b) => {
-        if (a[criteria] > b[criteria]) return -1;
-        else if (a[criteria] < b[criteria]) return 1;
+        if (a[criteria as keyof BookingType] > b[criteria as keyof BookingType])
+          return -1;
+        else if (
+          a[criteria as keyof BookingType] < b[criteria as keyof BookingType]
+        )
+          return 1;
         return 0;
       });
       return arr;
@@ -150,7 +160,7 @@ function Bookings() {
     return dataArr;
   }
 
-  function handleRedirect(id) {
+  function handleRedirect(id: string) {
     const path = `/dashboard-app/bookings/${id}`;
     navigate(path);
   }
@@ -175,30 +185,32 @@ function Bookings() {
 
   return (
     <MainContainer>
-      {isLoadingData ? (
-        <Loader />
-      ) : (
-        <Table
-          data={orderedData}
-          option="bookings"
-          tableHeader={tableHeader}
-          tabs={tabs}
-          activeTab={activeTab}
-          setActiveTab={setActiveTab}
-          setSearchTerms={setSearchTerms}
-          rowsGenerator={rowsToRender}
-          newBtn="New Booking"
-          newestAction={() => setActiveTab("All Bookings")}
-          paginate={true}
-          draggableRow={false}
-        />
-      )}
-      {showConfirm && (
-        <DeleteItem
-          handleClose={() => setShowConfirm((prev) => !prev)}
-          handleDelete={handleDeleteItem}
-        />
-      )}
+      <>
+        {isLoadingData ? (
+          <Loader />
+        ) : (
+          <Table
+            data={orderedData}
+            option="bookings"
+            tableHeader={tableHeader}
+            tabs={tabs}
+            activeTab={activeTab}
+            setActiveTab={setActiveTab}
+            setSearchTerms={setSearchTerms}
+            rowsGenerator={rowsToRender}
+            newBtn="New Booking"
+            newestAction={() => setActiveTab("All Bookings")}
+            paginate={true}
+            draggableRow={false}
+          />
+        )}
+        {showConfirm && (
+          <DeleteItem
+            handleClose={() => setShowConfirm((prev) => !prev)}
+            handleDelete={handleDeleteItem}
+          />
+        )}
+      </>
     </MainContainer>
   );
 }

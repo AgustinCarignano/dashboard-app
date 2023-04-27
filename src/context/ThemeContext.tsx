@@ -66,10 +66,14 @@ const Themes = {
   },
 };
 
-export const themeContext = createContext<ThemeContextType>(Themes[1]);
+export const themeContext = createContext<ThemeContextType>(
+  {} as ThemeContextType
+);
 
-export default function ThemeContextProvider( props:{children:React.ReactNode}) {
-  const [currentTheme, setCurrentTheme] = useState<'light'|'dark'>("light");
+export default function ThemeContextProvider(props: {
+  children: React.ReactNode;
+}) {
+  const [currentTheme, setCurrentTheme] = useState<"light" | "dark">("light");
 
   function handleThemeChange() {
     setCurrentTheme((prev) => (prev === "light" ? "dark" : "light"));

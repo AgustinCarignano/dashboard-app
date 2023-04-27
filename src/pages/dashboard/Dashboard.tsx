@@ -3,22 +3,22 @@ import {
   getAllContacts,
   selectContacts,
   selectIsLoading as selectLoadingBookings,
-} from "../../store/slices/contactSlice.js";
+} from "../../store/slices/contactSlice";
 import {
   getBookingsData,
   selectBookings,
   selectIsLoading as selectLoadingContacts,
-} from "../../store/slices/bookingSlice.js";
-import SmallCard from "../../components/SmallCard.js";
-import MainContainer from "../../components/MainContainer.js";
-import ContactPreview from "../../components/ContactPreview.js";
-import { formatDate } from "../../utils.js";
-import Table, { IRowItem } from "../../components/Table.js";
+} from "../../store/slices/bookingSlice";
+import SmallCard from "../../components/SmallCard";
+import MainContainer from "../../components/MainContainer";
+import ContactPreview from "../../components/ContactPreview";
+import { formatDate } from "../../utils";
+import Table, { IRowItem } from "../../components/Table";
 import styled from "styled-components";
-import Loader from "../../components/Loader.js";
-import { themeContext } from "../../context/ThemeContext.js";
-import { useAppSelector, useAppDispatch } from "../../hooks/hooks.js";
-import { BookingType } from "../../@types/bookings.js";
+import Loader from "../../components/Loader";
+import { themeContext } from "../../context/ThemeContext";
+import { useAppSelector, useAppDispatch } from "../../hooks/hooks";
+import { BookingType } from "../../@types/bookings";
 
 const FirstColumn = styled.div`
   display: flex;
@@ -66,8 +66,7 @@ function Dashboard() {
     { label: "Check Out" },
   ];
 
-  //const rowsToRender = (item:BookingType):IRowItem =>
-  const rowsToRender = (item): IRowItem => {
+  const rowsToRender = (item: BookingType): IRowItem => {
     let [checkInDate, checkInTime] = item.checkIn
       ? formatDate(item.checkIn)
       : "";

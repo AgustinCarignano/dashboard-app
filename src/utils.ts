@@ -63,8 +63,8 @@ export function formatDate(date: number | string) {
   const hour = newDate.getHours();
   const minutes = newDate.getMinutes().toString();
 
-  const shortDate = `${months[month]} ${day}${
-    day < 4 ? days[day] : "th"
+  const shortDate = `${months[month as keyof typeof months]} ${day}${
+    day < 4 ? days[day as keyof typeof days] : "th"
   }, ${year}`;
   const timeDate = `${hour > 12 ? hour - 12 : hour}:${
     minutes.length === 1 ? "0" + minutes : minutes

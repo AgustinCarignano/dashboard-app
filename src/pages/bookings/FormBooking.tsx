@@ -1,5 +1,5 @@
 import React, { useContext, useEffect, useState } from "react";
-import { useDispatch, useSelector } from "react-redux";
+import { useAppDispatch, useAppSelector } from "../../hooks/hooks";
 import Button from "../../components/Button";
 import MainContainer from "../../components/MainContainer";
 import {
@@ -20,11 +20,38 @@ import { getRoomsData, selectRooms } from "../../store/slices/roomSlice";
 import Loader from "../../components/Loader";
 import { formatDate } from "../../utils";
 import ErrorAlert from "../../components/ErrorAlert";
+import {
+  BookingInitialState,
+  BookingType,
+  ExtraRoom,
+} from "../../@types/bookings";
+import { RoomType } from "../../@types/rooms";
 
-function FormBooking(props) {
+const emptyRoom = {
+  photos: [""],
+  roomType: "string",
+  description: "string",
+  roomNumber: 0,
+  id: "",
+  offer: false,
+  price: 0,
+  discount: "",
+  cancellation: "",
+  status: "",
+  amenities: [""],
+};
+
+type PropsType = {
+  initialState: BookingInitialState;
+  extraRoom?: ExtraRoom;
+  onSubmitAction: (data: BookingType) => Promise<void>;
+};
+
+function FormBooking(props: PropsType) {
   const { initialState, extraRoom, onSubmitAction } = props;
-  const roomsData = useSelector(selectRooms);
-  const [booking, setBooking] = useState({});
+  const roomsData = useAppSelector(selectRooms);
+  const dispatch = useAppDispatch();
+  const [booking, setBooking] = useState({} as BookingInitialState);
   const [submitError, setSubmitError] = useState({
     hasError: false,
     guest: false,
@@ -32,34 +59,35 @@ function FormBooking(props) {
     checkOut: false,
     roomId: false,
   });
-  const [availableRooms, setAvailableRooms] = useState([]);
+  const [availableRooms, setAvailableRooms] = useState<RoomType[]>([]);
   const { theme } = useContext(themeContext);
-  const dispatch = useDispatch();
   const today = formatDate(new Date().getTime())[2];
 
-  function handleInputsChange(e) {
+  function handleInputsChange(e: React.BaseSyntheticEvent) {
     const copyOfData = { ...booking };
     const copyOfSubmitError = { ...submitError };
     const key = e.target.name;
     const value = e.target.value;
-    copyOfData[key] = value;
-    copyOfSubmitError[key] = false;
+    copyOfData[key as keyof BookingInitialState] = value;
+    copyOfSubmitError[key as keyof typeof submitError] = false;
     if (key === "roomId") {
       const room = availableRooms.find((item) => item.id === value);
-      copyOfData["roomNumber"] = room.roomNumber;
-      copyOfData["roomType"] = room.roomType;
+      if (room) {
+        copyOfData["roomNumber"] = room.roomNumber.toString();
+        copyOfData["roomType"] = room.roomType;
+      }
     }
     setSubmitError(copyOfSubmitError);
     setBooking(copyOfData);
   }
 
-  function verifyForm(data) {
+  function verifyForm(data: BookingInitialState) {
     let isValid = true;
     const errorObj = { ...submitError };
     for (const key in data) {
       if (key === "id" || key === "specialRequest") continue;
-      if (!data[key]) {
-        errorObj[key] = true;
+      if (!data[key as keyof BookingInitialState]) {
+        errorObj[key as keyof typeof submitError] = true;
         isValid = false;
       }
     }
@@ -68,14 +96,23 @@ function FormBooking(props) {
     return isValid;
   }
 
-  function handleOnSubmit(e) {
+  function handleOnSubmit(e: React.BaseSyntheticEvent) {
     e.preventDefault();
     const copyOfData = { ...booking };
     const correctForm = verifyForm(copyOfData);
     if (correctForm) {
-      copyOfData.checkIn = new Date(copyOfData.checkIn).getTime();
-      copyOfData.checkOut = new Date(copyOfData.checkOut).getTime();
-      onSubmitAction(copyOfData);
+      // copyOfData.checkIn = new Date(copyOfData.checkIn).getTime();
+      // copyOfData.checkOut = new Date(copyOfData.checkOut).getTime();
+      // onSubmitAction(copyOfData);
+      const newCheckIn = new Date(copyOfData.checkIn).getTime();
+      const newCheckOut = new Date(copyOfData.checkOut).getTime();
+      const newOrderDate = new Date(copyOfData.orderDate).getTime();
+      onSubmitAction({
+        ...copyOfData,
+        checkIn: newCheckIn,
+        checkOut: newCheckOut,
+        orderDate: newOrderDate,
+      });
     } else {
       console.log("Something was wrong");
     }
@@ -85,7 +122,15 @@ function FormBooking(props) {
     const availableRooms = roomsData.filter(
       (item) => item.status === "Available"
     );
-    if (extraRoom) availableRooms.push(extraRoom);
+    if (extraRoom) {
+      const { roomId, roomType, roomNumber } = extraRoom;
+      availableRooms.push({
+        ...emptyRoom,
+        id: roomId,
+        roomType,
+        roomNumber: parseInt(roomNumber),
+      });
+    }
     availableRooms.sort((a, b) => {
       if (a.roomType > b.roomType) return 1;
       else if (a.roomType < b.roomType) return -1;
@@ -184,6 +229,7 @@ function FormBooking(props) {
               <Label theme={theme}>Special Request</Label>
               <TextArea
                 theme={theme}
+                hasError={false}
                 name="specialRequest"
                 value={booking.specialRequest}
                 onChange={handleInputsChange}

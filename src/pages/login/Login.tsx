@@ -119,8 +119,8 @@ function Login() {
     } else if (!credentials.password) {
       return setShowAlert(errorMessage.emptyPassword);
     } else if (
-      credentials.userName === "agustinC" ||
-      credentials.password === "12345"
+      credentials.userName !== "agustinC" ||
+      credentials.password !== "12345"
     ) {
       return setShowAlert(errorMessage.wrongCredentials);
     } else {

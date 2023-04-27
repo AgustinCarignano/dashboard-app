@@ -73,7 +73,7 @@ function SmallCard(props: PropsType) {
   return (
     <MyCard theme={theme}>
       <FontAwesomeIcon
-        icon={cardsTypes[type].icon}
+        icon={cardsTypes[type as keyof typeof cardsTypes].icon}
         size="lg"
         className="icon"
         rotate={type === "checkOut" ? 180 : 0}
@@ -81,7 +81,9 @@ function SmallCard(props: PropsType) {
       />
       <div>
         <CardNumber theme={theme}>{number}</CardNumber>
-        <CardLegend theme={theme}>{cardsTypes[type].legend}</CardLegend>
+        <CardLegend theme={theme}>
+          {cardsTypes[type as keyof typeof cardsTypes].legend}
+        </CardLegend>
       </div>
     </MyCard>
   );

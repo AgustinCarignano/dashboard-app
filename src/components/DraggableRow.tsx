@@ -1,22 +1,21 @@
 import React, { useRef } from "react";
+import type { Identifier, XYCoord } from "dnd-core";
 import { useDrag, useDrop } from "react-dnd";
-//import type { FC } from "react";
-import type { Identifier, XYCoord } from 'dnd-core'
 
 export interface RowProps {
-  id:string,
-  rowData: React.ReactElement[],
-  index:number,
-  moveRow:(dragIndex: any, hoverIndex: any) => void
+  id: string;
+  rowData: React.ReactElement[];
+  index: number;
+  moveRow: (dragIndex: any, hoverIndex: any) => void;
 }
 
 interface DragItem {
-  index: number
-  id: string
-  type: string
+  index: number;
+  id: string;
+  type: string;
 }
 
-function DraggableRow({ id, rowData, index, moveRow }:RowProps) {
+function DraggableRow({ id, rowData, index, moveRow }: RowProps) {
   const ref = useRef<HTMLTableRowElement>(null);
   const [{ handlerId }, drop] = useDrop<
     DragItem,

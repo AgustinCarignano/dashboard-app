@@ -16,6 +16,7 @@ import {
 import { themeContext } from "../../context/ThemeContext";
 import Loader from "../../components/Loader";
 import ErrorAlert from "../../components/ErrorAlert";
+import { UserInitialState, UserType } from "../../@types/users";
 
 const availableRoles = [
   "(Select one role)",
@@ -24,9 +25,15 @@ const availableRoles = [
   "Room Services",
 ];
 
-function FormUser(props) {
+type PropsType = {
+  initialState: UserInitialState;
+  onSubmitAction: (data: UserType) => Promise<void>;
+  verifyPassword: boolean;
+};
+
+function FormUser(props: PropsType) {
   const { initialState, onSubmitAction, verifyPassword } = props;
-  const [user, setUser] = useState({});
+  const [user, setUser] = useState({} as UserInitialState);
   const [controlPassword, setControlPassword] = useState("");
   const [submitError, setSubmitError] = useState({
     hasError: false,
@@ -41,24 +48,24 @@ function FormUser(props) {
   });
   const { theme } = useContext(themeContext);
 
-  function handleInputsChange(e) {
+  function handleInputsChange(e: React.BaseSyntheticEvent) {
     const copyOfData = { ...user };
     const copyOfSubmitError = { ...submitError };
-    const key = e.target.name;
-    const value = e.target.value;
-    copyOfData[key] = value;
-    copyOfSubmitError[key] = false;
+    const key: string = e.target.name;
+    const value: string = e.target.value;
+    copyOfData[key as keyof UserType] = value;
+    copyOfSubmitError[key as keyof typeof submitError] = false;
     setUser(copyOfData);
     setSubmitError(copyOfSubmitError);
   }
 
-  function verifyForm(data) {
+  function verifyForm(data: UserInitialState) {
     const errorObj = { ...submitError };
     let isValid = true;
     for (const key in data) {
       if (key === "id") continue;
-      if (!data[key]) {
-        errorObj[key] = true;
+      if (!data[key as keyof UserType]) {
+        errorObj[key as keyof typeof errorObj] = true;
         isValid = false;
         continue;
       }
@@ -72,13 +79,16 @@ function FormUser(props) {
     return isValid;
   }
 
-  async function handleOnSubmit(e) {
+  async function handleOnSubmit(e: React.BaseSyntheticEvent) {
     e.preventDefault();
-    const copyOfData = { ...user };
-    const correctForm = verifyForm(copyOfData);
+    //const copyOfData = { ...user };
+    //const correctForm = verifyForm(copyOfData);
+    const correctForm = verifyForm(user);
     if (correctForm) {
-      copyOfData.startDate = new Date(copyOfData.startDate).getTime();
-      onSubmitAction(copyOfData);
+      //copyOfData.startDate = new Date(copyOfData.startDate).getTime();
+      const newDate = new Date(user.startDate).getTime();
+      onSubmitAction({ ...user, startDate: newDate });
+      //onSubmitAction(copyOfData);
     } else {
       console.log("Something was wrong");
     }
@@ -96,7 +106,7 @@ function FormUser(props) {
     );
 
   return (
-    <MainContainer style={{ minHeight: "calc(100vh - 145px)" }}>
+    <MainContainer>
       <Container theme={theme}>
         <Title theme={theme}>{user.id ? "Edit User" : "New User"}</Title>
         <FormContainer>

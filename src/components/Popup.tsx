@@ -15,7 +15,7 @@ const Preview = styled.div`
   position: relative;
 `;
 
-const Container = styled.div<{position:string,visible:boolean}>`
+const Container = styled.div<{ position: string; visible: boolean }>`
   display: flex;
   z-index: 100;
   width: 100%;
@@ -45,7 +45,7 @@ const Option = styled.p`
   }
 `;
 
-const ArrowIcon = styled.div<{turnArrow:boolean}>`
+const ArrowIcon = styled.div<{ turnArrow: boolean }>`
   position: absolute;
   top: 13px;
   right: 10px;
@@ -64,20 +64,20 @@ const ExtraWindow = styled.div`
 `;
 
 type OptionsPopup = {
-  label:string,
-  action:(itemId:string)=>void,
-  dataCy?:string
-}
+  label: string;
+  action: (itemId: string) => void;
+  dataCy?: string;
+};
 
-type PropsType={
-  preview: React.ReactElement,
-  options: OptionsPopup[],
-  itemId: string,
-  withArrow: boolean,
-  dataCy: string
-}
+type PropsType = {
+  preview: React.ReactElement;
+  options: OptionsPopup[];
+  itemId: string;
+  withArrow: boolean;
+  dataCy?: string;
+};
 
-function Popup(props:PropsType) {
+function Popup(props: PropsType) {
   const [show, setShow] = useState(false);
   const { theme } = useContext(themeContext);
   const { preview, options, itemId, withArrow, dataCy } = props;
@@ -86,7 +86,7 @@ function Popup(props:PropsType) {
     setShow((prev) => !prev);
   }
 
-  function handleAction(action:(itemdId:string)=>void) {
+  function handleAction(action: (itemdId: string) => void) {
     action(itemId);
     setShow((prev) => !prev);
   }
@@ -120,7 +120,9 @@ function Popup(props:PropsType) {
         <ExtraWindow
           id="closePopup"
           onClick={(e) =>
-            e.target instanceof Element && e.target.id.includes("closePopup") && handleVisibility()
+            e.target instanceof Element &&
+            e.target.id.includes("closePopup") &&
+            handleVisibility()
           }
         />
       )}

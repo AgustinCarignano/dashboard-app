@@ -1,6 +1,6 @@
 import React, { useEffect } from "react";
 import { useNavigate, useParams } from "react-router-dom";
-import { useSelector, useDispatch } from "react-redux";
+import { useAppDispatch, useAppSelector } from "../../hooks/hooks";
 import {
   getRoomDetails,
   selectIsLoading,
@@ -10,21 +10,22 @@ import {
 import FormRoom from "./FormRoom";
 import Loader from "../../components/Loader";
 import MainContainer from "../../components/MainContainer";
+import { RoomType } from "../../@types/rooms";
 
 function UpdateRoom() {
-  const roomData = useSelector(selectRoomDetails);
-  const isLoading = useSelector(selectIsLoading);
+  const roomData = useAppSelector(selectRoomDetails);
+  const isLoading = useAppSelector(selectIsLoading);
   const { id } = useParams();
-  const dispatch = useDispatch();
+  const dispatch = useAppDispatch();
   const navigate = useNavigate();
 
-  async function onSubmitAction(data) {
+  async function onSubmitAction(data: RoomType) {
     await dispatch(updateRoom({ body: data, id: data.id })).unwrap();
     navigate(`/dashboard-app/rooms/${id}`);
   }
 
   useEffect(() => {
-    dispatch(getRoomDetails(id));
+    if (id) dispatch(getRoomDetails(id));
   }, [dispatch, id]);
 
   return isLoading ? (

@@ -12,7 +12,12 @@ const BtnContainer = styled.div`
   justify-content: space-evenly;
 `;
 
-function DeleteItem({ handleClose, handleDelete }) {
+type PropsType = {
+  handleClose: () => void;
+  handleDelete: () => void;
+};
+
+function DeleteItem({ handleClose, handleDelete }: PropsType) {
   const { theme } = useContext(themeContext);
   return (
     <ModalContainer theme={theme}>

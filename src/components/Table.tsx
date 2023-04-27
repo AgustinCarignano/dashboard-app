@@ -2,7 +2,7 @@ import React, { useState, useEffect, useContext, useCallback } from "react";
 import { useNavigate } from "react-router-dom";
 import styled from "styled-components";
 import update from "immutability-helper";
-import type { FC } from "react";
+//import type { FC } from "react";
 import { DndProvider } from "react-dnd";
 import { HTML5Backend } from "react-dnd-html5-backend";
 import Button from "./Button";
@@ -11,6 +11,10 @@ import { faMagnifyingGlass } from "@fortawesome/free-solid-svg-icons";
 import { themeContext } from "../context/ThemeContext";
 import StaticRow from "./StaticRow";
 import DraggableRow from "./DraggableRow";
+import { BookingType } from "../@types/bookings";
+import { ContactType } from "../@types/contacts";
+import { RoomType } from "../@types/rooms";
+import { UserType } from "../@types/users";
 
 const TableContainer = styled.div`
   display: flex;
@@ -158,6 +162,8 @@ export interface IRowItem {
   rowData: React.ReactElement[];
 }
 
+type UnionType = BookingType & ContactType & RoomType & UserType;
+
 export type PropsType = {
   data: any[];
   option: string;
@@ -166,7 +172,7 @@ export type PropsType = {
   activeTab?: string;
   setActiveTab?: (item: string) => void;
   setSearchTerms?: (terms: string) => void;
-  rowsGenerator: (item: object) => IRowItem;
+  rowsGenerator: (item: UnionType) => IRowItem;
   newBtn?: string;
   newestAction?: () => void;
   paginate: boolean;
@@ -191,7 +197,7 @@ function Table(props: PropsType) {
   const [rows, setRows] = useState<
     { id: string; rowData: React.ReactElement[] }[]
   >([]);
-  const [dataToRender, setDataToRender] = useState<any[]>([]);
+  const [dataToRender, setDataToRender] = useState<UnionType[]>([]);
   const [totalPages, setTotalPages] = useState(1);
   const [currentPage, setCurrentPage] = useState(1);
   const [paginateBar, setPaginateBar] = useState<number[]>([]);

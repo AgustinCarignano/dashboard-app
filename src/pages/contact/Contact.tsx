@@ -1,27 +1,28 @@
 import React, { useContext, useEffect, useState } from "react";
-import { useSelector, useDispatch } from "react-redux";
 import {
   getAllContacts,
   updateContact,
   selectContacts,
   selectIsLoading,
-} from "../../store/slices/contactSlice.js";
+} from "../../store/slices/contactSlice";
 import Button from "../../components/Button";
 import ContactPreview from "../../components/ContactPreview";
 import MainContainer from "../../components/MainContainer";
 import Modal from "../../components/Modal";
-import Table from "../../components/Table";
+import Table, { IRowItem } from "../../components/Table";
 import { formatDate } from "../../utils";
 import { RowDataSmaller } from "../../components/Table";
-import Loader from "../../components/Loader.jsx";
-import { themeContext } from "../../context/ThemeContext.jsx";
+import Loader from "../../components/Loader";
+import { themeContext } from "../../context/ThemeContext";
+import { useAppDispatch, useAppSelector } from "../../hooks/hooks";
+import { ContactType } from "../../@types/contacts";
 
 function Contact() {
-  const data = useSelector(selectContacts);
-  const isLoadingData = useSelector(selectIsLoading);
-  const dispatch = useDispatch();
-  const [dataToRender, setDataToRender] = useState([]);
-  const [previewData, setPreviewData] = useState([]);
+  const data = useAppSelector(selectContacts);
+  const isLoadingData = useAppSelector(selectIsLoading);
+  const dispatch = useAppDispatch();
+  const [dataToRender, setDataToRender] = useState<ContactType[]>([]);
+  const [previewData, setPreviewData] = useState<ContactType[]>([]);
   const [activeTab, setActiveTab] = useState("All Contacts");
   const { theme } = useContext(themeContext);
   const tabs = ["All Contacts", "Archived"];
@@ -33,7 +34,7 @@ function Contact() {
     { label: "Action" },
   ];
 
-  const rowsToRender = (item) => {
+  const rowsToRender = (item: ContactType): IRowItem => {
     const [contactDate] = formatDate(item.date);
     return {
       id: item.id,
@@ -61,46 +62,31 @@ function Contact() {
             }
             previewStyle={{ cursor: "Pointer" }}
             changeToOpen={
-              !item.read &&
-              (() =>
-                dispatch(
-                  updateContact({
-                    body: { read: !item.read },
-                    id: item.id,
-                  })
-                ))
+              !item.read
+                ? () =>
+                    dispatch(
+                      updateContact({
+                        body: { ...item, read: !item.read },
+                        id: item.id,
+                      })
+                    )
+                : undefined
             }
           />
         </div>,
-        item.archived ? (
-          <Button
-            variant={1}
-            onClick={() =>
-              dispatch(
-                updateContact({
-                  body: { archived: !item.archived },
-                  id: item.id,
-                })
-              )
-            }
-          >
-            RESTORE
-          </Button>
-        ) : (
-          <Button
-            variant={7}
-            onClick={() =>
-              dispatch(
-                updateContact({
-                  body: { archived: !item.archived },
-                  id: item.id,
-                })
-              )
-            }
-          >
-            ARCHIVE
-          </Button>
-        ),
+        <Button
+          variant={item.archived ? 1 : 7}
+          onClick={() =>
+            dispatch(
+              updateContact({
+                body: { ...item, archived: !item.archived },
+                id: item.id,
+              })
+            )
+          }
+        >
+          {item.archived ? "RESTORE" : "ARCHIVE"}
+        </Button>,
       ],
     };
   };
@@ -140,7 +126,7 @@ function Contact() {
         <Loader />
       ) : (
         <>
-          <ContactPreview data={previewData} />
+          <ContactPreview data={previewData} variant={0} />
           <Table
             data={dataToRender}
             option="contact"

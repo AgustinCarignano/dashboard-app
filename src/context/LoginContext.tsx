@@ -1,11 +1,12 @@
-import React, { createContext, useEffect, useReducer } from "react";
+import { createContext, useEffect, useReducer } from "react";
 import { LoginActions, LoginContextType, LoginState } from "../@types/login";
+import { JsxElement } from "typescript";
 
-const reducer = (state:LoginState, action:LoginActions):LoginState => {
+const reducer = (state: LoginState, action: LoginActions): LoginState => {
   switch (action.type) {
     case loginActionTypes.LOGIN:
       if (action.payload) return { auth: true, ...action.payload };
-      else return {...state}
+      else return { ...state };
     case loginActionTypes.LOGOUT:
       return { ...initialState };
     case loginActionTypes.UPDATE:
@@ -28,18 +29,19 @@ const initialState = {
   photo: "",
 };
 
-const setLocalStorage = (state:LoginState) => {
+const setLocalStorage = (state: LoginState) => {
   localStorage.setItem("login", JSON.stringify(state));
 };
 
-const getLocalStorage = ():LoginState => {
-  return JSON.parse(localStorage.getItem("login")||"");
+const getLocalStorage = (): LoginState => {
+  return JSON.parse(localStorage.getItem("login") || "");
 };
 
-export const loginContext = createContext<LoginContextType|null>(null);
+export const loginContext = createContext<LoginContextType | null>(null);
 
-
-export default function LoginContextProvider({ children }) {
+export default function LoginContextProvider(props: {
+  children: React.ReactNode;
+}) {
   const [loginState, dispatchLogin] = useReducer(
     reducer,
     getLocalStorage() || initialState
@@ -53,7 +55,7 @@ export default function LoginContextProvider({ children }) {
     <loginContext.Provider
       value={{ loginState, dispatchLogin, loginActionTypes }}
     >
-      {children}
+      {props.children}
     </loginContext.Provider>
   );
 }

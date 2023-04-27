@@ -13,7 +13,7 @@ export type UserType = {
 
 export interface IUserState {
   users: UserType[];
-  user: UserType | null;
+  user: UserType;
   isLoading: boolean;
   hasError: boolean;
 }
@@ -21,4 +21,17 @@ export interface IUserState {
 export type UserUpdateObj = {
   body: UserType;
   id: string;
+};
+
+export type UserInitialState = {
+  photo: string;
+  fullName: string;
+  id: string;
+  email: string;
+  startDate: number | string;
+  description: string;
+  contact: string;
+  status: string;
+  role: string;
+  password: string;
 };

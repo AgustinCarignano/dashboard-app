@@ -22,17 +22,16 @@ export const MyButton = styled.button<propsType>`
 
 interface ButtonProps {
   variant: number;
-  children: string | React.ReactElement;
-  available?: boolean;
-  onClick?: (e: React.BaseSyntheticEvent) => void | Promise<void>;
-  value?: any;
-  name?: any;
+  children: any;
+  onClick?: (e: React.BaseSyntheticEvent) => void; //probar de cambiar el return implicito en arrow functions
+  value?: string | number | readonly string[];
+  name?: string;
+  style?: React.CSSProperties;
 }
 
 export default function Button({
   variant,
   children,
-  available,
   onClick,
   value,
   name,
@@ -95,10 +94,9 @@ export default function Button({
   return (
     <MyButton
       onClick={onClick}
-      available={available}
       name={name}
       value={value}
-      {...variantsOption[variant]}
+      {...variantsOption[variant as keyof typeof variantsOption]}
     >
       {children}
     </MyButton>
