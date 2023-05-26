@@ -6,6 +6,7 @@ import { themeContext } from "../context/ThemeContext";
 const MyMain = styled.main`
   display: grid;
   grid-template-columns: repeat(4, 1fr);
+  align-items: start;
   padding: 50px;
   background-color: ${(props) => props.theme[2]};
   gap: 40px;

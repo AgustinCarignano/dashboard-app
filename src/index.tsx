@@ -12,14 +12,14 @@ if (!rootDiv) throw new Error("The root element is missing in index.html");
 
 const root = ReactDOM.createRoot(rootDiv);
 root.render(
-  <React.StrictMode>
-    <Provider store={store}>
-      <App />
-    </Provider>
-  </React.StrictMode>
+  <Provider store={store}>
+    <App />
+  </Provider>
 );
 
 // If you want to start measuring performance in your app, pass a function
 // to log results (for example: reportWebVitals(console.log))
 // or send to an analytics endpoint. Learn more: https://bit.ly/CRA-vitals
 //reportWebVitals();
+
+//<React.StrictMode></React.StrictMode>

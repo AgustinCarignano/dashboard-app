@@ -107,7 +107,7 @@ export const RowDataBigger = styled.p`
 `;
 export const RowDataSmaller = styled.p`
   color: ${(props) => props.theme[12]};
-  font-size: 14px;
+  font-size: 12px;
   font-weight: 300;
 `;
 export const ImgRowContainer = styled.div<{ aspectRatio: string }>`

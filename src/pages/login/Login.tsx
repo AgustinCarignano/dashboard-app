@@ -5,8 +5,7 @@ import { loginContext } from "../../context/LoginContext";
 import Button from "../../components/Button";
 import { themeContext } from "../../context/ThemeContext";
 import ErrorAlert from "../../components/ErrorAlert";
-import { useAppDispatch } from "../../hooks/hooks";
-import { getUserDetails } from "../../store/slices/usersSlice";
+import { loginFecth } from "../../utils/fetchUtils";
 
 const FormContainer = styled.div`
   width: 100%;
@@ -49,7 +48,8 @@ const Form = styled.form`
     border-radius: 8px;
     outline: none;
     padding: 10px;
-    font: normal 400 24px/36px "Poppins", Sans-serif;
+    font: normal 400 18px/30px "Poppins", Sans-serif;
+    min-width: 310px;
   }
   Button {
     margin-top: 20px;
@@ -70,27 +70,33 @@ const Field = styled.div<{ showError: boolean }>`
 const errorMessage = {
   standBy: {
     modal: false,
-    userName: false,
+    email: false,
     password: false,
     message: "",
   },
-  emptyUserName: {
+  emptyEmail: {
     modal: true,
-    userName: true,
+    email: true,
     password: false,
-    message: "You must type a user name",
+    message: "You must type an email",
   },
   emptyPassword: {
     modal: true,
-    userName: false,
+    email: false,
     password: true,
     message: "You must type a user password",
   },
   wrongCredentials: {
     modal: true,
-    userName: true,
+    email: true,
     password: true,
-    message: "Invalid User Name or Password",
+    message: "Invalid Email or Password",
+  },
+  serverError: {
+    modal: true,
+    email: false,
+    password: false,
+    message: "There has been an internal error. Try again.",
   },
 };
 
@@ -98,13 +104,12 @@ function Login() {
   const { loginState, loginActionTypes, dispatchLogin } =
     useContext(loginContext) || {};
   const [credentials, setCredentials] = useState({
-    userName: "agustinC",
+    email: "agustin.carignano@gmail.com",
     password: "12345",
   });
   const [showAlert, setShowAlert] = useState(errorMessage.standBy);
   const { theme } = useContext(themeContext);
   const navigate = useNavigate();
-  const dispatch = useAppDispatch();
 
   function handleInputChange(e: React.BaseSyntheticEvent) {
     const { name, value } = e.target;
@@ -114,26 +119,30 @@ function Login() {
 
   async function handleSubmit(e: React.BaseSyntheticEvent) {
     e.preventDefault();
-    if (!credentials.userName) {
-      return setShowAlert(errorMessage.emptyUserName);
+    if (!credentials.email) {
+      return setShowAlert(errorMessage.emptyEmail);
     } else if (!credentials.password) {
       return setShowAlert(errorMessage.emptyPassword);
-    } else if (
-      credentials.userName !== "agustinC" ||
-      credentials.password !== "12345"
-    ) {
-      return setShowAlert(errorMessage.wrongCredentials);
     } else {
-      const user = await dispatch(getUserDetails("323905642-9")).unwrap();
-      if (!user.data || !dispatchLogin || !loginActionTypes) return;
-      dispatchLogin({
-        type: loginActionTypes.LOGIN,
-        payload: {
-          fullName: user.data.fullName,
-          email: user.data.email,
-          photo: user.data.photo,
-        },
-      });
+      const { error, data } = await loginFecth(credentials);
+      if (data) {
+        localStorage.setItem("token", data.token);
+        if (!dispatchLogin || !loginActionTypes) return;
+        dispatchLogin({
+          type: loginActionTypes.LOGIN,
+          payload: {
+            fullName: data.user.fullName ?? "",
+            email: data.user.email ?? "",
+            photo: data.user.photo ?? "",
+          },
+        });
+      } else {
+        if (error?.status === 401) {
+          return setShowAlert(errorMessage.wrongCredentials);
+        } else {
+          return setShowAlert(errorMessage.serverError);
+        }
+      }
     }
   }
 
@@ -147,16 +156,16 @@ function Login() {
     <FormContainer theme={theme}>
       <Form onSubmit={handleSubmit} theme={theme}>
         <h1>Type Your Credentials </h1>
-        <Field showError={showAlert.userName}>
-          <label htmlFor="userName">User name</label>
+        <Field showError={showAlert.email}>
+          <label htmlFor="email">Email</label>
           <input
-            data-cy="userName"
-            type="text"
-            name="userName"
-            id="userName"
+            data-cy="email"
+            type="email"
+            name="email"
+            id="email"
             autoComplete="off"
             onChange={handleInputChange}
-            value={credentials.userName}
+            value={credentials.email}
           />
         </Field>
         <Field showError={showAlert.password}>

@@ -1,7 +1,7 @@
 export type UserType = {
+  _id: string;
   photo: string;
   fullName: string;
-  id: string;
   email: string;
   startDate: number;
   description: string;
@@ -26,7 +26,7 @@ export type UserUpdateObj = {
 export type UserInitialState = {
   photo: string;
   fullName: string;
-  id: string;
+  _id: string;
   email: string;
   startDate: number | string;
   description: string;

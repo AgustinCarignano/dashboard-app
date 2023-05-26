@@ -63,7 +63,7 @@ function FormUser(props: PropsType) {
     const errorObj = { ...submitError };
     let isValid = true;
     for (const key in data) {
-      if (key === "id") continue;
+      if (key === "_id") continue;
       if (!data[key as keyof UserType]) {
         errorObj[key as keyof typeof errorObj] = true;
         isValid = false;
@@ -81,14 +81,10 @@ function FormUser(props: PropsType) {
 
   async function handleOnSubmit(e: React.BaseSyntheticEvent) {
     e.preventDefault();
-    //const copyOfData = { ...user };
-    //const correctForm = verifyForm(copyOfData);
     const correctForm = verifyForm(user);
     if (correctForm) {
-      //copyOfData.startDate = new Date(copyOfData.startDate).getTime();
       const newDate = new Date(user.startDate).getTime();
       onSubmitAction({ ...user, startDate: newDate });
-      //onSubmitAction(copyOfData);
     } else {
       console.log("Something was wrong");
     }
@@ -108,7 +104,7 @@ function FormUser(props: PropsType) {
   return (
     <MainContainer>
       <Container theme={theme}>
-        <Title theme={theme}>{user.id ? "Edit User" : "New User"}</Title>
+        <Title theme={theme}>{user._id ? "Edit User" : "New User"}</Title>
         <FormContainer>
           <Column>
             <Field>
@@ -152,7 +148,7 @@ function FormUser(props: PropsType) {
                 onChange={handleInputsChange}
               />
             </Field>
-            {!user.id && (
+            {!user._id && (
               <>
                 <Field>
                   <Label theme={theme}>Password</Label>
@@ -244,7 +240,7 @@ function FormUser(props: PropsType) {
           </Column>
           <Submit>
             <Button variant={1} onClick={handleOnSubmit}>
-              {user.id ? "SAVE" : "CREATE"}
+              {user._id ? "SAVE" : "CREATE"}
             </Button>
           </Submit>
           {submitError.hasError && (

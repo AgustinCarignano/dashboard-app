@@ -8,7 +8,7 @@ import {
 } from "../../store/slices/usersSlice";
 import FormUser from "./FormUser";
 import Loader from "../../components/Loader";
-import { formatDate } from "../../utils";
+import { formatDate } from "../../utils/dateUtils";
 import MainContainer from "../../components/MainContainer";
 import { UserInitialState, UserType } from "../../@types/users";
 
@@ -20,7 +20,7 @@ function UpdateUser() {
   const navigate = useNavigate();
 
   async function onSubmitAction(data: UserType) {
-    await dispatch(updateUser({ body: data, id: data.id })).unwrap();
+    await dispatch(updateUser({ body: data, id: data._id })).unwrap();
     navigate(`/dashboard-app/users/${id}`);
   }
 

@@ -1,4 +1,4 @@
-import React, { useContext, useEffect, useState } from "react";
+import { useContext, useEffect, useState } from "react";
 import {
   getAllContacts,
   updateContact,
@@ -10,17 +10,22 @@ import ContactPreview from "../../components/ContactPreview";
 import MainContainer from "../../components/MainContainer";
 import Modal from "../../components/Modal";
 import Table, { IRowItem } from "../../components/Table";
-import { formatDate } from "../../utils";
+import { formatDate } from "../../utils/dateUtils";
 import { RowDataSmaller } from "../../components/Table";
 import Loader from "../../components/Loader";
 import { themeContext } from "../../context/ThemeContext";
-import { useAppDispatch, useAppSelector } from "../../hooks/hooks";
+import {
+  useAppDispatch,
+  useAppSelector,
+  useFetchWrapp,
+} from "../../hooks/hooks";
 import { ContactType } from "../../@types/contacts";
 
 function Contact() {
   const data = useAppSelector(selectContacts);
   const isLoadingData = useAppSelector(selectIsLoading);
   const dispatch = useAppDispatch();
+  const wrappedDispatch = useFetchWrapp(getAllContacts);
   const [dataToRender, setDataToRender] = useState<ContactType[]>([]);
   const [previewData, setPreviewData] = useState<ContactType[]>([]);
   const [activeTab, setActiveTab] = useState("All Contacts");
@@ -37,18 +42,18 @@ function Contact() {
   const rowsToRender = (item: ContactType): IRowItem => {
     const [contactDate] = formatDate(item.date);
     return {
-      id: item.id,
+      id: item._id,
       rowData: [
         <div>
           <p>{contactDate}</p>
-          <RowDataSmaller theme={theme}>#{item.id}</RowDataSmaller>
+          <RowDataSmaller theme={theme}>#{item._id}</RowDataSmaller>
         </div>,
         <div>
           <p>{item.fullName}</p>
           <p>{item.email}</p>
           <p>{item.phone}</p>
         </div>,
-        <div style={!item.read ? { fontWeight: "500" } : {}}>
+        <div style={!item._read ? { fontWeight: "500" } : {}}>
           <p style={{ fontStyle: "italic", fontSize: "14px" }}>
             {item.subject}
           </p>
@@ -62,12 +67,12 @@ function Contact() {
             }
             previewStyle={{ cursor: "Pointer" }}
             changeToOpen={
-              !item.read
+              !item._read
                 ? () =>
                     dispatch(
                       updateContact({
-                        body: { ...item, read: !item.read },
-                        id: item.id,
+                        body: { ...item, _read: !item._read },
+                        id: item._id,
                       })
                     )
                 : undefined
@@ -80,7 +85,7 @@ function Contact() {
             dispatch(
               updateContact({
                 body: { ...item, archived: !item.archived },
-                id: item.id,
+                id: item._id,
               })
             )
           }
@@ -117,7 +122,8 @@ function Contact() {
   }, [activeTab, data]);
 
   useEffect(() => {
-    dispatch(getAllContacts());
+    //dispatch(getAllContacts());
+    wrappedDispatch();
   }, [dispatch]);
 
   return (

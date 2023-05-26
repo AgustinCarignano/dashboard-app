@@ -1,8 +1,10 @@
 import { createSlice, createAsyncThunk, isAnyOf } from "@reduxjs/toolkit";
-import { generateId, hashData } from "../../utils";
 import { IUserState, UserType, UserUpdateObj } from "../../@types/users";
-import user_data from "../../mockData/users_data.json";
 import { IGlobalStore } from "../../@types/store";
+import { Methods, fetchAPI, API_URL } from "../../utils/fetchUtils";
+import { toast } from "react-toastify";
+
+const baseURL = `${API_URL}/api/users`;
 
 const initialState: IUserState = {
   users: [],
@@ -12,67 +14,59 @@ const initialState: IUserState = {
 };
 
 export const getUsersData = createAsyncThunk("users/getAllUsers", async () => {
-  //const data = await getAllData("users_data.json");
-  const data = await new Promise<UserType[]>((resolve) => {
-    setTimeout(() => {
-      resolve(user_data);
-    }, 300);
-  });
-  return { data };
+  const { error, data } = await fetchAPI<UserType[]>(baseURL, Methods.GET);
+  if (data) return { data };
+  else throw new Error(error?.status.toString());
 });
 
 export const getUserDetails = createAsyncThunk(
   "users/getUserDetails",
   async (id: string) => {
-    //const data = await getItemData("users_data.json", id);
-    const allData = await new Promise<UserType[]>((resolve) => {
-      setTimeout(() => {
-        resolve(user_data);
-      }, 300);
-    });
-    const data = allData.find((item) => item.id === id);
-    return { data, id };
+    const { error, data } = await fetchAPI<UserType>(
+      `${baseURL}/${id}`,
+      Methods.GET
+    );
+    if (data) return { data, id };
+    else throw new Error(error?.status.toString());
   }
 );
 
 export const createUser = createAsyncThunk(
   "users/create",
-  async (body: UserType) => {
-    const id = generateId();
-    const hashedPassword = hashData(body.password);
-    //const data = await delayFunction({ ...body, id, password: hashedPassword });
-    const data = await new Promise<UserType>((resolve) => {
-      setTimeout(() => {
-        resolve({ ...body, id, password: hashedPassword });
-      }, 300);
-    });
-    return { data };
+  async (body: Partial<UserType>) => {
+    delete body._id;
+    const { error, data } = await fetchAPI<UserType>(
+      baseURL,
+      Methods.POST,
+      body
+    );
+    if (data) return { data };
+    else throw new Error(error?.status.toString());
   }
 );
 
 export const updateUser = createAsyncThunk(
   "users/update",
   async ({ body, id }: UserUpdateObj) => {
-    //const data = await delayFunction({ ...body, id });
-    const data = await new Promise<UserType>((resolve) => {
-      setTimeout(() => {
-        resolve({ ...body, id });
-      }, 300);
-    });
-    return { data };
+    const { error, data } = await fetchAPI<UserType>(
+      `${baseURL}/${id}`,
+      Methods.PUT,
+      body
+    );
+    if (data) return { data };
+    else throw new Error(error?.status.toString());
   }
 );
 
 export const deleteUser = createAsyncThunk(
   "users/delete",
   async (userId: string) => {
-    //const id = await delayFunction(userId);
-    const id = await new Promise<string>((resolve) => {
-      setTimeout(() => {
-        resolve(userId);
-      }, 300);
-    });
-    return { id };
+    const { error, data } = await fetchAPI<string>(
+      `${baseURL}/${userId}`,
+      Methods.DELETE
+    );
+    if (data) return { id: data };
+    else throw new Error(error?.status.toString());
   }
 );
 
@@ -83,37 +77,29 @@ export const usersSlice = createSlice({
   extraReducers: (builder) => {
     builder
       .addCase(getUsersData.fulfilled, (state, action) => {
-        //state.users = action.payload.data;
-        if (state.users.length === 0) {
-          state.users = action.payload.data;
-        }
+        state.users = action.payload.data;
       })
       .addCase(getUserDetails.fulfilled, (state, action) => {
-        //state.user = action.payload.data;
-        if (action.payload.data) {
-          state.user = action.payload.data;
-        } else {
-          const user = state.users.find(
-            (item) => item.id === action.payload.id
-          );
-          if (user) state.user = user;
-        }
+        state.user = action.payload.data;
       })
       .addCase(createUser.fulfilled, (state, action) => {
         state.users.push(action.payload.data);
+        toast.success("User created");
       })
       .addCase(updateUser.fulfilled, (state, action) => {
         state.users = state.users.map((item) =>
-          item.id === action.payload.data.id ? action.payload.data : item
+          item._id === action.payload.data._id ? action.payload.data : item
         );
-        if (state.user?.id === action.payload.data.id) {
+        if (state.user?._id === action.payload.data._id) {
           state.user = action.payload.data;
         }
+        toast.success("User updated");
       })
       .addCase(deleteUser.fulfilled, (state, action) => {
         state.users = state.users.filter(
-          (item) => item.id !== action.payload.id
+          (item) => item._id !== action.payload.id
         );
+        toast.success("User deleted");
       })
       .addMatcher(
         isAnyOf(
@@ -152,6 +138,7 @@ export const usersSlice = createSlice({
         (state) => {
           state.isLoading = false;
           state.hasError = true;
+          toast.error("There has been a problem. Please, try again.");
         }
       );
   },

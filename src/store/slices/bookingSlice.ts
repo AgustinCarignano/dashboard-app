@@ -1,12 +1,12 @@
 import { createSlice, createAsyncThunk, isAnyOf } from "@reduxjs/toolkit";
-import { generateId } from "../../utils";
-import bookings_data from "../../mockData/bookings_data.json";
 import {
   BookingType,
   BookingUpdateObj,
   IBookingState,
 } from "../../@types/bookings";
 import { IGlobalStore } from "../../@types/store";
+import { API_URL, fetchAPI, Methods } from "../../utils/fetchUtils";
+import { toast } from "react-toastify";
 
 const initialState: IBookingState = {
   bookings: [],
@@ -15,73 +15,65 @@ const initialState: IBookingState = {
   hasError: false,
 };
 
+const baseURL = `${API_URL}/api/bookings`;
+
 export const getBookingsData = createAsyncThunk(
   "bookings/getAllBookings",
   async () => {
-    //const data = await getAllData("bookings_data.json");
-    const data = await new Promise<BookingType[]>((resolve) => {
-      setTimeout(() => {
-        resolve(bookings_data);
-      }, 300);
-    });
-    return { data };
+    const { error, data } = await fetchAPI<BookingType[]>(baseURL, Methods.GET);
+    if (data) return { data };
+    else throw new Error(error?.status.toString());
   }
 );
 
 export const getBookingDetails = createAsyncThunk(
   "bookings/getBookingDetails",
   async (id: string) => {
-    //const data = await getItemData("bookings_data.json", id);
-    const data = await new Promise<BookingType>((resolve) => {
-      const allData = bookings_data;
-      const itemData = allData.find((item) => item.id === id);
-      if (itemData) {
-        setTimeout(() => {
-          resolve(itemData);
-        }, 300);
-      }
-    });
-    return { data, id };
+    const { error, data } = await fetchAPI<BookingType>(
+      `${baseURL}/${id}`,
+      Methods.GET
+    );
+    if (data) return { data, id };
+    else throw new Error(error?.status.toString());
   }
 );
 
 export const createBooking = createAsyncThunk(
   "bookings/create",
-  async (body: BookingType) => {
-    const id = generateId();
-    //const data = await delayFunction({ ...body, id });
-    const data = await new Promise<BookingType>((resolve) => {
-      setTimeout(() => {
-        resolve({ ...body, id });
-      }, 300);
-    });
-    return { data };
+  async (body: Partial<BookingType>) => {
+    delete body._id;
+    const { error, data } = await fetchAPI<BookingType>(
+      baseURL,
+      Methods.POST,
+      body
+    );
+    if (data) return { data };
+    else throw new Error(error?.status.toString());
   }
 );
 
 export const updateBooking = createAsyncThunk(
   "bookings/update",
   async ({ body, id }: BookingUpdateObj) => {
-    //const data = await delayFunction({ ...body, id });
-    const data = await new Promise<BookingType>((resolve) => {
-      setTimeout(() => {
-        resolve({ ...body, id });
-      }, 300);
-    });
-    return { data };
+    const { error, data } = await fetchAPI<BookingType>(
+      `${baseURL}/${id}`,
+      Methods.PUT,
+      body
+    );
+    if (data) return { data };
+    else throw new Error(error?.status.toString());
   }
 );
 
 export const deleteBooking = createAsyncThunk(
   "bookings/delete",
   async (bookingId: string) => {
-    //const id = await delayFunction(bookingId);
-    const id = await new Promise<string>((resolve) => {
-      setTimeout(() => {
-        resolve(bookingId);
-      }, 300);
-    });
-    return { id };
+    const { error, data } = await fetchAPI<string>(
+      `${baseURL}/${bookingId}`,
+      Methods.DELETE
+    );
+    if (data) return { id: data };
+    else throw new Error(error?.status.toString());
   }
 );
 
@@ -92,36 +84,29 @@ export const bookingsSlice = createSlice({
   extraReducers: (builder) => {
     builder
       .addCase(getBookingsData.fulfilled, (state, action) => {
-        //state.bookings = action.payload.data;
-        if (state.bookings.length === 0) {
-          state.bookings = action.payload.data;
-        }
+        state.bookings = action.payload.data;
       })
       .addCase(getBookingDetails.fulfilled, (state, action) => {
-        if (action.payload.data) {
-          state.booking = action.payload.data;
-        } else {
-          const booking = state.bookings.find(
-            (item) => item.id === action.payload.id
-          );
-          if (booking) state.booking = booking;
-        }
+        state.booking = action.payload.data;
       })
       .addCase(createBooking.fulfilled, (state, action) => {
         state.bookings.push(action.payload.data);
+        toast.success("Bookings created");
       })
       .addCase(updateBooking.fulfilled, (state, action) => {
         state.bookings = state.bookings.map((item) =>
-          item.id === action.payload.data.id ? action.payload.data : item
+          item._id === action.payload.data._id ? action.payload.data : item
         );
-        if (state.booking.id === action.payload.data.id) {
+        if (state.booking._id === action.payload.data._id) {
           state.booking = action.payload.data;
         }
+        toast.success("Bookings updated");
       })
       .addCase(deleteBooking.fulfilled, (state, action) => {
         state.bookings = state.bookings.filter(
-          (item) => item.id !== action.payload.id
+          (item) => item._id !== action.payload.id
         );
+        toast.success("Bookings deleted");
       })
       .addMatcher(
         isAnyOf(
@@ -160,6 +145,7 @@ export const bookingsSlice = createSlice({
         (state) => {
           state.isLoading = false;
           state.hasError = true;
+          toast.error("There has been an error. Please, try again.");
         }
       );
   },

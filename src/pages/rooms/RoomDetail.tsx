@@ -57,7 +57,7 @@ function RoomDetail() {
 
   async function handleDeleteItem() {
     try {
-      await dispatch(deleteRoom(item.id)).unwrap();
+      await dispatch(deleteRoom(item._id)).unwrap();
       navigate(`/dashboard-app/rooms`);
     } catch (error) {
       setShowConfirm(false);
@@ -66,7 +66,7 @@ function RoomDetail() {
   }
 
   useEffect(() => {
-    if (id && item.id !== id) dispatch(getRoomDetails(id));
+    if (id && item._id !== id) dispatch(getRoomDetails(id));
   }, [dispatch, item, id]);
 
   return (
@@ -83,7 +83,7 @@ function RoomDetail() {
                 </DetailImg>
                 <DetailHeader theme={theme}>
                   <h1>{item.roomNumber}</h1>
-                  <p>ID {item.id}</p>
+                  <p>ID {item._id}</p>
                 </DetailHeader>
               </PrimaryContainer>
               <SecondaryContainer border={false} padding={false} theme={theme}>
@@ -130,7 +130,7 @@ function RoomDetail() {
                     </Button>
                   }
                   options={optionsMenu}
-                  itemId={item.id}
+                  itemId={item._id}
                   withArrow
                 />
               </EditBtn>

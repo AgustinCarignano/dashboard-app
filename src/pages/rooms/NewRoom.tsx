@@ -10,14 +10,14 @@ function NewRoom() {
   const navigate = useNavigate();
 
   const initialState: RoomType = {
+    _id: " ",
     photos: ["", "", ""],
     roomType: "",
     description: "",
     roomNumber: 0,
-    id: "",
     offer: false,
     price: 0,
-    discount: "",
+    discount: 0,
     cancellation: "",
     status: "Available",
     amenities: [],
@@ -25,7 +25,7 @@ function NewRoom() {
 
   async function onSubmitAction(data: RoomType) {
     const payload = await dispatch(createRoom(data)).unwrap();
-    navigate(`/dashboard-app/rooms/${payload.data.id}`);
+    navigate(`/dashboard-app/rooms/${payload.data._id}`);
   }
 
   return (

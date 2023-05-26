@@ -71,7 +71,7 @@ function FormRoom(props: PropsType) {
     if (key === "offer") {
       copyOfSubmitError.discount = false;
       copyOfData["offer"] = value === "true";
-      if (value === "false") copyOfData.discount = "";
+      if (value === "false") copyOfData.discount = 0;
     } else if (key.includes("photo")) {
       const index = parseInt(key.split("_")[1]);
       copyOfData["photos"][index] = value;
@@ -95,7 +95,7 @@ function FormRoom(props: PropsType) {
         copyOfSubmitError["price"] = false;
       }
       if (key === "discount") {
-        copyOfData["discount"] = value;
+        copyOfData["discount"] = Number(value);
         copyOfSubmitError["discount"] = false;
       }
       if (key === "cancellation") {
@@ -149,7 +149,7 @@ price: number;
     let isValid = true;
     const errorObj = { ...submitError };
     for (const key in data) {
-      if (key === "discount" || key === "id") continue;
+      if (key === "discount" || key === "_id") continue;
       else if (key === "offer") {
         if (data[key] && !data["discount"]) {
           errorObj.discount = true;
@@ -210,7 +210,7 @@ price: number;
     <MainContainer>
       <Container theme={theme}>
         <Title theme={theme}>
-          {initialState.id ? "Edit Room" : "New Room"}
+          {initialState._id ? "Edit Room" : "New Room"}
         </Title>
         <FormContainer>
           <Column>
@@ -369,7 +369,7 @@ price: number;
           </Column>
           <Submit>
             <Button variant={1} onClick={handleOnSubmit}>
-              {initialState.id ? "SAVE" : "CREATE"}
+              {initialState._id ? "SAVE" : "CREATE"}
             </Button>
           </Submit>
           {submitError.hasError && (

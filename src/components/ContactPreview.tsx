@@ -138,7 +138,8 @@ function ContactPreview(props: PropsType) {
         3 * (currentPage - 1),
         3 * (currentPage - 1) + 3
       );
-      setDataToRender(slice);
+      if (slice.length > 0) setDataToRender(slice);
+      else handlePaginate("prev");
     } else {
       setDataToRender(data.slice(0, data.length));
     }
@@ -164,21 +165,21 @@ function ContactPreview(props: PropsType) {
                   ? item.message.slice(0, 150) + "..."
                   : item.message
               }
-              previewStyle={messageStyle(!item.read)}
+              previewStyle={messageStyle(!item._read)}
               changeToOpen={
-                !item.read
+                !item._read
                   ? () =>
                       dispatch(
                         updateContact({
-                          body: { ...item, read: !item.read },
-                          id: item.id,
+                          body: { ...item, _read: !item._read },
+                          id: item._id,
                         })
                       )
                   : undefined
               }
             />
             <StatusContainer>
-              {item.read && (
+              {item._read && (
                 <FontAwesomeIcon
                   icon={faCircleCheck}
                   size="xl"

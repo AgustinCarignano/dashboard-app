@@ -18,7 +18,7 @@ import {
 import { themeContext } from "../../context/ThemeContext";
 import { getRoomsData, selectRooms } from "../../store/slices/roomSlice";
 import Loader from "../../components/Loader";
-import { formatDate } from "../../utils";
+import { formatDate } from "../../utils/dateUtils";
 import ErrorAlert from "../../components/ErrorAlert";
 import {
   BookingInitialState,
@@ -35,7 +35,7 @@ const emptyRoom = {
   id: "",
   offer: false,
   price: 0,
-  discount: "",
+  discount: 0,
   cancellation: "",
   status: "",
   amenities: [""],
@@ -66,15 +66,17 @@ function FormBooking(props: PropsType) {
   function handleInputsChange(e: React.BaseSyntheticEvent) {
     const copyOfData = { ...booking };
     const copyOfSubmitError = { ...submitError };
-    const key = e.target.name;
+    const key: keyof BookingInitialState = e.target.name;
     const value = e.target.value;
-    copyOfData[key as keyof BookingInitialState] = value;
+    if (key !== "roomNumber") copyOfData[key] = value;
+    else copyOfData["roomNumber"] = Number(value);
     copyOfSubmitError[key as keyof typeof submitError] = false;
     if (key === "roomId") {
-      const room = availableRooms.find((item) => item.id === value);
+      const room = availableRooms.find((item) => item._id === value);
       if (room) {
-        copyOfData["roomNumber"] = room.roomNumber.toString();
+        copyOfData["roomNumber"] = room.roomNumber;
         copyOfData["roomType"] = room.roomType;
+        copyOfData["roomImg"] = room.photos[0];
       }
     }
     setSubmitError(copyOfSubmitError);
@@ -85,7 +87,7 @@ function FormBooking(props: PropsType) {
     let isValid = true;
     const errorObj = { ...submitError };
     for (const key in data) {
-      if (key === "id" || key === "specialRequest") continue;
+      if (key === "_id" || key === "specialRequest" || key === "__v") continue;
       if (!data[key as keyof BookingInitialState]) {
         errorObj[key as keyof typeof submitError] = true;
         isValid = false;
@@ -101,12 +103,9 @@ function FormBooking(props: PropsType) {
     const copyOfData = { ...booking };
     const correctForm = verifyForm(copyOfData);
     if (correctForm) {
-      // copyOfData.checkIn = new Date(copyOfData.checkIn).getTime();
-      // copyOfData.checkOut = new Date(copyOfData.checkOut).getTime();
-      // onSubmitAction(copyOfData);
       const newCheckIn = new Date(copyOfData.checkIn).getTime();
       const newCheckOut = new Date(copyOfData.checkOut).getTime();
-      const newOrderDate = new Date(copyOfData.orderDate).getTime();
+      const newOrderDate = new Date(copyOfData.orderDate).getTime() + 3600 * 8;
       onSubmitAction({
         ...copyOfData,
         checkIn: newCheckIn,
@@ -126,9 +125,9 @@ function FormBooking(props: PropsType) {
       const { roomId, roomType, roomNumber } = extraRoom;
       availableRooms.push({
         ...emptyRoom,
-        id: roomId,
+        _id: roomId,
         roomType,
-        roomNumber: parseInt(roomNumber),
+        roomNumber,
       });
     }
     availableRooms.sort((a, b) => {
@@ -218,7 +217,7 @@ function FormBooking(props: PropsType) {
                 {availableRooms.length !== 0 &&
                   availableRooms.map((item, index) => {
                     return (
-                      <option key={index} value={item.id}>
+                      <option key={index} value={item._id}>
                         {item.roomNumber} - {item.roomType}
                       </option>
                     );

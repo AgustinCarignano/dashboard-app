@@ -1,8 +1,10 @@
 import { createSlice, createAsyncThunk, isAnyOf } from "@reduxjs/toolkit";
-import { generateId } from "../../utils";
-import room_data from "../../mockData/rooms_data.json";
 import { IRoomState, RoomType, RoomUpdateObj } from "../../@types/rooms";
 import { IGlobalStore } from "../../@types/store";
+import { API_URL, Methods, fetchAPI } from "../../utils/fetchUtils";
+import { toast } from "react-toastify";
+
+const baseURL = `${API_URL}/api/rooms`;
 
 const initialState: IRoomState = {
   rooms: [],
@@ -12,66 +14,60 @@ const initialState: IRoomState = {
 };
 
 export const getRoomsData = createAsyncThunk("rooms/getAllRooms", async () => {
-  // const data = await getAllData("rooms_data.json");
-  const data = await new Promise<RoomType[]>((resolve) => {
-    setTimeout(() => {
-      resolve(room_data);
-    }, 300);
-  });
-  return { data };
+  const { error, data } = await fetchAPI<RoomType[]>(baseURL, Methods.GET);
+  if (data) return { data };
+  else throw new Error(error?.status.toString());
 });
 
 export const getRoomDetails = createAsyncThunk(
   "rooms/getRoomDetails",
   async (id: string) => {
-    //const data = await getItemData("rooms_data.json", id);
-    const allData = await new Promise<RoomType[]>((resolve) => {
-      setTimeout(() => {
-        resolve(room_data);
-      }, 300);
-    });
-    const data = allData.find((item) => item.id === id);
-    return { data, id };
+    const { error, data } = await fetchAPI<RoomType>(
+      `${baseURL}/${id}`,
+      Methods.GET
+    );
+    if (data) return { data, id };
+    else throw new Error(error?.status.toString());
   }
 );
 
 export const createRoom = createAsyncThunk(
   "rooms/create",
-  async (body: RoomType) => {
-    const id = generateId();
-    //const data = await delayFunction({ ...body, id });
-    const data = await new Promise<RoomType>((resolve) => {
-      setTimeout(() => {
-        resolve({ ...body, id });
-      }, 300);
-    });
-    return { data };
+  async (body: Partial<RoomType>) => {
+    delete body._id;
+    console.log(body);
+    const { error, data } = await fetchAPI<RoomType>(
+      baseURL,
+      Methods.POST,
+      body
+    );
+    if (data) return { data };
+    else throw new Error(error?.status.toString());
   }
 );
 
 export const updateRoom = createAsyncThunk(
   "rooms/update",
   async ({ body, id }: RoomUpdateObj) => {
-    // const data = await delayFunction({ ...body, id });
-    const data = await new Promise<RoomType>((resolve) => {
-      setTimeout(() => {
-        resolve({ ...body, id });
-      }, 300);
-    });
-    return { data };
+    const { error, data } = await fetchAPI<RoomType>(
+      `${baseURL}/${id}`,
+      Methods.PUT,
+      body
+    );
+    if (data) return { data };
+    else throw new Error(error?.status.toString());
   }
 );
 
 export const deleteRoom = createAsyncThunk(
   "rooms/delete",
   async (roomId: string) => {
-    //const id = await delayFunction(roomId);
-    const id = await new Promise<string>((resolve) => {
-      setTimeout(() => {
-        resolve(roomId);
-      }, 300);
-    });
-    return { id };
+    const { error, data } = await fetchAPI<string>(
+      `${baseURL}/${roomId}`,
+      Methods.DELETE
+    );
+    if (data) return { id: data };
+    else throw new Error(error?.status.toString());
   }
 );
 
@@ -82,37 +78,29 @@ export const roomsSlice = createSlice({
   extraReducers: (builder) => {
     builder
       .addCase(getRoomsData.fulfilled, (state, action) => {
-        //state.rooms = action.payload.data;
-        if (state.rooms.length === 0) {
-          state.rooms = action.payload.data;
-        }
+        state.rooms = action.payload.data;
       })
       .addCase(getRoomDetails.fulfilled, (state, action) => {
-        //state.room = action.payload.data;
-        if (action.payload.data) {
-          state.room = action.payload.data;
-        } else {
-          const room = state.rooms.find(
-            (item) => item.id === action.payload.id
-          );
-          if (room) state.room = room;
-        }
+        state.room = action.payload.data;
       })
       .addCase(createRoom.fulfilled, (state, action) => {
         state.rooms.push(action.payload.data);
+        toast.success("Room created");
       })
       .addCase(updateRoom.fulfilled, (state, action) => {
         state.rooms = state.rooms.map((item) =>
-          item.id === action.payload.data.id ? action.payload.data : item
+          item._id === action.payload.data._id ? action.payload.data : item
         );
-        if (state.room?.id === action.payload.data.id) {
+        if (state.room?._id === action.payload.data._id) {
           state.room = action.payload.data;
         }
+        toast.success("Room updated");
       })
       .addCase(deleteRoom.fulfilled, (state, action) => {
         state.rooms = state.rooms.filter(
-          (user) => user.id !== action.payload.id
+          (user) => user._id !== action.payload.id
         );
+        toast.success("Room deleted");
       })
       .addMatcher(
         isAnyOf(
@@ -151,6 +139,7 @@ export const roomsSlice = createSlice({
         (state) => {
           state.isLoading = false;
           state.hasError = true;
+          toast.error("There has been a problem. Please, try again.");
         }
       );
   },

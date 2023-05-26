@@ -11,7 +11,7 @@ import {
 } from "../../store/slices/usersSlice";
 import MainContainer from "../../components/MainContainer";
 import Button from "../../components/Button";
-import { formatDate } from "../../utils";
+import { formatDate } from "../../utils/dateUtils";
 import Loader from "../../components/Loader";
 import {
   ItemContainer,
@@ -35,6 +35,7 @@ const Container = styled(ItemContainer)`
   flex-direction: column;
   gap: 30px;
   padding: 40px;
+  //padding-right: 200px;
   max-width: 700px;
   margin: 0 auto;
 `;
@@ -68,7 +69,7 @@ function UserDetail() {
 
   async function handleDeleteItem() {
     try {
-      await dispatch(deleteUser(user.id)).unwrap();
+      await dispatch(deleteUser(user._id)).unwrap();
       navigate(`/dashboard-app/users`);
     } catch (error) {
       setShowConfirm(false);
@@ -77,7 +78,7 @@ function UserDetail() {
   }
 
   useEffect(() => {
-    if (id && user.id !== id) dispatch(getUserDetails(id));
+    if (id && user._id !== id) dispatch(getUserDetails(id));
   }, [dispatch, user, id]);
 
   return (
@@ -93,7 +94,7 @@ function UserDetail() {
               </DetailImg>
               <DetailHeader theme={theme}>
                 <h1 style={{ maxWidth: "240px" }}>{user.fullName}</h1>
-                <p>ID {user.id}</p>
+                <p>ID {user._id}</p>
                 <p>{user.email}</p>
                 <p>{user.contact}</p>
               </DetailHeader>
@@ -124,7 +125,7 @@ function UserDetail() {
                   </Button>
                 }
                 options={optionsMenu}
-                itemId={user.id}
+                itemId={user._id}
                 withArrow
               />
             </EditBtn>

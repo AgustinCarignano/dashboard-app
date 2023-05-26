@@ -1,4 +1,4 @@
-import React, { useContext, useEffect, useState } from "react";
+import { useContext, useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import { useAppDispatch, useAppSelector } from "../../hooks/hooks";
 import MainContainer from "../../components/MainContainer";
@@ -6,7 +6,7 @@ import Button from "../../components/Button";
 import Slider from "../../components/Slider";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faPenToSquare } from "@fortawesome/free-solid-svg-icons";
-import { formatDate } from "../../utils";
+import { formatDate } from "../../utils/dateUtils";
 import {
   selectBookingDetail,
   selectIsLoading as loadingBookingData,
@@ -81,7 +81,7 @@ function BookingDetail() {
 
   async function handleDeleteItem() {
     try {
-      await dispatch(deleteBooking(item.id)).unwrap();
+      await dispatch(deleteBooking(item._id)).unwrap();
       navigate(`/dashboard-app/bookings`);
     } catch (error) {
       setShowConfirm(false);
@@ -90,7 +90,7 @@ function BookingDetail() {
   }
 
   useEffect(() => {
-    if (id && item.id !== id) dispatch(getBookingDetails(id));
+    if (id && item._id !== id) dispatch(getBookingDetails(id));
   }, [dispatch, id]);
 
   useEffect(() => {
@@ -109,7 +109,7 @@ function BookingDetail() {
               <PrimaryContainer>
                 <DetailHeader theme={theme}>
                   <h1>{item.guest}</h1>
-                  <p>ID {item.id}</p>
+                  <p>ID {item._id}</p>
                 </DetailHeader>
               </PrimaryContainer>
               <SecondaryContainer border={true} padding={true} theme={theme}>
@@ -156,7 +156,7 @@ function BookingDetail() {
                     </Button>
                   }
                   options={optionsMenu}
-                  itemId={item.id}
+                  itemId={item._id}
                   withArrow
                 />
               </EditBtn>

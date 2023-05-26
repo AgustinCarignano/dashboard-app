@@ -1,12 +1,12 @@
 export type ContactType = {
-  id: string;
+  _id: string;
   fullName: string;
   email: string;
   phone: string;
   subject: string;
   message: string;
   date: number;
-  read: boolean;
+  _read: boolean;
   archived: boolean;
 };
 

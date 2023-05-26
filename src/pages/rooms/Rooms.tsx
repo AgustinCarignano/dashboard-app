@@ -1,6 +1,10 @@
 import React, { useContext, useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { useAppDispatch, useAppSelector } from "../../hooks/hooks";
+import {
+  useAppDispatch,
+  useAppSelector,
+  useFetchWrapp,
+} from "../../hooks/hooks";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faEllipsisVertical } from "@fortawesome/free-solid-svg-icons";
 import {
@@ -32,6 +36,7 @@ function Rooms() {
   const data = useAppSelector(selectRooms);
   const isLoadingData = useAppSelector(selectIsLoading);
   const dispatch = useAppDispatch();
+  const wrappedDispatch = useFetchWrapp(getRoomsData);
   const [showConfirm, setShowConfirm] = useState(false);
   const [itemToDelete, setItemToDelete] = useState("");
   const [dataToRender, setDataToRender] = useState<RoomType[]>([]);
@@ -91,15 +96,15 @@ function Rooms() {
 
   const rowsToRender = (item: RoomType): IRowItem => {
     return {
-      id: item.id,
+      id: item._id,
       rowData: [
-        <RowContainer justify="normal" onClick={() => handleRedirect(item.id)}>
+        <RowContainer justify="normal" onClick={() => handleRedirect(item._id)}>
           <ImgRowContainer aspectRatio="3/2">
             <img src={item.photos[0]} alt="thumbnail" />
           </ImgRowContainer>
           <div>
             <p>{item.roomNumber}</p>
-            <RowDataSmaller theme={theme}>#{item.id}</RowDataSmaller>
+            <RowDataSmaller theme={theme}>#{item._id}</RowDataSmaller>
           </div>
         </RowContainer>,
         <>{item.roomType}</>,
@@ -112,7 +117,7 @@ function Rooms() {
         <div>
           $
           {item.offer
-            ? item.price * (1 - parseInt(item.discount) / 100)
+            ? Math.round(item.price * (1 - item.discount / 100))
             : item.price}
         </div>,
         <RowContainer justify="space-between">
@@ -126,7 +131,7 @@ function Rooms() {
           </Button>
           <Popup
             options={optionsMenu}
-            itemId={item.id}
+            itemId={item._id}
             withArrow={false}
             preview={
               <FontAwesomeIcon
@@ -163,7 +168,8 @@ function Rooms() {
   }, [activeTab, data, orderBy, ascPrice]);
 
   useEffect(() => {
-    dispatch(getRoomsData());
+    //dispatch(getRoomsData());
+    wrappedDispatch();
   }, [dispatch]);
 
   return (

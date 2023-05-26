@@ -3,7 +3,7 @@ import { useContext } from "react";
 import styled from "styled-components";
 import { themeContext } from "../context/ThemeContext";
 
-const GeneralLayout = styled.div<{showAside:boolean}>`
+const GeneralLayout = styled.div<{ showAside: boolean }>`
   background-color: ${(props) => props.theme[2]};
   display: grid;
   grid-template-areas:
@@ -16,11 +16,11 @@ const GeneralLayout = styled.div<{showAside:boolean}>`
 `;
 
 type PropsType = {
-  children:React.ReactElement,
-  showAside:boolean,
-}
+  children: React.ReactElement;
+  showAside: boolean;
+};
 
-export default function Layout({ children, showAside }:PropsType) {
+export default function Layout({ children, showAside }: PropsType) {
   const { theme } = useContext(themeContext);
   return (
     <GeneralLayout showAside={showAside} theme={theme}>

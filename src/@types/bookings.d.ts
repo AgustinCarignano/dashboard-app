@@ -1,5 +1,5 @@
 export type BookingType = {
-  id: string;
+  _id: string;
   guest: string;
   specialRequest: string;
   orderDate: number;
@@ -8,7 +8,7 @@ export type BookingType = {
   checkIn: number;
   checkOut: number;
   roomId: string;
-  roomNumber: string;
+  roomNumber: number;
   roomImg: string;
 };
 
@@ -25,7 +25,7 @@ export type BookingUpdateObj = {
 };
 
 export type BookingInitialState = {
-  id: string;
+  _id: string;
   guest: string;
   specialRequest: string;
   orderDate: string;
@@ -34,12 +34,12 @@ export type BookingInitialState = {
   checkIn: string;
   checkOut: string;
   roomId: string;
-  roomNumber: string;
+  roomNumber: number;
   roomImg: string;
 };
 
 export type ExtraRoom = {
   roomId: string;
   roomType: string;
-  roomNumber: string;
+  roomNumber: number;
 };

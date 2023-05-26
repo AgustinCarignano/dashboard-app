@@ -59,7 +59,8 @@ const UserCard = styled.div<{ theme: Theme }>`
   box-shadow: 0px 20px 30px ${(props) => props.theme[18]};
   border-radius: 18px;
   margin: 60px 0;
-  width: 60%;
+  width: 80%;
+  max-width: 230px;
   img {
     width: 40%;
     aspect-ratio: 1/1;

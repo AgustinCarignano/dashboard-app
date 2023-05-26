@@ -1,6 +1,10 @@
 import React, { useState, useEffect, useContext } from "react";
 import { useNavigate } from "react-router-dom";
-import { useAppDispatch, useAppSelector } from "../../hooks/hooks";
+import {
+  useAppDispatch,
+  useAppSelector,
+  useFetchWrapp,
+} from "../../hooks/hooks";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faEllipsisVertical } from "@fortawesome/free-solid-svg-icons";
 import {
@@ -18,7 +22,7 @@ import Table, {
   RowDataSmaller,
 } from "../../components/Table";
 import Modal from "../../components/Modal";
-import { formatDate } from "../../utils";
+import { formatDate } from "../../utils/dateUtils";
 import Loader from "../../components/Loader";
 import Popup from "../../components/Popup";
 import DeleteItem from "../../components/DeleteItem";
@@ -29,6 +33,7 @@ function Users() {
   const data = useAppSelector(selectUsers);
   const isLoadingData = useAppSelector(selectIsLoading);
   const dispatch = useAppDispatch();
+  const wrappedDispatch = useFetchWrapp(getUsersData);
   const [showConfirm, setShowConfirm] = useState(false);
   const [itemToDelete, setItemToDelete] = useState("");
   const [modifydData, setModifydData] = useState<UserType[]>([]);
@@ -79,15 +84,15 @@ function Users() {
   const rowsToRender = (item: UserType): IRowItem => {
     const [userDate] = formatDate(item.startDate);
     return {
-      id: item.id,
+      id: item._id,
       rowData: [
-        <RowContainer justify="normal" onClick={() => handleRedirect(item.id)}>
+        <RowContainer justify="normal" onClick={() => handleRedirect(item._id)}>
           <ImgRowContainer aspectRatio="1/1">
             <img src={item.photo} alt="employee profile" />
           </ImgRowContainer>
           <div>
             <p>{item.fullName}</p>
-            <RowDataSmaller theme={theme}>#{item.id}</RowDataSmaller>
+            <RowDataSmaller theme={theme}>#{item._id}</RowDataSmaller>
             <RowDataSmaller theme={theme}>{item.email}</RowDataSmaller>
           </div>
         </RowContainer>,
@@ -109,7 +114,7 @@ function Users() {
           </Button>
           <Popup
             options={optionsMenu}
-            itemId={item.id}
+            itemId={item._id}
             withArrow={false}
             preview={
               <FontAwesomeIcon
@@ -145,7 +150,8 @@ function Users() {
   }, [data, activeTab, orderBy, searchTerms]);
 
   useEffect(() => {
-    dispatch(getUsersData());
+    //dispatch(getUsersData());
+    wrappedDispatch();
   }, [dispatch]);
   return (
     <MainContainer>

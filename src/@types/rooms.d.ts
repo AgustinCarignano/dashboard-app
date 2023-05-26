@@ -1,12 +1,12 @@
 export type RoomType = {
+  _id: string;
   photos: string[];
   roomType: string;
   description: string;
   roomNumber: number;
-  id: string;
   offer: boolean;
   price: number;
-  discount: string;
+  discount: number;
   cancellation: string;
   status: string;
   amenities: string[];

@@ -62,7 +62,12 @@ function Modal(props: PropsType) {
 
   function handleOpenMessage() {
     setOpenModal(true);
+    //changeToOpen && changeToOpen();
+  }
+
+  function handleCloseModal() {
     changeToOpen && changeToOpen();
+    setOpenModal(false);
   }
 
   return (
@@ -77,18 +82,21 @@ function Modal(props: PropsType) {
           onClick={(e) => {
             e.target instanceof Element &&
               e.target.id.includes("closeWindow") &&
-              setOpenModal(false);
+              handleCloseModal();
+            //setOpenModal(false);
           }}
         >
           <ModalWindow id="modalWindow" theme={theme}>
             <FontAwesomeIcon
               icon={faXmark}
               size="lg"
-              onClick={() => setOpenModal(false)}
+              onClick={handleCloseModal}
+              // onClick={() => setOpenModal(false)}
             />
             <h3>{title}</h3>
             <p>{content}</p>
-            <Button variant={2} onClick={() => setOpenModal(false)}>
+            {/* <Button variant={2} onClick={() => setOpenModal(false)}> */}
+            <Button variant={2} onClick={handleCloseModal}>
               OK
             </Button>
           </ModalWindow>

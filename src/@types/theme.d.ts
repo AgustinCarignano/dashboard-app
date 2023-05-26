@@ -1,6 +1,7 @@
 export type ThemeContextType = {
   theme: Theme;
   handleThemeChange: () => void;
+  currentTheme: "light" | "dark";
 };
 
 export type Theme = {

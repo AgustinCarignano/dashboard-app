@@ -1,6 +1,5 @@
 import { createContext, useEffect, useReducer } from "react";
 import { LoginActions, LoginContextType, LoginState } from "../@types/login";
-import { JsxElement } from "typescript";
 
 const reducer = (state: LoginState, action: LoginActions): LoginState => {
   switch (action.type) {
@@ -8,6 +7,7 @@ const reducer = (state: LoginState, action: LoginActions): LoginState => {
       if (action.payload) return { auth: true, ...action.payload };
       else return { ...state };
     case loginActionTypes.LOGOUT:
+      localStorage.removeItem("token");
       return { ...initialState };
     case loginActionTypes.UPDATE:
       return { ...state, ...action.payload };

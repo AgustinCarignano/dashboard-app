@@ -12,13 +12,19 @@ import {
 import SmallCard from "../../components/SmallCard";
 import MainContainer from "../../components/MainContainer";
 import ContactPreview from "../../components/ContactPreview";
-import { formatDate } from "../../utils";
+import { formatDate } from "../../utils/dateUtils";
 import Table, { IRowItem } from "../../components/Table";
 import styled from "styled-components";
 import Loader from "../../components/Loader";
 import { themeContext } from "../../context/ThemeContext";
-import { useAppSelector, useAppDispatch } from "../../hooks/hooks";
+import {
+  useAppSelector,
+  useAppDispatch,
+  useFetchWrapp,
+} from "../../hooks/hooks";
 import { BookingType } from "../../@types/bookings";
+import { ContactType } from "../../@types/contacts";
+import { useNavigate } from "react-router-dom";
 
 const FirstColumn = styled.div`
   display: flex;
@@ -53,11 +59,15 @@ const cardsInfo = [
 function Dashboard() {
   const bookingsData = useAppSelector(selectBookings);
   const isLoadingBookings = useAppSelector(selectLoadingBookings);
-  const latestContact = useAppSelector(selectContacts);
+  const contacts = useAppSelector(selectContacts);
   const isLoadingContacts = useAppSelector(selectLoadingContacts);
   const theme = useContext(themeContext);
   const dispatch = useAppDispatch();
+  const wrappedDispatchContacts = useFetchWrapp(getAllContacts);
+  const wrappedDispatchBookings = useFetchWrapp(getBookingsData);
+  const navigate = useNavigate();
   const [filteredBookings, setFilteredBookings] = useState<BookingType[]>([]);
+  const [latestContacts, setLatestContacts] = useState<ContactType[]>([]);
 
   const tableHeader = [
     { label: "Room" },
@@ -74,9 +84,12 @@ function Dashboard() {
       ? formatDate(item.checkOut)
       : "";
     return {
-      id: item.id,
+      id: item._id,
       rowData: [
-        <FirstColumn theme={theme}>
+        <FirstColumn
+          theme={theme}
+          onClick={() => navigate(`/dashboard-app/bookings/${item._id}`)}
+        >
           <img src={item.roomImg} alt={"room" + item.roomNumber} />
           <div>
             <h4>{item.roomType}</h4>
@@ -97,14 +110,16 @@ function Dashboard() {
   };
 
   useEffect(() => {
-    dispatch(getBookingsData());
+    // dispatch(getBookingsData());
     dispatch(getAllContacts());
+    //wrappedDispatchContacts();
+    wrappedDispatchBookings();
   }, [dispatch]);
 
   useEffect(() => {
     const period = {
-      start: 1647298800000,
-      end: 1649973600000,
+      start: 1680307200000,
+      end: 1685577600000,
     };
     if (bookingsData.length > 0) {
       const filterData = bookingsData.filter((item) => {
@@ -115,6 +130,11 @@ function Dashboard() {
       setFilteredBookings(filterData);
     }
   }, [bookingsData]);
+
+  useEffect(() => {
+    const latest = contacts.filter((item) => !item._read);
+    setLatestContacts(latest);
+  }, [contacts]);
 
   return (
     <MainContainer>
@@ -141,9 +161,8 @@ function Dashboard() {
         ) : (
           <ContactPreview
             title="Latest Contacts"
-            data={latestContact}
+            data={latestContacts}
             variant={1}
-            //shadow="0px 4px 4px #00000005"
           />
         )}
       </>

@@ -38,7 +38,10 @@ export const DetailHeader = styled.div`
     color: ${(props) => props.theme[12]};
   }
 `;
-export const SecondaryContainer = styled.div<{border:boolean, padding:boolean}>`
+export const SecondaryContainer = styled.div<{
+  border: boolean;
+  padding: boolean;
+}>`
   display: flex;
   border-bottom: ${(props) =>
     props.border ? `solid 3px ${props.theme[6]}` : "none"};
@@ -81,7 +84,7 @@ export const EditBtn = styled.div`
   right: 40px;
 `;
 
-export const RightColumn = styled.div<{justify:string,background:boolean}>`
+export const RightColumn = styled.div<{ justify: string; background: boolean }>`
   display: flex;
   flex-direction: column;
   justify-content: ${(props) => props.justify};
@@ -116,9 +119,11 @@ export const BookingStatus = styled.span`
 
 export const DetailImg = styled.div`
   width: 25%;
+  aspect-ratio: 1/1;
   border-radius: 12px;
   overflow: hidden;
   img {
-    width: 100%;
+    height: 100%;
+    //width: 100%;
   }
 `;

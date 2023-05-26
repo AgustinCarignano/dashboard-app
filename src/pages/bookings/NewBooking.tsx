@@ -10,12 +10,12 @@ function NewBooking() {
   const navigate = useNavigate();
 
   const initialState = {
-    id: "",
+    _id: "",
     guest: "",
     specialRequest: "",
-    orderDate: new Date().getTime().toString(),
+    orderDate: new Date().toISOString(),
     roomType: "",
-    roomNumber: "",
+    roomNumber: 0,
     status: "Check In",
     checkIn: "",
     checkOut: "",
@@ -24,8 +24,9 @@ function NewBooking() {
   };
 
   async function onSubmitAction(data: BookingType) {
+    console.log(data);
     const payload = await dispatch(createBooking(data)).unwrap();
-    navigate(`/dashboard-app/bookings/${payload.data.id}`);
+    navigate(`/dashboard-app/bookings/${payload.data._id}`);
   }
 
   return (

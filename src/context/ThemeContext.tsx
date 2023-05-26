@@ -80,7 +80,7 @@ export default function ThemeContextProvider(props: {
   }
   return (
     <themeContext.Provider
-      value={{ theme: Themes[currentTheme], handleThemeChange }}
+      value={{ theme: Themes[currentTheme], handleThemeChange, currentTheme }}
     >
       {props.children}
     </themeContext.Provider>

@@ -1,6 +1,10 @@
 import React, { useContext, useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { useAppDispatch, useAppSelector } from "../../hooks/hooks";
+import {
+  useAppDispatch,
+  useAppSelector,
+  useFetchWrapp,
+} from "../../hooks/hooks";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faEllipsisVertical } from "@fortawesome/free-solid-svg-icons";
 import MainContainer from "../../components/MainContainer";
@@ -12,11 +16,12 @@ import Table, {
 } from "../../components/Table";
 import Button from "../../components/Button";
 import Modal from "../../components/Modal";
-import { formatDate } from "../../utils";
+import { formatDate } from "../../utils/dateUtils";
 import Popup from "../../components/Popup";
 import {
   selectBookings,
   selectIsLoading,
+  selectHasError,
   getBookingsData,
   deleteBooking,
 } from "../../store/slices/bookingSlice";
@@ -24,6 +29,7 @@ import Loader from "../../components/Loader";
 import DeleteItem from "../../components/DeleteItem";
 import { themeContext } from "../../context/ThemeContext";
 import { BookingType } from "../../@types/bookings";
+import AppError from "../../components/AppError";
 
 const availableStates = {
   "Check In": 6,
@@ -34,7 +40,9 @@ const availableStates = {
 function Bookings() {
   const data = useAppSelector(selectBookings);
   const isLoadingData = useAppSelector(selectIsLoading);
+  const hasError = useAppSelector(selectHasError);
   const dispatch = useAppDispatch();
+  const wrappedDispatch = useFetchWrapp(getBookingsData);
   const [showConfirm, setShowConfirm] = useState(false);
   const [itemToDelete, setItemToDelete] = useState("");
   const [orderedData, setOrderedData] = useState<BookingType[]>([]);
@@ -79,11 +87,11 @@ function Bookings() {
     const [checkInDate, checkInTime] = formatDate(item.checkIn);
     const [checkOutDate, checkOutTime] = formatDate(item.checkOut);
     return {
-      id: item.id,
+      id: item._id,
       rowData: [
-        <div onClick={() => handleRedirect(item.id)}>
+        <div onClick={() => handleRedirect(item._id)}>
           <RowDataBigger>{item.guest}</RowDataBigger>
-          <RowDataSmaller theme={theme}>#{item.id}</RowDataSmaller>
+          <RowDataSmaller theme={theme}>#{item._id}</RowDataSmaller>
         </div>,
         <div>
           <p>{orderDate}</p>
@@ -122,8 +130,8 @@ function Bookings() {
           <Popup
             options={optionsMenu}
             withArrow={false}
-            itemId={item.id}
-            dataCy={"booking_action_options_" + item.id}
+            itemId={item._id}
+            dataCy={"booking_action_options_" + item._id}
             preview={
               <FontAwesomeIcon
                 color="#6E6E6E"
@@ -170,6 +178,11 @@ function Bookings() {
     setShowConfirm(false);
   }
 
+  function handleLoadError() {
+    //dispatch(getBookingsData());
+    wrappedDispatch();
+  }
+
   useEffect(() => {
     const copyOfData = structuredClone(data);
     const newData = filterData(copyOfData, activeTab);
@@ -180,9 +193,16 @@ function Bookings() {
   }, [data, activeTab, searchTerms]);
 
   useEffect(() => {
-    dispatch(getBookingsData());
-  }, [dispatch]);
+    //dispatch(getBookingsData());
+    wrappedDispatch();
+  }, []);
 
+  if (hasError)
+    return (
+      <MainContainer>
+        <AppError reload={handleLoadError} />
+      </MainContainer>
+    );
   return (
     <MainContainer>
       <>

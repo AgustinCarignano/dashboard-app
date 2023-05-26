@@ -20,7 +20,7 @@ function UpdateRoom() {
   const navigate = useNavigate();
 
   async function onSubmitAction(data: RoomType) {
-    await dispatch(updateRoom({ body: data, id: data.id })).unwrap();
+    await dispatch(updateRoom({ body: data, id: data._id })).unwrap();
     navigate(`/dashboard-app/rooms/${id}`);
   }
 

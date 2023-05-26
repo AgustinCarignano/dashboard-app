@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import { useAppDispatch, useAppSelector } from "../../hooks/hooks";
 import {
@@ -7,7 +7,7 @@ import {
   selectIsLoading,
   updateBooking,
 } from "../../store/slices/bookingSlice";
-import { formatDate } from "../../utils";
+import { formatDate } from "../../utils/dateUtils";
 import FormBooking from "./FormBooking";
 import Loader from "../../components/Loader";
 import MainContainer from "../../components/MainContainer";
@@ -27,14 +27,11 @@ function UpdateBooking() {
   const navigate = useNavigate();
 
   async function onSubmitAction(data: BookingType) {
-    await dispatch(updateBooking({ body: data, id: data.id })).unwrap();
-    navigate(`/dashboard-app/bookings/${data.id}`);
+    await dispatch(updateBooking({ body: data, id: data._id })).unwrap();
+    navigate(`/dashboard-app/bookings/${data._id}`);
   }
 
   function configInitialState() {
-    // const clone = { ...bookingData };
-    // clone.checkIn = formatDate(bookingData.checkIn)[2];
-    // clone.checkOut = formatDate(bookingData.checkOut)[2];
     if (bookingData.checkIn && bookingData.checkOut && bookingData.orderDate) {
       const newCheckIn = formatDate(bookingData.checkIn)[2];
       const newCheckOut = formatDate(bookingData.checkOut)[2];
@@ -51,7 +48,7 @@ function UpdateBooking() {
   }
 
   useEffect(() => {
-    if (bookingData.id !== id) {
+    if (bookingData._id !== id) {
       if (id) dispatch(getBookingDetails(id));
     } else {
       configInitialState();
@@ -61,20 +58,6 @@ function UpdateBooking() {
   useEffect(() => {
     configInitialState();
   }, [bookingData]);
-
-  /* async function configInitialState() {
-    const payload = await dispatch(getBookingDetails(id)).unwrap();
-    const clone = { ...payload.data };
-    clone.checkIn = formatDate(bookingData.checkIn)[2];
-    clone.checkOut = formatDate(bookingData.checkOut)[2];
-    const { roomId, roomType, roomNumber } = clone;
-    setCurrentRoom({ roomId, roomType, roomNumber });
-    setInitialState(clone);
-  }
-
-  useEffect(() => {
-    configInitialState();
-  }, [dispatch]); */
 
   if (!Object.keys(initialState).includes("guest") || isLoading)
     return (

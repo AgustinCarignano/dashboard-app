@@ -1,10 +1,13 @@
 import { useContext, useEffect, useState } from "react";
 import styled, { keyframes } from "styled-components";
 import { useLocation, useNavigate } from "react-router-dom";
-import { useAppSelector } from "../hooks/hooks";
+import { useAppDispatch, useAppSelector } from "../hooks/hooks";
 import { loginContext } from "../context/LoginContext";
-import { selectUnreadContacts } from "../store/slices/contactSlice";
-import { selectBookings } from "../store/slices/bookingSlice";
+import {
+  getAllContacts,
+  selectUnreadContacts,
+} from "../store/slices/contactSlice";
+import { getBookingsData, selectBookings } from "../store/slices/bookingSlice";
 import { themeContext } from "../context/ThemeContext";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
@@ -102,6 +105,7 @@ function Header(props: { handleSidebarVisibility: () => void }) {
   const messages = useAppSelector(selectUnreadContacts);
   const bookings = useAppSelector(selectBookings);
   const { pathname } = useLocation();
+  const dispatch = useAppDispatch();
   const navigate = useNavigate();
 
   function handleNavigate() {
@@ -109,11 +113,6 @@ function Header(props: { handleSidebarVisibility: () => void }) {
     navigate(path);
   }
 
-  /* const notifications = bookings.filter((book) => {
-    if (book.orderDate) {
-      return new Date(book.orderDate).getMonth() === new Date().getMonth();
-    }
-  }).length; */
   const notifications = bookings.filter(
     (book) =>
       book.orderDate &&
@@ -142,7 +141,9 @@ function Header(props: { handleSidebarVisibility: () => void }) {
 
   useEffect(() => {
     if (!loginState?.auth) return;
-  }, [loginState?.auth]);
+    if (messages === 0) dispatch(getAllContacts());
+    if (bookings.length === 0) dispatch(getBookingsData());
+  }, [pathname]);
 
   return (
     <StyleHeader theme={theme}>

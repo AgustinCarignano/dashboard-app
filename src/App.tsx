@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useContext } from "react";
 import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
 import Bookings from "./pages/bookings/Bookings";
 import BookingDetail from "./pages/bookings/BookingDetail";
@@ -17,14 +17,16 @@ import Layout from "./components/Layout";
 import RequiredAuth from "./components/RequiredAuth";
 import NewBooking from "./pages/bookings/NewBooking";
 import LoginContextProvider from "./context/LoginContext";
-import ThemeContextProvider from "./context/ThemeContext";
+import ThemeContextProvider, { themeContext } from "./context/ThemeContext";
 import UpdateBooking from "./pages/bookings/UpdateBooking";
 import UpdateRoom from "./pages/rooms/UpdateRoom";
 import UpdateUser from "./pages/users/UpdateUser";
 import InvalidPage from "./pages/invalidPage/InvalidPage";
+import { ToastContainer } from "react-toastify";
 
 function App() {
   const [showSidebar, setShowSidebar] = useState(true);
+  const { currentTheme } = useContext(themeContext);
 
   function handleSidebarVisibility() {
     setShowSidebar(!showSidebar);
@@ -160,6 +162,19 @@ function App() {
                   />
                   <Route path="*" element={<InvalidPage />} />
                 </Routes>
+                <ToastContainer
+                  position="bottom-right"
+                  autoClose={3000}
+                  limit={1}
+                  hideProgressBar={false}
+                  newestOnTop={false}
+                  closeOnClick
+                  rtl={false}
+                  pauseOnFocusLoss={false}
+                  draggable={false}
+                  pauseOnHover={false}
+                  theme={currentTheme === "light" ? "light" : "dark"}
+                />
               </>
             </Layout>
           </div>

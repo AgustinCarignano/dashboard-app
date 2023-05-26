@@ -11,9 +11,9 @@ function NewUser() {
   const navigate = useNavigate();
 
   const initialState = {
+    _id: "",
     photo: "",
     fullName: "",
-    id: "",
     email: "",
     startDate: "",
     description: "",
@@ -25,7 +25,7 @@ function NewUser() {
 
   async function onSubmitAction(data: UserType) {
     const payload = await dispatch(createUser(data)).unwrap();
-    navigate(`/dashboard-app/users/${payload.data.id}`);
+    navigate(`/dashboard-app/users/${payload.data._id}`);
   }
 
   return (
