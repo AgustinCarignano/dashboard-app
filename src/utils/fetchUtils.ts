@@ -1,6 +1,7 @@
 import fetch from "cross-fetch";
 import { IFetchData } from "../@types/fetchTypes";
 import { UserType } from "../@types/users";
+import { toast } from "react-toastify";
 
 export const API_URL = process.env.REACT_APP_API_URL;
 
@@ -28,25 +29,32 @@ export async function fetchAPI<T>(
   method: Methods,
   body?: Partial<T> | { email: string; password: string }
 ) {
+  const tokenData = localStorage.getItem("token");
+  const token = tokenData ? JSON.parse(tokenData).token : undefined;
   try {
     const resp = await fetch(URL, {
       method,
       body: body ? JSON.stringify(body) : undefined,
       headers: {
         "content-Type": "application/json",
-        Authorization: `bearer ${localStorage.getItem("token")}`,
+        Authorization: `bearer ${token}`,
       },
     });
     if (resp.ok) {
       const data: IFetchData<T> = await resp.json();
-      return { error: null, data: data.payload };
+      return data.payload;
     } else {
-      return {
-        error: { status: resp.status, message: resp.statusText },
-        data: null,
-      };
+      if (resp.status === 401) {
+        const newError = new Error("401");
+        newError.name = "Unauthorized";
+        throw newError;
+      } else {
+        throw new Error("Server error");
+      }
     }
-  } catch (error) {
-    throw error;
+  } catch (e: any) {
+    if (e.message !== "401")
+      toast.error("There has been a problem. Please, try again.");
+    throw e;
   }
 }

@@ -124,20 +124,26 @@ function Login() {
     } else if (!credentials.password) {
       return setShowAlert(errorMessage.emptyPassword);
     } else {
-      const { error, data } = await loginFecth(credentials);
-      if (data) {
-        localStorage.setItem("token", data.token);
-        if (!dispatchLogin || !loginActionTypes) return;
-        dispatchLogin({
-          type: loginActionTypes.LOGIN,
-          payload: {
-            fullName: data.user.fullName ?? "",
-            email: data.user.email ?? "",
-            photo: data.user.photo ?? "",
-          },
-        });
-      } else {
-        if (error?.status === 401) {
+      try {
+        const { token, user } = await loginFecth(credentials);
+        if (token) {
+          localStorage.setItem(
+            "token",
+            JSON.stringify({ token, setAt: new Date().getTime() })
+          );
+          if (!dispatchLogin || !loginActionTypes) return;
+          dispatchLogin({
+            type: loginActionTypes.LOGIN,
+            payload: {
+              fullName: user.fullName ?? "",
+              email: user.email ?? "",
+              photo: user.photo ?? "",
+            },
+          });
+        }
+      } catch (error: any) {
+        console.error(error);
+        if (error.message === "401") {
           return setShowAlert(errorMessage.wrongCredentials);
         } else {
           return setShowAlert(errorMessage.serverError);

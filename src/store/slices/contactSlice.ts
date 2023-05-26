@@ -19,22 +19,20 @@ const initialState: IContactState = {
 export const getAllContacts = createAsyncThunk(
   "contacts/getContacts",
   async () => {
-    const { error, data } = await fetchAPI<ContactType[]>(baseURL, Methods.GET);
-    if (data) return { data };
-    else throw new Error(error?.status.toString());
+    const data = await fetchAPI<ContactType[]>(baseURL, Methods.GET);
+    return { data };
   }
 );
 
 export const updateContact = createAsyncThunk(
   "contatcs/update",
   async ({ body, id }: ContactUpdateObj) => {
-    const { error, data } = await fetchAPI<ContactType>(
+    const data = await fetchAPI<ContactType>(
       `${baseURL}/${id}`,
       Methods.PUT,
       body
     );
-    if (data) return { data };
-    else throw new Error(error?.status.toString() || "Unknown error");
+    return { data };
   }
 );
 

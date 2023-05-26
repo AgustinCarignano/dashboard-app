@@ -14,20 +14,15 @@ const initialState: IUserState = {
 };
 
 export const getUsersData = createAsyncThunk("users/getAllUsers", async () => {
-  const { error, data } = await fetchAPI<UserType[]>(baseURL, Methods.GET);
-  if (data) return { data };
-  else throw new Error(error?.status.toString());
+  const data = await fetchAPI<UserType[]>(baseURL, Methods.GET);
+  return { data };
 });
 
 export const getUserDetails = createAsyncThunk(
   "users/getUserDetails",
   async (id: string) => {
-    const { error, data } = await fetchAPI<UserType>(
-      `${baseURL}/${id}`,
-      Methods.GET
-    );
-    if (data) return { data, id };
-    else throw new Error(error?.status.toString());
+    const data = await fetchAPI<UserType>(`${baseURL}/${id}`, Methods.GET);
+    return { data, id };
   }
 );
 
@@ -35,38 +30,28 @@ export const createUser = createAsyncThunk(
   "users/create",
   async (body: Partial<UserType>) => {
     delete body._id;
-    const { error, data } = await fetchAPI<UserType>(
-      baseURL,
-      Methods.POST,
-      body
-    );
-    if (data) return { data };
-    else throw new Error(error?.status.toString());
+    const data = await fetchAPI<UserType>(baseURL, Methods.POST, body);
+    return { data };
   }
 );
 
 export const updateUser = createAsyncThunk(
   "users/update",
   async ({ body, id }: UserUpdateObj) => {
-    const { error, data } = await fetchAPI<UserType>(
+    const data = await fetchAPI<UserType>(
       `${baseURL}/${id}`,
       Methods.PUT,
       body
     );
-    if (data) return { data };
-    else throw new Error(error?.status.toString());
+    return { data };
   }
 );
 
 export const deleteUser = createAsyncThunk(
   "users/delete",
   async (userId: string) => {
-    const { error, data } = await fetchAPI<string>(
-      `${baseURL}/${userId}`,
-      Methods.DELETE
-    );
-    if (data) return { id: data };
-    else throw new Error(error?.status.toString());
+    const id = await fetchAPI<string>(`${baseURL}/${userId}`, Methods.DELETE);
+    return { id };
   }
 );
 
@@ -138,7 +123,6 @@ export const usersSlice = createSlice({
         (state) => {
           state.isLoading = false;
           state.hasError = true;
-          toast.error("There has been a problem. Please, try again.");
         }
       );
   },

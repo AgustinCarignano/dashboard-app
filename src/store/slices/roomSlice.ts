@@ -14,20 +14,15 @@ const initialState: IRoomState = {
 };
 
 export const getRoomsData = createAsyncThunk("rooms/getAllRooms", async () => {
-  const { error, data } = await fetchAPI<RoomType[]>(baseURL, Methods.GET);
-  if (data) return { data };
-  else throw new Error(error?.status.toString());
+  const data = await fetchAPI<RoomType[]>(baseURL, Methods.GET);
+  return { data };
 });
 
 export const getRoomDetails = createAsyncThunk(
   "rooms/getRoomDetails",
   async (id: string) => {
-    const { error, data } = await fetchAPI<RoomType>(
-      `${baseURL}/${id}`,
-      Methods.GET
-    );
-    if (data) return { data, id };
-    else throw new Error(error?.status.toString());
+    const data = await fetchAPI<RoomType>(`${baseURL}/${id}`, Methods.GET);
+    return { data, id };
   }
 );
 
@@ -36,38 +31,28 @@ export const createRoom = createAsyncThunk(
   async (body: Partial<RoomType>) => {
     delete body._id;
     console.log(body);
-    const { error, data } = await fetchAPI<RoomType>(
-      baseURL,
-      Methods.POST,
-      body
-    );
-    if (data) return { data };
-    else throw new Error(error?.status.toString());
+    const data = await fetchAPI<RoomType>(baseURL, Methods.POST, body);
+    return { data };
   }
 );
 
 export const updateRoom = createAsyncThunk(
   "rooms/update",
   async ({ body, id }: RoomUpdateObj) => {
-    const { error, data } = await fetchAPI<RoomType>(
+    const data = await fetchAPI<RoomType>(
       `${baseURL}/${id}`,
       Methods.PUT,
       body
     );
-    if (data) return { data };
-    else throw new Error(error?.status.toString());
+    return { data };
   }
 );
 
 export const deleteRoom = createAsyncThunk(
   "rooms/delete",
   async (roomId: string) => {
-    const { error, data } = await fetchAPI<string>(
-      `${baseURL}/${roomId}`,
-      Methods.DELETE
-    );
-    if (data) return { id: data };
-    else throw new Error(error?.status.toString());
+    const id = await fetchAPI<string>(`${baseURL}/${roomId}`, Methods.DELETE);
+    return { id };
   }
 );
 
@@ -139,7 +124,6 @@ export const roomsSlice = createSlice({
         (state) => {
           state.isLoading = false;
           state.hasError = true;
-          toast.error("There has been a problem. Please, try again.");
         }
       );
   },

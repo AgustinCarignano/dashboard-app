@@ -56,8 +56,8 @@ export default function Button({
     },
     4: {
       background: "transparent",
-      color: theme[12],
-      border: `solid 1px ${theme[12]}`,
+      color: theme[30],
+      border: `solid 1px ${theme[30]}`,
     },
     5: {
       background: theme[1],

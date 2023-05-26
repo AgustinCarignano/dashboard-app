@@ -175,6 +175,7 @@ export type PropsType = {
   rowsGenerator: (item: UnionType) => IRowItem;
   newBtn?: string;
   newestAction?: () => void;
+  newestText?: string;
   paginate: boolean;
   draggableRow: boolean;
 };
@@ -191,6 +192,7 @@ function Table(props: PropsType) {
     rowsGenerator,
     newBtn,
     newestAction,
+    newestText,
     paginate,
     draggableRow,
   } = props;
@@ -307,7 +309,7 @@ function Table(props: PropsType) {
             )}
             {newestAction && (
               <Button variant={4} onClick={newestAction}>
-                Newest
+                {newestText}
               </Button>
             )}
           </BtnsContainer>

@@ -87,7 +87,7 @@ function FormBooking(props: PropsType) {
     let isValid = true;
     const errorObj = { ...submitError };
     for (const key in data) {
-      if (key === "_id" || key === "specialRequest" || key === "__v") continue;
+      if (key === "_id" || key === "specialRequest") continue;
       if (!data[key as keyof BookingInitialState]) {
         errorObj[key as keyof typeof submitError] = true;
         isValid = false;

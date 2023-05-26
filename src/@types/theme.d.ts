@@ -34,4 +34,5 @@ export type Theme = {
   27: string;
   28: string;
   29: string;
+  30: string;
 };

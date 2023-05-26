@@ -20,21 +20,16 @@ const baseURL = `${API_URL}/api/bookings`;
 export const getBookingsData = createAsyncThunk(
   "bookings/getAllBookings",
   async () => {
-    const { error, data } = await fetchAPI<BookingType[]>(baseURL, Methods.GET);
-    if (data) return { data };
-    else throw new Error(error?.status.toString());
+    const data = await fetchAPI<BookingType[]>(baseURL, Methods.GET);
+    return { data };
   }
 );
 
 export const getBookingDetails = createAsyncThunk(
   "bookings/getBookingDetails",
   async (id: string) => {
-    const { error, data } = await fetchAPI<BookingType>(
-      `${baseURL}/${id}`,
-      Methods.GET
-    );
-    if (data) return { data, id };
-    else throw new Error(error?.status.toString());
+    const data = await fetchAPI<BookingType>(`${baseURL}/${id}`, Methods.GET);
+    return { data, id };
   }
 );
 
@@ -42,38 +37,31 @@ export const createBooking = createAsyncThunk(
   "bookings/create",
   async (body: Partial<BookingType>) => {
     delete body._id;
-    const { error, data } = await fetchAPI<BookingType>(
-      baseURL,
-      Methods.POST,
-      body
-    );
-    if (data) return { data };
-    else throw new Error(error?.status.toString());
+    const data = await fetchAPI<BookingType>(baseURL, Methods.POST, body);
+    return { data };
   }
 );
 
 export const updateBooking = createAsyncThunk(
   "bookings/update",
   async ({ body, id }: BookingUpdateObj) => {
-    const { error, data } = await fetchAPI<BookingType>(
+    const data = await fetchAPI<BookingType>(
       `${baseURL}/${id}`,
       Methods.PUT,
       body
     );
-    if (data) return { data };
-    else throw new Error(error?.status.toString());
+    return { data };
   }
 );
 
 export const deleteBooking = createAsyncThunk(
   "bookings/delete",
   async (bookingId: string) => {
-    const { error, data } = await fetchAPI<string>(
+    const id = await fetchAPI<string>(
       `${baseURL}/${bookingId}`,
       Methods.DELETE
     );
-    if (data) return { id: data };
-    else throw new Error(error?.status.toString());
+    return { id };
   }
 );
 
@@ -145,7 +133,6 @@ export const bookingsSlice = createSlice({
         (state) => {
           state.isLoading = false;
           state.hasError = true;
-          toast.error("There has been an error. Please, try again.");
         }
       );
   },

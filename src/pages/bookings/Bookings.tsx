@@ -47,6 +47,7 @@ function Bookings() {
   const [itemToDelete, setItemToDelete] = useState("");
   const [orderedData, setOrderedData] = useState<BookingType[]>([]);
   const [activeTab, setActiveTab] = useState("All Bookings");
+  const [revOrder, setRevOrder] = useState(false);
   const [searchTerms, setSearchTerms] = useState("");
   const { theme } = useContext(themeContext);
   const navigate = useNavigate();
@@ -145,15 +146,12 @@ function Bookings() {
     };
   };
 
-  function filterData(dataArr: BookingType[], tab: string) {
+  function filterData(dataArr: BookingType[], tab: string, rev: boolean) {
     const orderList = (arr: BookingType[], criteria: keyof BookingType) => {
       arr.sort((a, b) => {
-        if (a[criteria as keyof BookingType] > b[criteria as keyof BookingType])
-          return -1;
-        else if (
-          a[criteria as keyof BookingType] < b[criteria as keyof BookingType]
-        )
-          return 1;
+        let revMult = rev ? -1 : 1;
+        if (a[criteria] > b[criteria]) return -1 * revMult;
+        else if (a[criteria] < b[criteria]) return 1 * revMult;
         return 0;
       });
       return arr;
@@ -179,21 +177,23 @@ function Bookings() {
   }
 
   function handleLoadError() {
-    //dispatch(getBookingsData());
     wrappedDispatch();
+  }
+
+  function handleOrderByDate() {
+    setRevOrder((prev) => !prev);
   }
 
   useEffect(() => {
     const copyOfData = structuredClone(data);
-    const newData = filterData(copyOfData, activeTab);
+    const newData = filterData(copyOfData, activeTab, revOrder);
     const searchData = newData.filter((item) =>
       item.guest.toLowerCase().includes(searchTerms.toLowerCase())
     );
     setOrderedData(searchData);
-  }, [data, activeTab, searchTerms]);
+  }, [data, activeTab, searchTerms, revOrder]);
 
   useEffect(() => {
-    //dispatch(getBookingsData());
     wrappedDispatch();
   }, []);
 
@@ -219,7 +219,8 @@ function Bookings() {
             setSearchTerms={setSearchTerms}
             rowsGenerator={rowsToRender}
             newBtn="New Booking"
-            newestAction={() => setActiveTab("All Bookings")}
+            newestAction={handleOrderByDate}
+            newestText={revOrder ? "Oldest" : "Newest"}
             paginate={true}
             draggableRow={false}
           />

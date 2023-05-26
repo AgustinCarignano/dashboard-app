@@ -32,6 +32,7 @@ const Themes = {
     27: "#135846", //button variant 2 letter
     28: "#0000001a", //row tables box shadow
     29: "#fdfdfd", //odd rows background
+    30: "#799283",
   },
   dark: {
     1: "#202020",
@@ -63,6 +64,7 @@ const Themes = {
     27: "#ffffff",
     28: "#0000001a",
     29: "#1b1b1b",
+    30: "#135846",
   },
 };
 

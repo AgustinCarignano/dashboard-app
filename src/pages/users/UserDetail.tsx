@@ -35,7 +35,7 @@ const Container = styled(ItemContainer)`
   flex-direction: column;
   gap: 30px;
   padding: 40px;
-  //padding-right: 200px;
+  padding-right: 200px;
   max-width: 700px;
   margin: 0 auto;
 `;
