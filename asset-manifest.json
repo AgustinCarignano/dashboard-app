@@ -1,16 +1,14 @@
 {
   "files": {
-    "main.css": "/dashboard-app/static/css/main.669b7223.css",
-    "main.js": "/dashboard-app/static/js/main.ac6f5210.js",
-    "static/js/787.92af229c.chunk.js": "/dashboard-app/static/js/787.92af229c.chunk.js",
+    "main.css": "/dashboard-app/static/css/main.a294006c.css",
+    "main.js": "/dashboard-app/static/js/main.c64ade8e.js",
     "static/media/calendarIcon.svg": "/dashboard-app/static/media/calendarIcon.dd9a9992fc5a0aeb981ea703bdb4a420.svg",
     "index.html": "/dashboard-app/index.html",
-    "main.669b7223.css.map": "/dashboard-app/static/css/main.669b7223.css.map",
-    "main.ac6f5210.js.map": "/dashboard-app/static/js/main.ac6f5210.js.map",
-    "787.92af229c.chunk.js.map": "/dashboard-app/static/js/787.92af229c.chunk.js.map"
+    "main.a294006c.css.map": "/dashboard-app/static/css/main.a294006c.css.map",
+    "main.c64ade8e.js.map": "/dashboard-app/static/js/main.c64ade8e.js.map"
   },
   "entrypoints": [
-    "static/css/main.669b7223.css",
-    "static/js/main.ac6f5210.js"
+    "static/css/main.a294006c.css",
+    "static/js/main.c64ade8e.js"
   ]
 }
