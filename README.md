@@ -5,7 +5,7 @@ Backoffice app for Miranda Hotel, a fake luxury hotel chain, which allow its emp
 ## Main features
 
 This app was bootstrapped with CRA, later adding redux and context better manage the application states.
-There are some interesting features in this application, for example, getting a variety of metrics on a user-selected time period, being able to see some key information in graphs, filtering in many ways the information on each page, and dragging and dropping some elements from the different tables.
+There are some interesting features in this application, for example, getting a variety of metrics on a user-selected time period, being able to see some key information in graphs, filtering in many ways the information on each page, and drag and drop rows from one of the tables.
 
 ## Page Link
 
