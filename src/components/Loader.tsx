@@ -5,7 +5,7 @@ const { DotWave } = require("@uiball/loaders");
 
 const Container = styled.div`
   position: absolute;
-  top: 100%;
+  top: 20%;
   left: 50%;
   right: 50%;
   margin: 0 auto;
