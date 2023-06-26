@@ -1,4 +1,4 @@
-import React, { useContext, useEffect, useState } from "react";
+import { useContext, useEffect, useState } from "react";
 import {
   getAllContacts,
   selectContacts,
@@ -63,7 +63,6 @@ function Dashboard() {
   const isLoadingContacts = useAppSelector(selectLoadingContacts);
   const theme = useContext(themeContext);
   const dispatch = useAppDispatch();
-  const wrappedDispatchContacts = useFetchWrapp(getAllContacts);
   const wrappedDispatchBookings = useFetchWrapp(getBookingsData);
   const navigate = useNavigate();
   const [filteredBookings, setFilteredBookings] = useState<BookingType[]>([]);
@@ -110,9 +109,7 @@ function Dashboard() {
   };
 
   useEffect(() => {
-    // dispatch(getBookingsData());
     dispatch(getAllContacts());
-    //wrappedDispatchContacts();
     wrappedDispatchBookings();
   }, [dispatch]);
 
@@ -136,35 +133,31 @@ function Dashboard() {
     setLatestContacts(latest);
   }, [contacts]);
 
+  if (isLoadingBookings || isLoadingContacts) return <Loader />;
+
   return (
     <MainContainer>
       <>
         {cardsInfo.map((item, index) => (
           <SmallCard type={item.type} number={item.number} key={index} />
         ))}
-        {isLoadingBookings ? (
-          <Loader />
-        ) : (
-          filteredBookings.length !== 0 && (
-            <Table
-              data={filteredBookings}
-              option="dashboard"
-              tableHeader={tableHeader}
-              rowsGenerator={rowsToRender}
-              paginate={false}
-              draggableRow={false}
-            />
-          )
+        {filteredBookings.length !== 0 && (
+          <Table
+            data={filteredBookings}
+            option="dashboard"
+            tableHeader={tableHeader}
+            rowsGenerator={rowsToRender}
+            paginate={false}
+            draggableRow={false}
+          />
         )}
-        {isLoadingContacts ? (
-          <Loader />
-        ) : (
+        {
           <ContactPreview
             title="Latest Contacts"
             data={latestContacts}
             variant={1}
           />
-        )}
+        }
       </>
     </MainContainer>
   );
