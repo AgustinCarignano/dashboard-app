@@ -19,6 +19,7 @@ jobs:
         uses: cypress-io/github-action@v5
         timeout-minutes: 10
         with:
+          node-version: "16"
           browser: chrome
           record: true
           build: npm run build
