@@ -1,7 +1,7 @@
 import { createSlice, createAsyncThunk, isAnyOf } from "@reduxjs/toolkit";
 import {
   generateId,
-  hashData,
+  // hashData,
   getAllData,
   getItemData,
   delayFunction,
@@ -29,8 +29,8 @@ export const getUserDetails = createAsyncThunk(
 
 export const createUser = createAsyncThunk("users/create", async (body) => {
   const id = generateId();
-  const hashedPassword = hashData(body.password);
-  const data = await delayFunction({ ...body, id, password: hashedPassword });
+  // const hashedPassword = hashData(body.password);
+  const data = await delayFunction({ ...body, id });
   return { data };
 });
 

@@ -74,9 +74,9 @@ const ButtonRigth = styled.div`
   right: 0;
   Button {
     padding: 13px 20px;
-    transition: transform 0.3s;
-    &:hover {
-      transform: scale(1.1);
+    transition: transform 0.2s;
+    &:active {
+      transform: scale(0.9);
     }
   }
 `;

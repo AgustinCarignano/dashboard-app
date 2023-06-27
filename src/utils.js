@@ -1,4 +1,4 @@
-import bcryprt from "bcryptjs";
+//import bcryprt from "bcryptjs";
 
 export async function getAllData(fileName) {
   const resp = await fetch(`${process.env.PUBLIC_URL}/mockData/${fileName}`);
@@ -69,7 +69,7 @@ export function generateId() {
   return id;
 }
 
-export function hashData(data) {
-  const salt = bcryprt.genSaltSync(10);
-  return bcryprt.hashSync(data, salt);
-}
+// export function hashData(data) {
+//   const salt = bcryprt.genSaltSync(10);
+//   return bcryprt.hashSync(data, salt);
+// }
