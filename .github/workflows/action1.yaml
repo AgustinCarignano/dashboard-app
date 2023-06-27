@@ -9,12 +9,8 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@v3
-      - name: Setup
-        uses: actions/setup-node@v3
-        with:
-          node-version: "16"
       - name: Cypress run
         uses: cypress-io/github-action@v5
         with:
-          build: npm run build
-          start: npm start
+          command: npx cypress run
+          browser: chrome
