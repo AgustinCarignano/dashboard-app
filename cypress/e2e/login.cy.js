@@ -48,7 +48,7 @@ describe("Private routes with login", () => {
     cy.get('[data-cy="password"]').should(
       "have.css",
       "border",
-      "0.8px solid rgb(226, 52, 40)"
+      "1px solid rgb(226, 52, 40)"
     );
 
     cy.get('[data-cy="password"]').type("wrongPass");
@@ -61,12 +61,12 @@ describe("Private routes with login", () => {
     cy.get('[data-cy="userName"]').should(
       "have.css",
       "border",
-      "0.8px solid rgb(226, 52, 40)"
+      "1px solid rgb(226, 52, 40)"
     );
     cy.get('[data-cy="password"]').should(
       "have.css",
       "border",
-      "0.8px solid rgb(226, 52, 40)"
+      "1px solid rgb(226, 52, 40)"
     );
   });
 
