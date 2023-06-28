@@ -6,21 +6,21 @@ on:
 jobs:
   cypress-test:
     runs-on: ubuntu-latest
+    env:
+      CI: false
     steps:
       - name: Check out repository code
         uses: actions/checkout@v3
       - uses: actions/setup-node@v3
         with:
           node-version: "16"
-      - name: install dependencies
-        run: npm install
+      - name: install dependencies and build
+        run: npm install && npm run build
 
       - name: run cypress tests in chrome
         uses: cypress-io/github-action@v5
         timeout-minutes: 10
         with:
-          node-version: "16"
           browser: chrome
-          build: npm run build
           start: npm start
           wait-on: "http://localhost:3000"
