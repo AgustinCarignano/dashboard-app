@@ -19,22 +19,22 @@ describe("Action to create a new room", () => {
     cy.get('[data-cy="bookingFormGuest"]').should(
       "have.css",
       "border",
-      "0.8px solid rgb(226, 52, 40)"
+      "1px solid rgb(226, 52, 40)"
     );
     cy.get('[data-cy="bookingFormCheckIn"]').should(
       "have.css",
       "border",
-      "0.8px solid rgb(226, 52, 40)"
+      "1px solid rgb(226, 52, 40)"
     );
     cy.get('[data-cy="bookingFormCheckOut"]').should(
       "have.css",
       "border",
-      "0.8px solid rgb(226, 52, 40)"
+      "1px solid rgb(226, 52, 40)"
     );
     cy.get('[data-cy="bookingFormRoom"]').should(
       "have.css",
       "border",
-      "0.8px solid rgb(226, 52, 40)"
+      "1px solid rgb(226, 52, 40)"
     );
   });
   it("If all inputs are fill, a new booking is created when click in 'CREATE' button, and redirect to booking detail", () => {
