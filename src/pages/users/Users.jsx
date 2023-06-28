@@ -40,11 +40,11 @@ function Users() {
   const optionsMenu = [
     {
       label: "Details",
-      action: (itemId) => navigate(`/dashboard-app/users/${itemId}`),
+      action: (itemId) => navigate(`/users/${itemId}`),
     },
     {
       label: "Edit",
-      action: (itemId) => navigate(`/dashboard-app/users/update/${itemId}`),
+      action: (itemId) => navigate(`/users/update/${itemId}`),
     },
     {
       label: "Delete",
@@ -64,7 +64,7 @@ function Users() {
   ];
 
   function handleRedirect(id) {
-    const path = `/dashboard-app/users/${id}`;
+    const path = `/users/${id}`;
     navigate(path);
   }
 

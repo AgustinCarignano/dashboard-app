@@ -66,7 +66,7 @@ function BookingDetail() {
   const optionsMenu = [
     {
       label: "Edit Booking",
-      action: (itemId) => navigate(`/dashboard-app/bookings/update/${itemId}`),
+      action: (itemId) => navigate(`/bookings/update/${itemId}`),
     },
     {
       label: "Delete Booking",
@@ -79,7 +79,7 @@ function BookingDetail() {
   async function handleDeleteItem() {
     try {
       await dispatch(deleteBooking(item.id)).unwrap();
-      navigate(`/dashboard-app/bookings`);
+      navigate(`/bookings`);
     } catch (error) {
       setShowConfirm(false);
       console.log("there has been an error", error);

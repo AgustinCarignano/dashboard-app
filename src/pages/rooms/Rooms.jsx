@@ -43,11 +43,11 @@ function Rooms() {
   const optionsMenu = [
     {
       label: "Details",
-      action: (itemId) => navigate(`/dashboard-app/rooms/${itemId}`),
+      action: (itemId) => navigate(`/rooms/${itemId}`),
     },
     {
       label: "Edit",
-      action: (itemId) => navigate(`/dashboard-app/rooms/update/${itemId}`),
+      action: (itemId) => navigate(`/rooms/update/${itemId}`),
     },
     {
       label: "Delete",
@@ -77,7 +77,7 @@ function Rooms() {
   ];
 
   function handleRedirect(id) {
-    const path = `/dashboard-app/rooms/${id}`;
+    const path = `/rooms/${id}`;
     navigate(path);
   }
 

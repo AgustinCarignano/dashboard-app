@@ -55,7 +55,7 @@ function UserDetail() {
   const optionsMenu = [
     {
       label: "Edit User",
-      action: (itemId) => navigate(`/dashboard-app/users/update/${itemId}`),
+      action: (itemId) => navigate(`/users/update/${itemId}`),
     },
     {
       label: "Delete User",
@@ -68,7 +68,7 @@ function UserDetail() {
   async function handleDeleteItem() {
     try {
       await dispatch(deleteUser(user.id)).unwrap();
-      navigate(`/dashboard-app/users`);
+      navigate(`/users`);
     } catch (error) {
       setShowConfirm(false);
       console.log("there has been an error", error);

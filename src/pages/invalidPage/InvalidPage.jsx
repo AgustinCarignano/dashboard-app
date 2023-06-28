@@ -31,7 +31,7 @@ function InvalidPage() {
     <MainContainer>
       <Container>
         <Message theme={theme}>404: The page doesn't exist</Message>
-        <Link to="/dashboard-app/dashboard">
+        <Link to="/dashboard">
           <Button variant={1}>Home</Button>
         </Link>
       </Container>

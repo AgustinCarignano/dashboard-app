@@ -45,11 +45,11 @@ function Bookings() {
   const optionsMenu = [
     {
       label: "Details",
-      action: (itemId) => navigate(`/dashboard-app/bookings/${itemId}`),
+      action: (itemId) => navigate(`/bookings/${itemId}`),
     },
     {
       label: "Edit",
-      action: (itemId) => navigate(`/dashboard-app/bookings/update/${itemId}`),
+      action: (itemId) => navigate(`/bookings/update/${itemId}`),
     },
     {
       label: "Delete",
@@ -151,7 +151,7 @@ function Bookings() {
   }
 
   function handleRedirect(id) {
-    const path = `/dashboard-app/bookings/${id}`;
+    const path = `/bookings/${id}`;
     navigate(path);
   }
 

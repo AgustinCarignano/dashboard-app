@@ -137,7 +137,7 @@ function Login() {
 
   useEffect(() => {
     if (loginState.auth) {
-      return navigate("/dashboard-app/");
+      return navigate("/");
     }
   }, [loginState, navigate]);
 

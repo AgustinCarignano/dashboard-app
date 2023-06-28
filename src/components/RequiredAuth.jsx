@@ -6,7 +6,7 @@ function RequiredAuth(props) {
   const { loginState } = useContext(loginContext);
 
   if (!loginState.auth) {
-    return <Navigate to={"/dashboard-app/login"} />;
+    return <Navigate to={"/login"} />;
   }
   return props.children;
 }

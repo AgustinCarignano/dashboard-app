@@ -44,7 +44,7 @@ function RoomDetail() {
   const optionsMenu = [
     {
       label: "Edit Room",
-      action: (itemId) => navigate(`/dashboard-app/rooms/update/${itemId}`),
+      action: (itemId) => navigate(`/rooms/update/${itemId}`),
     },
     {
       label: "Delete Room",
@@ -57,7 +57,7 @@ function RoomDetail() {
   async function handleDeleteItem() {
     try {
       await dispatch(deleteRoom(item.id)).unwrap();
-      navigate(`/dashboard-app/rooms`);
+      navigate(`/rooms`);
     } catch (error) {
       setShowConfirm(false);
       console.log("there has been an error", error);

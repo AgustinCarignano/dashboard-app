@@ -24,7 +24,7 @@ function NewRoom() {
 
   async function onSubmitAction(data) {
     const payload = await dispatch(createRoom(data)).unwrap();
-    navigate(`/dashboard-app/rooms/${payload.data.id}`);
+    navigate(`/rooms/${payload.data.id}`);
   }
 
   return (

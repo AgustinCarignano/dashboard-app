@@ -20,7 +20,7 @@ function UpdateUser() {
 
   async function onSubmitAction(data) {
     await dispatch(updateUser({ body: data, id: data.id })).unwrap();
-    navigate(`/dashboard-app/users/${id}`);
+    navigate(`/users/${id}`);
   }
 
   async function configInitialState() {

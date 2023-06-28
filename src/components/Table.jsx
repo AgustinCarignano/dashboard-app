@@ -184,7 +184,7 @@ function Table(props) {
   }
 
   function handleNewItem() {
-    const path = `/dashboard-app/${option}/create`;
+    const path = `/${option}/create`;
     navigate(path);
   }
 

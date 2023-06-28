@@ -23,7 +23,7 @@ function UpdateBooking() {
 
   async function onSubmitAction(data) {
     await dispatch(updateBooking({ body: data, id: data.id })).unwrap();
-    navigate(`/dashboard-app/bookings/${data.id}`);
+    navigate(`/bookings/${data.id}`);
   }
 
   function configInitialState() {

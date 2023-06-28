@@ -46,13 +46,10 @@ function App() {
               <Header handleSidebarVisibility={handleSidebarVisibility} />
 
               <Routes>
-                <Route path="/dashboard-app/login" element={<Login />} />
+                <Route path="/login" element={<Login />} />
+                <Route path="/" element={<Navigate to="/dashboard" />} />
                 <Route
-                  path="/dashboard-app/"
-                  element={<Navigate to="/dashboard-app/dashboard" />}
-                />
-                <Route
-                  path="/dashboard-app/dashboard"
+                  path="/dashboard"
                   element={
                     <RequiredAuth>
                       <Dashboard />
@@ -60,7 +57,7 @@ function App() {
                   }
                 />
                 <Route
-                  path="/dashboard-app/bookings"
+                  path="/bookings"
                   element={
                     <RequiredAuth>
                       <Bookings />
@@ -68,7 +65,7 @@ function App() {
                   }
                 ></Route>
                 <Route
-                  path="/dashboard-app/bookings/:id"
+                  path="/bookings/:id"
                   element={
                     <RequiredAuth>
                       <BookingDetail />
@@ -76,7 +73,7 @@ function App() {
                   }
                 ></Route>
                 <Route
-                  path="/dashboard-app/bookings/create"
+                  path="/bookings/create"
                   element={
                     <RequiredAuth>
                       <NewBooking />
@@ -84,7 +81,7 @@ function App() {
                   }
                 ></Route>
                 <Route
-                  path="/dashboard-app/bookings/update/:id"
+                  path="/bookings/update/:id"
                   element={
                     <RequiredAuth>
                       <UpdateBooking />
@@ -92,7 +89,7 @@ function App() {
                   }
                 ></Route>
                 <Route
-                  path="/dashboard-app/rooms"
+                  path="/rooms"
                   element={
                     <RequiredAuth>
                       <Rooms />
@@ -100,7 +97,7 @@ function App() {
                   }
                 ></Route>
                 <Route
-                  path="/dashboard-app/rooms/:id"
+                  path="/rooms/:id"
                   element={
                     <RequiredAuth>
                       <RoomDetail />
@@ -108,7 +105,7 @@ function App() {
                   }
                 ></Route>
                 <Route
-                  path="/dashboard-app/rooms/create"
+                  path="/rooms/create"
                   element={
                     <RequiredAuth>
                       <NewRoom />
@@ -116,7 +113,7 @@ function App() {
                   }
                 ></Route>
                 <Route
-                  path="/dashboard-app/rooms/update/:id"
+                  path="/rooms/update/:id"
                   element={
                     <RequiredAuth>
                       <UpdateRoom />
@@ -124,7 +121,7 @@ function App() {
                   }
                 ></Route>
                 <Route
-                  path="/dashboard-app/users"
+                  path="/users"
                   element={
                     <RequiredAuth>
                       <Users />
@@ -132,7 +129,7 @@ function App() {
                   }
                 />
                 <Route
-                  path="/dashboard-app/users/:id"
+                  path="/users/:id"
                   element={
                     <RequiredAuth>
                       <UserDetail />
@@ -140,7 +137,7 @@ function App() {
                   }
                 />
                 <Route
-                  path="/dashboard-app/users/create"
+                  path="/users/create"
                   element={
                     <RequiredAuth>
                       <NewUser />
@@ -148,7 +145,7 @@ function App() {
                   }
                 />
                 <Route
-                  path="/dashboard-app/users/update/:id"
+                  path="/users/update/:id"
                   element={
                     <RequiredAuth>
                       <UpdateUser />
@@ -156,7 +153,7 @@ function App() {
                   }
                 />
                 <Route
-                  path="/dashboard-app/contact"
+                  path="/contact"
                   element={
                     <RequiredAuth>
                       <Contact />

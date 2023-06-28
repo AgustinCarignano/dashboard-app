@@ -20,7 +20,7 @@ function UpdateRoom() {
 
   async function onSubmitAction(data) {
     await dispatch(updateRoom({ body: data, id: data.id })).unwrap();
-    navigate(`/dashboard-app/rooms/${id}`);
+    navigate(`/rooms/${id}`);
   }
 
   useEffect(() => {

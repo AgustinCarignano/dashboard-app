@@ -105,7 +105,7 @@ function Header(props) {
   const navigate = useNavigate();
 
   function handleNavigate() {
-    const path = `/dashboard-app/${pathArray[2]}/`;
+    const path = `/${pathArray[2]}/`;
     navigate(path);
   }
 

@@ -2,7 +2,7 @@ const { wait } = require("@testing-library/user-event/dist/utils");
 
 describe("Logout process destroy de session", () => {
   beforeEach(() => {
-    cy.visit("http://localhost:3000/dashboard-app/");
+    cy.visit("http://localhost:3000/");
     cy.contains("Sign In").click();
   });
   it("There is an user object session in the local storage", () => {

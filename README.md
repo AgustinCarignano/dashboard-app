@@ -9,7 +9,7 @@ There are some interesting features in this application, for example, getting a 
 
 ## Page Link
 
-Click in [Dashboard]('https://agustincarignano.github.io/dashboard-app/') to see the app deployed in Github Pages
+Click in [Dashboard]('https://agustincarignano.github.io/') to see the app deployed in Github Pages
 
 ## Available Scripts
 
