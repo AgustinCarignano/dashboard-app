@@ -2,6 +2,8 @@
 
 Backoffice app for Miranda Hotel, a fake luxury hotel chain, which allow its employees to manage reservations, guests messages, add new users and much more.
 
+![capture](https://imgur.com/2YBx3ny.png)
+
 ## Main features
 
 This app was bootstrapped with CRA, later adding redux and context better manage the application states.
@@ -9,7 +11,7 @@ There are some interesting features in this application, for example, getting a 
 
 ## Page Link
 
-Click in [Dashboard]('https://agustincarignano.github.io/dashboard-app/') to see the app deployed in Github Pages
+Click in [Dashboard](http://miranda-dashboard-carignano.s3-website.eu-west-3.amazonaws.com/) to see the app deployed in AWS S3
 
 ## Available Scripts
 
