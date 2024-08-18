@@ -1,14 +1,14 @@
 {
   "files": {
-    "main.css": "/dashboard-app/static/css/main.a294006c.css",
-    "main.js": "/dashboard-app/static/js/main.6b20a1ce.js",
+    "main.css": "/dashboard-app/static/css/main.669b7223.css",
+    "main.js": "/dashboard-app/static/js/main.27a8d91d.js",
     "static/media/calendarIcon.svg": "/dashboard-app/static/media/calendarIcon.3e852f10cd1d7363c43075d48b0488a7.svg",
     "index.html": "/dashboard-app/index.html",
-    "main.a294006c.css.map": "/dashboard-app/static/css/main.a294006c.css.map",
-    "main.6b20a1ce.js.map": "/dashboard-app/static/js/main.6b20a1ce.js.map"
+    "main.669b7223.css.map": "/dashboard-app/static/css/main.669b7223.css.map",
+    "main.27a8d91d.js.map": "/dashboard-app/static/js/main.27a8d91d.js.map"
   },
   "entrypoints": [
-    "static/css/main.a294006c.css",
-    "static/js/main.6b20a1ce.js"
+    "static/css/main.669b7223.css",
+    "static/js/main.27a8d91d.js"
   ]
 }
